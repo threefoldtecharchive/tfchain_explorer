@@ -5,9 +5,11 @@ import App from "@/App.vue";
 import router from "@/router";
 import vuetify from "@/plugins/vuetify";
 import apolloProvider from "@/plugins/apollo";
+import dateFiler from "@/filters/date";
 
 Vue.config.productionTip = false;
 Vue.use(VueApollo);
+Vue.filter("date", dateFiler);
 
 new Vue({
   router,

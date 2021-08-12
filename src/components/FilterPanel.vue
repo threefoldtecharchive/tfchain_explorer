@@ -1,56 +1,75 @@
 <template>
-  <div class="container">
-    <v-expansion-panels multiple accordion v-model="opened">
-      <!-- l v-for="x in [1, 2, 3, 4]" :key="x" -->
-      <v-expansion-panel>
-        <v-expansion-panel-header disabled disable-icon-rotate>
-          Item - {{ opened }}
-          <template v-slot:actions>
-            <v-checkbox
-              class="shrink mr-0 mt-0"
-              hide-details
-              :value="open"
-              @click="toggleOpen"
-            />
-          </template>
-        </v-expansion-panel-header>
-        <v-divider />
-        <v-expansion-panel-content>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+  <div>
+    <v-container>
+      <v-row>
+        <h3>Filters - {{ openList }}</h3>
+        <v-spacer />
+        <v-btn color="primary" @click="log">
+          Apply
+        </v-btn>
+      </v-row>
+    </v-container>
+    <div class="div-spacer">
+      <v-divider />
+    </div>
+    <div class="filter-container">
+      <v-expansion-panels multiple accordion v-model="openList">
+        <FilterOption
+          v-for="(key, index) in keys"
+          :key="key"
+          :name="key"
+          :index="index"
+          :filter="filters[key]"
+          v-on:toggle-open="toggleFilter"
+        />
+      </v-expansion-panels>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
+import FilterOption from "@/components/FilterOption.vue";
 
-@Component({})
+@Component({
+  components: {
+    FilterOption,
+  },
+})
 export default class FilterPanel extends Vue {
-  opened: number[] = [];
-  open = false;
+  openList: number[] = [];
+  @Prop({ required: true }) filters!: any;
 
-  toggleOpen() {
-    if (this.open) {
-      this.open = false;
-      this.opened.pop();
-    } else {
-      this.open = true;
-      this.opened.push(0);
+  get keys() {
+    return Object.keys(this.filters);
+  }
+
+  toggleFilter(index: number, opened: boolean): void {
+    console.log({ index, opened });
+    if (opened) {
+      this.openList.push(index);
+      return;
     }
+
+    const idx = this.openList.findIndex((v) => v === index);
+    this.openList.splice(idx, 1);
+  }
+
+  log() {
+    console.log(this.filters.generate());
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.container {
+.filter-container {
   height: auto;
   width: 100%;
-  max-height: 80vh;
+  max-height: 70vh;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.div-spacer {
+  margin: 10px 0;
 }
 </style>

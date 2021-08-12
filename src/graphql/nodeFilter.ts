@@ -9,6 +9,10 @@ class OutputGenerator {
       return res;
     }, {} as any);
   }
+
+  set(key: any, value: any): void {
+    (this as any)[key] = value;
+  }
 }
 
 class NodeWhereInputID extends OutputGenerator {
@@ -246,19 +250,19 @@ interface NodeWhereInput
     NodeWhereInputCru,
     NodeWhereInputMru,
     NodeWhereInputPublicConfig {
-  AND: NodeWhereInput[];
-  OR: NodeWhereInput[];
+  // AND: NodeWhereInput[];
+  // OR: NodeWhereInput[];
 }
 
-class NodeFilterModel {
+export class NodeFilterModel {
   constructor(
     public id = new NodeWhereInputID(),
     public createdAt = new NodeWhereInputCreatedAt(),
-    public createdBy = new NodeWhereInputCreatedBy(),
+    public createdById = new NodeWhereInputCreatedBy(),
     public updateAt = new NodeWhereInputUpdateAt(),
-    public updatedBy = new NodeWhereInputUpdatedBy(),
+    public updatedById = new NodeWhereInputUpdatedBy(),
     public deletedAt = new NodeWhereInputDeletedAt(),
-    public deletedBy = new NodeWhereInputDeletedBy(),
+    public deletedById = new NodeWhereInputDeletedBy(),
     public gridVersion = new NodeWhereInputGridVersion(),
     public nodeId = new NodeWhereInputNodeId(),
     public farmId = new NodeWhereInputFarmId(),

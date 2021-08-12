@@ -7,7 +7,7 @@
     <br />
     <v-row v-if="!loading">
       <v-col cols="3">
-        <FilterPanel />
+        <FilterPanel :filters="filters" />
       </v-col>
       <v-col cols="9">
         <v-data-table
@@ -39,6 +39,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { nodesQuery, NodeModel } from "@/graphql/node";
 import FilterPanel from "@/components/FilterPanel.vue";
+import { NodeFilterModel } from "@/graphql/nodeFilter";
 
 @Component({
   components: {
@@ -58,6 +59,7 @@ export default class Home extends Vue {
     { text: "CreatedAt", value: "createdAt", align: "center" },
   ];
 
+  filters = new NodeFilterModel();
   nodes: NodeModel[] = [];
   loading = true;
 

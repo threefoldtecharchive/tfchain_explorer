@@ -6,6 +6,7 @@ import router from "@/router";
 import vuetify from "@/plugins/vuetify";
 import apolloProvider from "@/plugins/apollo";
 import dateFiler from "@/filters/date";
+import "@/graphql/nodeFilter";
 
 Vue.config.productionTip = false;
 Vue.use(VueApollo);

@@ -7,14 +7,7 @@
     <br />
     <v-row v-if="!loading">
       <v-col cols="3">
-        <v-navigation-drawer width="100%">
-          <!-- <v-list>height="auto"
-            <template v-for="x in [1, 2, 3, 4]">
-              <v-list-item :key="x"> item {{ x }} </v-list-item>
-              <v-divider :key="x" v-if="x != 4" />
-            </template>
-          </v-list> -->
-        </v-navigation-drawer>
+        <FilterPanel />
       </v-col>
       <v-col cols="9">
         <v-data-table
@@ -45,8 +38,13 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { nodesQuery, NodeModel } from "@/graphql/node";
+import FilterPanel from "@/components/FilterPanel.vue";
 
-@Component({})
+@Component({
+  components: {
+    FilterPanel,
+  },
+})
 export default class Home extends Vue {
   headers = [
     { text: "ID", value: "nodeId" },

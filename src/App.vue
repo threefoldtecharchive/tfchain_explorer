@@ -2,7 +2,7 @@
   <v-app>
     <Sidenav :mini="mini" />
     <v-main>
-      <navbar :mini="mini" v-on:toggle-sidenav="mini = !mini" />
+      <Navbar :mini="mini" v-on:toggle-sidenav="mini = !mini" />
       <router-view />
     </v-main>
   </v-app>

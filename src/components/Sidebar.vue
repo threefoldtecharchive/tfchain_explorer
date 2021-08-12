@@ -27,9 +27,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-@Component({
-  name: "Sidebar",
-})
+@Component({})
 export default class Sidebar extends Vue {
   @Prop({ required: true }) mini!: boolean;
 

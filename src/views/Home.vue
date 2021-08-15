@@ -19,6 +19,7 @@
           :items-per-page="10"
           class="elevation-1"
           align
+          @click:row="openSheet"
         >
           <template v-slot:[`item.version`]="{ item }">
             v{{ item.version }}.0
@@ -40,18 +41,25 @@
     <div class="d-flex justify-center align-center loader" v-if="initial">
       <v-progress-circular indeterminate color="primary" />
     </div>
+    <NodeDetails
+      :open="!!activeNode"
+      :node="activeNode"
+      v-on:close-sheet="closeSheet"
+    />
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { nodesQuery, NodeModel } from "@/graphql/node";
-import FilterPanel from "@/components/FilterPanel.vue";
 import { generateWhereQuery } from "@/utils/filter";
+import FilterPanel from "@/components/FilterPanel.vue";
+import NodeDetails from "@/components/NodeDetails.vue";
 
 @Component({
   components: {
     FilterPanel,
+    NodeDetails,
   },
 })
 export default class Home extends Vue {
@@ -70,6 +78,7 @@ export default class Home extends Vue {
   nodes: NodeModel[] = [];
   initial = true;
   loading = false;
+  activeNode: NodeModel | null = null;
 
   async created(): Promise<void> {
     const res = await this.$apollo.query<{ nodes: NodeModel[] }>({
@@ -88,6 +97,14 @@ export default class Home extends Vue {
     });
     this.nodes = res.data.nodes;
     this.loading = false;
+  }
+
+  openSheet(node: NodeModel) {
+    this.activeNode = node;
+  }
+
+  closeSheet(): void {
+    this.activeNode = null;
   }
 }
 </script>

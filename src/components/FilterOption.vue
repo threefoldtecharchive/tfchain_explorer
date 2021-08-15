@@ -1,7 +1,7 @@
 <template>
   <v-expansion-panel>
     <v-expansion-panel-header disabled disable-icon-rotate>
-      <span class="filter-title">By {{ name | optionTitle }}</span>
+      <span class="filter-title">By {{ filterName | optionTitle }}</span>
       <template v-slot:actions>
         <v-checkbox
           class="shrink mr-0 mt-0"
@@ -14,7 +14,11 @@
     <v-divider />
     <v-expansion-panel-content>
       <div v-for="(key, i) in keys" :key="key">
-        <FilterOptionDisplay :filter="name" :option="filter.options[key]" />
+        <FilterOptionDisplay
+          :name="name"
+          :filterName="filterName"
+          :option="filter.options[key]"
+        />
         <template v-if="i + 1 != keys.length">
           <br />
           <v-divider />
@@ -37,6 +41,7 @@ import { createFilterOption } from "@/utils/filter";
 export default class FilterOption extends Vue {
   @Prop({ required: true }) index!: number;
   @Prop({ required: true }) name!: string;
+  @Prop({ required: true }) filterName!: string;
   @Prop({ required: true }) filter!: ReturnType<typeof createFilterOption>;
 
   get keys() {
@@ -46,8 +51,8 @@ export default class FilterOption extends Vue {
   toggleEnable() {
     this.$emit("toggle-open", this.index);
     this.$store.commit("toggleFilterEnable", {
-      name: "nodes",
-      filter: this.name,
+      name: this.name,
+      filter: this.filterName,
     });
   }
 }

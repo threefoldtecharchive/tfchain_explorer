@@ -12,6 +12,12 @@ const cache = new InMemoryCache();
 const apolloClient = new ApolloClient({
   link,
   cache,
+  defaultOptions: {
+    query: {
+      fetchPolicy: "no-cache",
+      errorPolicy: "all",
+    },
+  },
 });
 
 export default new VueApollo({

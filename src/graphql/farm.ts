@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-export interface NodeModel {
+export interface FarmModel {
   id: string;
   createdAt: string;
   createdById: string;
@@ -10,21 +10,17 @@ export interface NodeModel {
   deletedById?: string;
   version: number;
   gridVersion: number;
-  nodeId: number;
   farmId: number;
-  twinId: number;
-  locationId: string;
+  name: string;
+  twinId?: number;
+  pricingPolicyId?: number;
+  certificationType: "Diy" | "Certified";
   countryId?: number;
   cityId?: number;
-  hru?: string;
-  sru?: string;
-  cru?: string;
-  mru?: string;
-  publicConfigId?: string;
 }
 
-const nodeBaseFragment = gql`
-  fragment NodeBase on Node {
+const farmBaseFragment = gql`
+  fragment FarmBase on Farm {
     id
     createdAt
     createdById
@@ -34,25 +30,21 @@ const nodeBaseFragment = gql`
     deletedById
     version
     gridVersion
-    nodeId
     farmId
+    name
     twinId
-    locationId
+    pricingPolicyId
+    certificationType
     countryId
     cityId
-    hru
-    sru
-    cru
-    mru
-    publicConfigId
   }
 `;
 
-export const nodesQuery = gql`
-  ${nodeBaseFragment}
-  query nodes($where: NodeWhereInput) {
-    nodes(where: $where) {
-      ...NodeBase
+export const farmsQuery = gql`
+  ${farmBaseFragment}
+  query farms($where: FarmWhereInput) {
+    farms(where: $where) {
+      ...FarmBase
     }
   }
 `;

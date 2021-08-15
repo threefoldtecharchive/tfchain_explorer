@@ -1,6 +1,6 @@
 import { createFilter, optionsSchemas } from "@/utils/filter";
 
-export const nodes = createFilter({
+export const farms = createFilter({
   id: ["text", optionsSchemas.schema2],
   createdAt: ["text", optionsSchemas.schema5],
   createdById: ["text", optionsSchemas.schema2],
@@ -11,16 +11,9 @@ export const nodes = createFilter({
   gridVersion: [],
   nodeId: [],
   farmId: [],
+  name: ["text", ["eq", "contains", "endsWith", "endsWith", "in"]],
   twinId: [],
-  location: ["text", optionsSchemas.schema2],
+  pricingPolicyId: [],
   countryId: [],
   cityId: [],
-  hru: ["text"],
-  sru: ["text"],
-  cru: ["text"],
-  mru: ["text"],
-  publicConfig: ["text", optionsSchemas.schema2],
-  uptime: [],
-  created: [],
-  farmingPolicyId: [],
 });

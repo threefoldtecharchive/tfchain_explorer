@@ -38,29 +38,30 @@ import { FilterOptionModel, inMath, inMeaningful } from "@/utils/filter";
 @Component({})
 export default class FilterOptionDisplay extends Vue {
   @Prop({ required: true }) option!: FilterOptionModel;
-  @Prop({ required: true }) filter!: string;
+  @Prop({ required: true }) name!: string;
+  @Prop({ required: true }) filterName!: string;
 
   get label(): string {
     return "By " + inMeaningful[this.option.name];
   }
 
   get inputLabel(): string {
-    return `${this.filter} (${inMath[this.option.name]})`;
+    return `${this.filterName} (${inMath[this.option.name]})`;
   }
 
   toggleEnable() {
     this.$store.commit("toggleFilterOptionEnable", {
-      name: "nodes",
-      filter: this.filter,
-      option: this.filter + "_" + this.option.name,
+      name: this.name,
+      filter: this.filterName,
+      option: this.filterName + "_" + this.option.name,
     });
   }
 
   updateValue(value: any) {
     this.$store.commit("updateFilterOptionValue", {
-      name: "nodes",
-      filter: this.filter,
-      option: this.filter + "_" + this.option.name,
+      name: this.name,
+      filter: this.filterName,
+      option: this.filterName + "_" + this.option.name,
       value,
     });
   }

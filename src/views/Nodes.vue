@@ -8,6 +8,7 @@
     <v-row v-if="!initial">
       <v-col cols="3">
         <FilterPanel
+          :name="'nodes'"
           v-on:apply-filter="applyFilter"
           :filters="$store.getters.filters('nodes')"
         />
@@ -62,7 +63,7 @@ import NodeDetails from "@/components/NodeDetails.vue";
     NodeDetails,
   },
 })
-export default class Home extends Vue {
+export default class Nodes extends Vue {
   headers = [
     { text: "ID", value: "nodeId" },
     { text: "Farm ID", value: "farmId", align: "center" },

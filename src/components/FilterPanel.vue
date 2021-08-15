@@ -17,7 +17,8 @@
         <FilterOption
           v-for="(key, index) in keys"
           :key="key"
-          :name="key"
+          :name="name"
+          :filterName="key"
           :index="index"
           :filter="filters[key]"
           v-on:toggle-open="toggleFilter"
@@ -37,8 +38,10 @@ import { FilterModel } from "@/utils/filter";
   },
 })
 export default class FilterPanel extends Vue {
-  openList: number[] = [];
   @Prop({ required: true }) filters!: FilterModel["filters"];
+  @Prop({ required: true }) name!: string;
+
+  openList: number[] = [];
 
   get keys() {
     return Object.keys(this.filters);

@@ -32,8 +32,8 @@ export default class Sidebar extends Vue {
   @Prop({ required: true }) mini!: boolean;
 
   items = [
-    { title: "Nodes", icon: "mdi-home-city", route: "/" },
-    { title: "Farms", icon: "mdi-account-group-outline", route: "/about" },
+    { title: "Nodes", icon: "mdi-resistor-nodes", route: "/" },
+    { title: "Farms", icon: "mdi-webpack", route: "/farms" },
   ];
 }
 </script>

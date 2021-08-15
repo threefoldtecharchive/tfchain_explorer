@@ -1,12 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { nodes } from "@/graphql/nodeFilter";
+import { farms } from "@/graphql/farmFilter";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     nodes,
+    farms,
   },
   getters: {
     filters(state) {

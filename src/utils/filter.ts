@@ -1,5 +1,16 @@
 // All filter available options
-type FilterOptions = "eq" | "lt" | "lte" | "gt" | "gte" | "in" | "all";
+type FilterOptions =
+  | "eq"
+  | "lt"
+  | "lte"
+  | "gt"
+  | "gte"
+  | "in"
+  | "all"
+  | "contains"
+  | "startsWith"
+  | "endsWith";
+
 const optionsSchemas = {
   schema2: ["eq", "in"] as FilterOptions[],
   schema5: ["eq", "lt", "lte", "gt", "gte"] as FilterOptions[],

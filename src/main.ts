@@ -7,6 +7,7 @@ import vuetify from "@/plugins/vuetify";
 import apolloProvider from "@/plugins/apollo";
 import dateFiler from "@/filters/date";
 import optionTitleFiler from "@/filters/optionTitle";
+import store from './store'
 
 Vue.config.productionTip = false;
 Vue.use(VueApollo);
@@ -17,5 +18,6 @@ new Vue({
   router,
   vuetify,
   apolloProvider,
-  render: (h) => h(App),
+  store,
+  render: (h) => h(App)
 }).$mount("#app");

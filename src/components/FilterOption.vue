@@ -6,44 +6,49 @@
         <v-checkbox
           class="shrink mr-0 mt-0"
           hide-details
-          @change="toggleOpen"
+          @change="toggleEnable"
           :value="opened"
         />
       </template>
     </v-expansion-panel-header>
     <v-divider />
     <v-expansion-panel-content>
-      <v-btn color="primary" @click="changeFirstKey">
-        {{ keys[0] }}
-      </v-btn>
+      <FilterOptionDisplay
+        v-for="key in keys"
+        :key="key"
+        :filter="name"
+        :option="filter.options[key]"
+      />
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import FilterOptionDisplay from "@/components/FilterOptionDisplay.vue";
+import { createFilterOption } from "@/utils/filter";
 
 @Component({
-  // props: {
-  //   value: Object,
-  // },
+  components: {
+    FilterOptionDisplay,
+  },
 })
 export default class FilterOption extends Vue {
   @Prop({ required: true }) index!: number;
   @Prop({ required: true }) name!: string;
-  @Prop({ required: true }) filter!: any;
+  @Prop({ required: true }) filter!: ReturnType<typeof createFilterOption>;
   opened = false;
 
   get keys() {
-    return Object.keys(this.filter);
+    return Object.keys(this.filter.options);
   }
 
-  toggleOpen() {
+  toggleEnable() {
     this.opened = !this.opened;
     this.$emit("toggle-open", this.index, this.opened);
-  }
-
-  changeFirstKey() {
-    this.filter.set(this.keys[0], 5);
+    this.$store.commit("toggleFilterEnable", {
+      name: "nodes",
+      filter: this.name,
+    });
   }
 }
 </script>

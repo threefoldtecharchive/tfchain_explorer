@@ -7,7 +7,7 @@
     <br />
     <v-row v-if="!loading">
       <v-col cols="3">
-        <FilterPanel :filters="filters" />
+        <FilterPanel :filters="$store.getters.filters('nodes')" />
       </v-col>
       <v-col cols="9">
         <v-data-table
@@ -39,7 +39,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import { nodesQuery, NodeModel } from "@/graphql/node";
 import FilterPanel from "@/components/FilterPanel.vue";
-import { NodeFilterModel } from "@/graphql/nodeFilter";
 
 @Component({
   components: {
@@ -59,28 +58,13 @@ export default class Home extends Vue {
     { text: "CreatedAt", value: "createdAt", align: "center" },
   ];
 
-  filters = new NodeFilterModel();
   nodes: NodeModel[] = [];
   loading = true;
 
   async created(): Promise<void> {
     const res = await this.$apollo.query<{ nodes: NodeModel[] }>(nodesQuery);
-    // this.nodes = res.data.nodes;
+    this.nodes = res.data.nodes;
     this.loading = false;
-
-    // fake data
-    const data = [];
-    for (let i = 0; i < 1e2; i++) {
-      const x = Math.random() > 0.5 ? res.data.nodes : res.data.nodes.reverse();
-      data.push(
-        ...x.map((y) => {
-          y = { ...y };
-          y.id += Math.random().toString();
-          return y;
-        })
-      );
-    }
-    this.nodes = data;
   }
 }
 </script>

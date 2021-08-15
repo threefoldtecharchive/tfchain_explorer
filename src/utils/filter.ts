@@ -7,11 +7,11 @@ const optionsSchemas = {
   schema6_all: ["eq", "lt", "lte", "gt", "gte", "all"] as FilterOptions[],
 };
 
-interface FilterOptionModel {
+export interface FilterOptionModel {
   model: "option";
   type: "text" | "number";
   enabled: boolean;
-  value: number | string | undefined;
+  value: number | string | (number | string)[];
   name: string;
 }
 
@@ -23,19 +23,23 @@ function createFilterOption(
   const res: { [key: string]: FilterOptionModel } = {};
 
   for (const filter of schema) {
+    const value = filter === "in" ? [] : type === "text" ? "" : 0;
     res[name + "_" + filter] = {
       model: "option",
       enabled: false,
       name: filter,
       type,
-      value: undefined,
+      value,
     };
   }
 
-  return res;
+  return {
+    enabled: false,
+    options: res,
+  };
 }
 
-interface FilterModel {
+export interface FilterModel {
   model: "filter";
   filters: {
     [key: string]: ReturnType<typeof createFilterOption>;

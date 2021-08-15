@@ -2,9 +2,9 @@
   <div>
     <v-container>
       <v-row>
-        <h3>Filters - {{ openList }}</h3>
+        <h3>Filters</h3>
         <v-spacer />
-        <v-btn color="primary" @click="log">
+        <v-btn color="primary">
           Apply
         </v-btn>
       </v-row>
@@ -29,6 +29,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import FilterOption from "@/components/FilterOption.vue";
+import { FilterModel } from "@/utils/filter";
 
 @Component({
   components: {
@@ -37,14 +38,13 @@ import FilterOption from "@/components/FilterOption.vue";
 })
 export default class FilterPanel extends Vue {
   openList: number[] = [];
-  @Prop({ required: true }) filters!: any;
+  @Prop({ required: true }) filters!: FilterModel["filters"];
 
   get keys() {
     return Object.keys(this.filters);
   }
 
   toggleFilter(index: number, opened: boolean): void {
-    console.log({ index, opened });
     if (opened) {
       this.openList.push(index);
       return;
@@ -52,10 +52,6 @@ export default class FilterPanel extends Vue {
 
     const idx = this.openList.findIndex((v) => v === index);
     this.openList.splice(idx, 1);
-  }
-
-  log() {
-    console.log(this.filters.generate());
   }
 }
 </script>

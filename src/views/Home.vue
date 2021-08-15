@@ -89,6 +89,7 @@ export default class Home extends Vue {
   }
 
   async applyFilter(): Promise<void> {
+    this.loading = true;
     const res = await this.$apollo.query<{ nodes: NodeModel[] }>({
       query: nodesQuery,
       variables: {

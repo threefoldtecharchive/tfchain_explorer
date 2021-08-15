@@ -1,0 +1,17 @@
+ports:
+  - port: 8080
+    onOpen: open-browser
+
+vscode:
+  extensions:
+    - zhuangtongfa.Material-theme
+    - esbenp.prettier-vscode
+    - octref.vetur
+    - redhat.vscode-yaml
+    - vscode-icons-team.vscode-icons
+    - CoenraadS.bracket-pair-colorizer
+    - apollographql.vscode-apollo
+
+github:
+  prebuilds:
+    master: true

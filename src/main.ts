@@ -7,7 +7,6 @@ import vuetify from "@/plugins/vuetify";
 import apolloProvider from "@/plugins/apollo";
 import dateFiler from "@/filters/date";
 import optionTitleFiler from "@/filters/optionTitle";
-import "@/graphql/nodeFilter";
 
 Vue.config.productionTip = false;
 Vue.use(VueApollo);

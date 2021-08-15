@@ -10,7 +10,6 @@ vscode:
     - redhat.vscode-yaml
     - vscode-icons-team.vscode-icons
     - CoenraadS.bracket-pair-colorizer
-    - apollographql.vscode-apollo
 
 github:
   prebuilds:

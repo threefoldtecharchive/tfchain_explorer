@@ -52,13 +52,11 @@ const nodeBaseFragment = gql`
   }
 `;
 
-export const nodesQuery = {
-  query: gql`
-    ${nodeBaseFragment}
-    query nodes {
-      nodes {
-        ...NodeBase
-      }
+export const nodesQuery = gql`
+  ${nodeBaseFragment}
+  query nodes($where: NodeWhereInput) {
+    nodes(where: $where) {
+      ...NodeBase
     }
-  `,
-};
+  }
+`;

@@ -5,7 +5,7 @@ export const nodes = createFilter({
   id: ["text", optionsSchemas.schema2],
   createdAt: ["text", optionsSchemas.schema5],
   createdById: ["text", optionsSchemas.schema2],
-  updatedAt: [],
+  updatedAt: ['text', optionsSchemas.schema5],
   updatedById: ["text", optionsSchemas.schema2],
   deletedAt: ['text', optionsSchemas.schema6_all],
   deletedById: ['text', optionsSchemas.schema2],

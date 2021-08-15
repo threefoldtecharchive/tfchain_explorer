@@ -5,11 +5,14 @@
     </h1>
     <v-divider />
     <br />
-    <v-row v-if="!loading">
+    <v-row v-if="!initial">
       <v-col cols="3">
-        <FilterPanel :filters="$store.getters.filters('nodes')" />
+        <FilterPanel
+          v-on:apply-filter="applyFilter"
+          :filters="$store.getters.filters('nodes')"
+        />
       </v-col>
-      <v-col cols="9">
+      <v-col cols="9" v-if="!loading">
         <v-data-table
           :headers="headers"
           :items="nodes"
@@ -28,8 +31,13 @@
           </template>
         </v-data-table>
       </v-col>
+      <v-col cols="9" v-if="loading">
+        <div class="d-flex justify-center align-center loader">
+          <v-progress-circular indeterminate color="primary" />
+        </div>
+      </v-col>
     </v-row>
-    <div class="d-flex justify-center align-center loader" v-if="loading">
+    <div class="d-flex justify-center align-center loader" v-if="initial">
       <v-progress-circular indeterminate color="primary" />
     </div>
   </v-container>
@@ -39,6 +47,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { nodesQuery, NodeModel } from "@/graphql/node";
 import FilterPanel from "@/components/FilterPanel.vue";
+import { generateWhereQuery } from "@/utils/filter";
 
 @Component({
   components: {
@@ -59,10 +68,24 @@ export default class Home extends Vue {
   ];
 
   nodes: NodeModel[] = [];
-  loading = true;
+  initial = true;
+  loading = false;
 
   async created(): Promise<void> {
-    const res = await this.$apollo.query<{ nodes: NodeModel[] }>(nodesQuery);
+    const res = await this.$apollo.query<{ nodes: NodeModel[] }>({
+      query: nodesQuery,
+    });
+    this.nodes = res.data.nodes;
+    this.initial = false;
+  }
+
+  async applyFilter(): Promise<void> {
+    const res = await this.$apollo.query<{ nodes: NodeModel[] }>({
+      query: nodesQuery,
+      variables: {
+        where: generateWhereQuery(this.$store.state.nodes),
+      },
+    });
     this.nodes = res.data.nodes;
     this.loading = false;
   }

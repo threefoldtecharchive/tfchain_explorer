@@ -95,4 +95,50 @@ function createFilter(filters: CreateFilterInput): FilterModel {
   };
 }
 
-export { optionsSchemas, createFilter, createFilterOption };
+function generateOptionQuery(option: FilterOptionModel) {
+  const { type, value = "", name } = option;
+
+  if (name === "all") return value;
+
+  if (name === "in") {
+    const res: string[] = value
+      .toString()
+      .trim()
+      .split(" ");
+
+    return type === "number"
+      ? res.map((e) => +e.trim()).filter((e) => !isNaN(e))
+      : res;
+  }
+
+  return value.toString().trim() === ""
+    ? null
+    : type === "text"
+    ? value.trim()
+    : isNaN(+value)
+    ? null
+    : +value;
+}
+
+function generateWhereQuery(filter: FilterModel) {
+  const { filters } = filter;
+  const res: { [key: string]: any } = {};
+
+  for (const f in filters) {
+    if (!filters[f].enabled) continue;
+    const { options } = filters[f];
+
+    for (const name in options) {
+      if (!options[name].enabled) continue;
+
+      const v = generateOptionQuery(options[name]);
+      if (v !== null) {
+        res[name] = v;
+      }
+    }
+  }
+
+  return res;
+}
+
+export { optionsSchemas, createFilter, createFilterOption, generateWhereQuery };

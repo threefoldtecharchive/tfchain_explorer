@@ -4,7 +4,7 @@
       <v-row>
         <h3>Filters</h3>
         <v-spacer />
-        <v-btn color="primary">
+        <v-btn color="primary" @click="$emit('apply-filter')">
           Apply
         </v-btn>
       </v-row>

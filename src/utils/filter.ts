@@ -1,5 +1,5 @@
 // All filter available options
-type FilterOptions = "eq" | "lt" | "lte" | "gt" | "gte" | "in";
+type FilterOptions = "eq" | "lt" | "lte" | "gt" | "gte" | "in" | "all";
 const optionsSchemas = {
   schema2: ["eq", "in"] as FilterOptions[],
   schema5: ["eq", "lt", "lte", "gt", "gte"] as FilterOptions[],
@@ -7,11 +7,31 @@ const optionsSchemas = {
   schema6_all: ["eq", "lt", "lte", "gt", "gte", "all"] as FilterOptions[],
 };
 
+export const inMath: any = {
+  eq: "=",
+  lt: "<",
+  lte: "<=",
+  gt: ">",
+  gte: ">=",
+  in: "value1 value2 value3",
+  all: "false or true",
+};
+
+export const inMeaningful: any = {
+  eq: "equals",
+  lt: "less than",
+  lte: "less than equals",
+  gt: "greater than",
+  gte: "greater than equals",
+  in: "in list",
+  all: "all of them",
+};
+
 export interface FilterOptionModel {
   model: "option";
   type: "text" | "number";
   enabled: boolean;
-  value: number | string | (number | string)[];
+  value: any;
   name: string;
 }
 
@@ -23,7 +43,15 @@ function createFilterOption(
   const res: { [key: string]: FilterOptionModel } = {};
 
   for (const filter of schema) {
-    const value = filter === "in" ? [] : type === "text" ? "" : 0;
+    const value =
+      filter === "in"
+        ? ""
+        : filter === "all"
+        ? false
+        : type === "text"
+        ? ""
+        : 0;
+
     res[name + "_" + filter] = {
       model: "option",
       enabled: false,

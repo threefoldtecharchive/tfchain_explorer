@@ -44,14 +44,13 @@ export default class FilterPanel extends Vue {
     return Object.keys(this.filters);
   }
 
-  toggleFilter(index: number, opened: boolean): void {
-    if (opened) {
-      this.openList.push(index);
-      return;
-    }
-
+  toggleFilter(index: number): void {
     const idx = this.openList.findIndex((v) => v === index);
-    this.openList.splice(idx, 1);
+    if (idx === -1) {
+      this.openList.push(index);
+    } else {
+      this.openList.splice(idx, 1);
+    }
   }
 }
 </script>

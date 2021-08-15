@@ -7,18 +7,20 @@
           class="shrink mr-0 mt-0"
           hide-details
           @change="toggleEnable"
-          :value="opened"
+          :value="filter.enabled"
         />
       </template>
     </v-expansion-panel-header>
     <v-divider />
     <v-expansion-panel-content>
-      <FilterOptionDisplay
-        v-for="key in keys"
-        :key="key"
-        :filter="name"
-        :option="filter.options[key]"
-      />
+      <div v-for="(key, i) in keys" :key="key">
+        <FilterOptionDisplay :filter="name" :option="filter.options[key]" />
+        <template v-if="i + 1 != keys.length">
+          <br />
+          <v-divider />
+          <br />
+        </template>
+      </div>
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
@@ -36,15 +38,13 @@ export default class FilterOption extends Vue {
   @Prop({ required: true }) index!: number;
   @Prop({ required: true }) name!: string;
   @Prop({ required: true }) filter!: ReturnType<typeof createFilterOption>;
-  opened = false;
 
   get keys() {
     return Object.keys(this.filter.options);
   }
 
   toggleEnable() {
-    this.opened = !this.opened;
-    this.$emit("toggle-open", this.index, this.opened);
+    this.$emit("toggle-open", this.index);
     this.$store.commit("toggleFilterEnable", {
       name: "nodes",
       filter: this.name,

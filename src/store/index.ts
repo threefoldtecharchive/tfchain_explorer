@@ -30,6 +30,14 @@ export default new Vuex.Store({
       const ref = state[name].filters[filter].options[option];
       ref.enabled = !ref.enabled;
     },
+    updateFilterOptionValue(
+      state,
+      // prettier-ignore
+      payload: { name: keyof typeof state; filter: string; option: string, value: string }
+    ) {
+      const { name, filter, option, value } = payload;
+      state[name].filters[filter].options[option].value = value;
+    },
   },
   actions: {},
   modules: {},

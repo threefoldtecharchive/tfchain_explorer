@@ -9,25 +9,42 @@
     <v-sheet class="text-center" height="90vh" v-if="node">
       <div class="content container">
         <h2>Node Details</h2>
-
-        <p>ID: {{ node.id }}</p>
-        <p>Version: {{ node.version }}</p>
-        <p>GridVersion: {{ node.gridVersion }}</p>
-        <p>NodeID: {{ node.nodeId }}</p>
-        <p>FarmID: {{ node.farmId }}</p>
-        <p>TwinID: {{ node.twinId }}</p>
-        <p>CountryID: {{ node.countryId }}</p>
-        <p>CityID: {{ node.cityId }}</p>
-        <p>CreatedById: {{ node.createdById }}</p>
-        <p>LocationId: {{ node.locationId }}</p>
-        <p>PublicConfigId: {{ node.publicConfigId }}</p>
-        <p>CreatedAt: {{ node.createdAt }}</p>
-        <p>UpdatedAt: {{ node.updatedAt }}</p>
-        <p>DeletedAt: {{ node.deletedAt }}</p>
-        <p>HRU: {{ node.hru }}</p>
-        <p>SRU: {{ node.sru }}</p>
-        <p>CRU: {{ node.cru }}</p>
-        <p>MRU: {{ node.mru }}</p>
+        <p>node - {{ node.nodeId }}</p>
+        {{ node }}
+        <hr />
+        <p>
+          node.farmId - {{ node.farmId }} - {{ $store.getters.farms.length }}
+        </p>
+        {{ $store.getters.farm(node.farmId) }}
+        <hr />
+        <p>
+          node.twinId - {{ node.twinId }} - {{ $store.getters.twins.length }}
+        </p>
+        {{ $store.getters.twin(node.twinId) }}
+        <hr />
+        <p>
+          node.countryId - {{ node.countryId }} -
+          {{ $store.getters.countries.length }}
+        </p>
+        {{ $store.getters.country(node.countryId) }}
+        <hr />
+        <p>
+          node.cityId - {{ node.cityId }} - {{ $store.getters.cities.length }}
+        </p>
+        {{ $store.getters.city(node.cityId) }}
+        <hr />
+        <p>
+          node.locationId - {{ node.locationId }} -
+          {{ $store.getters.locations.length }}
+        </p>
+        {{ $store.getters.location(node.locationId) }}
+        <hr />
+        <p>
+          node.publicConfigId - {{ node.publicConfigId }} -
+          {{ $store.getters.publicConfigs.length }}
+        </p>
+        {{ $store.getters.publicConfig(node.publicConfigId) }}
+        <hr />
       </div>
     </v-sheet>
   </v-bottom-sheet>

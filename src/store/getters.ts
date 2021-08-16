@@ -1,8 +1,8 @@
 import { IState } from "./state";
 
-function _findById(items: { id: string }[] = []) {
+function _findById(items: any[] = [], key: string) {
   return (id?: string) => {
-    return id ? items.find((item) => item.id === id) : null;
+    return id ? items.find((item) => item[key] === id) : null;
   };
 }
 
@@ -27,11 +27,11 @@ export default {
   cities: (state: IState) => state.data?.cities ?? [],
 
   /* Getters By Id */
-  node: (state: IState) => _findById(state.data?.nodes),
-  farm: (state: IState) => _findById(state.data?.farms),
-  location: (state: IState) => _findById(state.data?.locations),
-  twin: (state: IState) => _findById(state.data?.twins),
-  country: (state: IState) => _findById(state.data?.countries),
-  publicConfig: (state: IState) => _findById(state.data?.publicConfigs),
-  city: (state: IState) => _findById(state.data?.cities),
+  node: (state: IState) => _findById(state.data?.nodes, "nodeId"),
+  farm: (state: IState) => _findById(state.data?.farms, "farmId"),
+  location: (state: IState) => _findById(state.data?.locations, "locationId"),
+  twin: (state: IState) => _findById(state.data?.twins, "twinId"),
+  country: (state: IState) => _findById(state.data?.countries, "countryId"),
+  publicConfig: (state: IState) => _findById(state.data?.publicConfigs, "publicConfigId"), // prettier-ignore
+  city: (state: IState) => _findById(state.data?.cities, "cityId"),
 };

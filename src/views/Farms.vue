@@ -7,11 +7,11 @@
     <br />
     <v-row v-if="!initial">
       <v-col cols="3">
-        <FilterPanel
+        <!-- <FilterPanel
           v-on:apply-filter="applyFilter"
           :name="'farms'"
           :filters="$store.getters.filters('farms')"
-        />
+        /> -->
       </v-col>
       <v-col cols="9" v-if="!loading">
         <v-data-table

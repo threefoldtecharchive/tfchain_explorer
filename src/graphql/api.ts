@@ -264,21 +264,35 @@ export interface GetDataQueryType {
 }
 
 export const getDataQuery = gql`
-    query getDataQuery {
-        ${NodeType}
-        ${FarmType}
-        ${LocationType}
-        ${TwinType}
-        ${CountryType}
-        ${PublicConfigType}
-        ${CityType}
+  ${NodeType}
+  ${FarmType}
+  ${LocationType}
+  ${TwinType}
+  ${CountryType}
+  ${PublicConfigType}
+  ${CityType}
 
-        nodes { ...NodeType }
-        farms { ...FarmType }
-        locations { ...LocationType }
-        twins { ...TwinType }
-        countries { ...CountryType }
-        publicConfigs { ...PublicConfigType }
-        cities { ...CityType }
+  query getDataQuery {
+    nodes {
+      ...NodeType
     }
+    farms {
+      ...FarmType
+    }
+    locations {
+      ...LocationType
+    }
+    twins {
+      ...TwinType
+    }
+    countries {
+      ...CountryType
+    }
+    publicConfigs {
+      ...PublicConfigType
+    }
+    cities {
+      ...CityType
+    }
+  }
 `;

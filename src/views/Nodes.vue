@@ -5,7 +5,7 @@
     </h1>
     <v-divider />
     <br />
-    <v-row v-if="!initial">
+    <v-row>
       <v-col cols="3">
         <!-- <FilterPanel
           :name="'nodes'"
@@ -13,10 +13,12 @@
           :filters="$store.getters.filters('nodes')"
         /> -->
       </v-col>
-      <v-col cols="9" v-if="!loading">
+      <v-col cols="9">
         <v-data-table
+          :loading="$store.getters.loading"
+          loading-text="Loading..."
           :headers="headers"
-          :items="nodes"
+          :items="$store.getters.nodes"
           :items-per-page="10"
           class="elevation-1"
           align
@@ -33,15 +35,7 @@
           </template>
         </v-data-table>
       </v-col>
-      <v-col cols="9" v-if="loading">
-        <div class="d-flex justify-center align-center loader">
-          <v-progress-circular indeterminate color="primary" />
-        </div>
-      </v-col>
     </v-row>
-    <div class="d-flex justify-center align-center loader" v-if="initial">
-      <v-progress-circular indeterminate color="primary" />
-    </div>
     <NodeDetails
       :open="!!activeNode"
       :node="activeNode"
@@ -54,12 +48,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import { nodesQuery, NodeModel } from "@/graphql/node";
 import { generateWhereQuery } from "@/utils/filter";
-import FilterPanel from "@/components/FilterPanel.vue";
 import NodeDetails from "@/components/NodeDetails.vue";
 
 @Component({
   components: {
-    FilterPanel,
     NodeDetails,
   },
 })
@@ -76,30 +68,7 @@ export default class Nodes extends Vue {
     { text: "CreatedAt", value: "createdAt", align: "center" },
   ];
 
-  nodes: NodeModel[] = [];
-  initial = true;
-  loading = false;
   activeNode: NodeModel | null = null;
-
-  async created(): Promise<void> {
-    const res = await this.$apollo.query<{ nodes: NodeModel[] }>({
-      query: nodesQuery,
-    });
-    this.nodes = res.data.nodes;
-    this.initial = false;
-  }
-
-  async applyFilter(): Promise<void> {
-    this.loading = true;
-    const res = await this.$apollo.query<{ nodes: NodeModel[] }>({
-      query: nodesQuery,
-      variables: {
-        where: generateWhereQuery(this.$store.state.nodes),
-      },
-    });
-    this.nodes = res.data.nodes;
-    this.loading = false;
-  }
 
   openSheet(node: NodeModel) {
     this.activeNode = node;

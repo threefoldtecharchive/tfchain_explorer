@@ -54,12 +54,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import { farmsQuery, FarmModel } from "@/graphql/farm";
 import { generateWhereQuery } from "@/utils/filter";
-import FilterPanel from "@/components/FilterPanel.vue";
 import NodeDetails from "@/components/NodeDetails.vue";
 
 @Component({
   components: {
-    FilterPanel,
     NodeDetails,
   },
 })

@@ -9,6 +9,10 @@
       TF Explorer
     </v-app-bar-title>
     <v-spacer />
+    <template v-if="$store.getters.loading">
+      <v-progress-circular indeterminate />
+      <v-divider vertical class="mr-4 ml-4" />
+    </template>
     <v-btn icon @click="toggleTheme">
       <v-icon>mdi-theme-light-dark</v-icon>
     </v-btn>

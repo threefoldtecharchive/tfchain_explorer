@@ -21,5 +21,12 @@ import Navbar from "@/components/Navbar.vue";
 })
 export default class App extends Vue {
   mini = true;
+
+  created() {
+    this.$store.dispatch("loadData");
+    setInterval(() => {
+      this.$store.dispatch("loadData");
+    }, 60 * 1000);
+  }
 }
 </script>

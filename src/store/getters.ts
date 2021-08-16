@@ -1,5 +1,6 @@
-import { GetDataQueryType, INode } from "@/graphql/api";
-import { applyFilter, nodeIdFilter } from "@/utils/filters";
+import { GetDataQueryType } from "@/graphql/api";
+import { applyFilters, nodeIdFilter } from "@/utils/filters";
+import { GetterTree } from "vuex";
 import { IState } from "./state";
 
 function findById(items: any[] = [], key: string) {
@@ -8,54 +9,47 @@ function findById(items: any[] = [], key: string) {
   };
 }
 
-export function fallbackExtractor<T>(key: keyof GetDataQueryType): (state: IState) => T[]; // prettier-ignore
-export function fallbackExtractor<T>(key: keyof GetDataQueryType, state: IState): T[]; // prettier-ignore
-export function fallbackExtractor(key: keyof GetDataQueryType, state?: any) {
+export function fallbackDataExtractor<T = GetDataQueryType, K extends keyof T = keyof T>(key: K): (state: IState) => T[K]; // prettier-ignore
+export function fallbackDataExtractor<T = GetDataQueryType, K extends keyof T = keyof T>(key: K, state: IState): T[K]; // prettier-ignore
+export function fallbackDataExtractor(key: any, state?: any) {
   if (state) return state.data?.[key] ?? [];
-  return (state: IState) => state.data?.[key] ?? [];
+  return (state: any) => state.data?.[key] ?? [];
 }
 
 export default {
-  loading: (state: IState) => state.loading,
-  nodes: fallbackExtractor("nodes"),
-  farms: fallbackExtractor("farms"),
-  locations: fallbackExtractor("locations"),
-  twins: fallbackExtractor("twins"),
-  countries: fallbackExtractor("countries"),
-  publicConfigs: fallbackExtractor("publicConfigs"),
-  cities: fallbackExtractor("cities"),
+  loading: (state) => state.loading,
+  nodes: fallbackDataExtractor("nodes"),
+  farms: fallbackDataExtractor("farms"),
+  locations: fallbackDataExtractor("locations"),
+  twins: fallbackDataExtractor("twins"),
+  countries: fallbackDataExtractor("countries"),
+  publicConfigs: fallbackDataExtractor("publicConfigs"),
+  cities: fallbackDataExtractor("cities"),
 
   /* Getters By Id */
-  node: (state: IState) => findById(state.data?.nodes, "nodeId"),
-  farm: (state: IState) => findById(state.data?.farms, "farmId"),
-  location: (state: IState) => findById(state.data?.locations, "locationId"),
-  twin: (state: IState) => findById(state.data?.twins, "twinId"),
-  country: (state: IState) => findById(state.data?.countries, "countryId"),
-  publicConfig: (state: IState) => findById(state.data?.publicConfigs, "publicConfigId"), // prettier-ignore
-  city: (state: IState) => findById(state.data?.cities, "cityId"),
+  node: (state) => findById(state.data?.nodes, "nodeId"),
+  farm: (state) => findById(state.data?.farms, "farmId"),
+  location: (state) => findById(state.data?.locations, "locationId"),
+  twin: (state) => findById(state.data?.twins, "twinId"),
+  country: (state) => findById(state.data?.countries, "countryId"),
+  publicConfig: (state) => findById(state.data?.publicConfigs, "publicConfigId"), // prettier-ignore
+  city: (state) => findById(state.data?.cities, "cityId"),
 
   /* filters helpers */
-  nodes_id: (state: IState) => {
-    const nodes = fallbackExtractor<INode>("nodes", state);
+  nodes_id: (state) => {
+    const nodes = fallbackDataExtractor("nodes", state);
     return nodes.map(({ nodeId }) => nodeId.toString());
   },
-  node_filters(state: IState) {
+  node_filters(state) {
     return (filter: keyof IState["filters"]["nodes"]) => {
       return state.filters.nodes[filter];
     };
   },
 
   /* filtered values */
-  filtered_nodes: (state: IState) => {
-    return applyFilter(
-      state,
-      "nodes",
-      nodeIdFilter,
-      nodeIdFilter,
-      nodeIdFilter,
-      nodeIdFilter,
-      nodeIdFilter,
-      nodeIdFilter
-    );
-  },
-};
+  filtered_nodes: applyFilters(
+    fallbackDataExtractor("nodes"),
+    (state) => state.filters.nodes,
+    nodeIdFilter
+  ),
+} as GetterTree<IState, IState>;

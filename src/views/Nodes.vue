@@ -41,7 +41,7 @@
           :loading="$store.getters.loading"
           loading-text="Loading..."
           :headers="headers"
-          :items="$store.getters.nodes"
+          :items="$store.getters.filtered_nodes"
           :items-per-page="10"
           class="elevation-1"
           align

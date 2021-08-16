@@ -9,7 +9,7 @@ export enum MutationTypes {
 }
 
 interface ISetNodeFilter {
-  key: keyof IState["node_filters"];
+  key: keyof IState["filters"]["nodes"];
   value: any;
 }
 
@@ -21,10 +21,10 @@ export default {
     state.data = payload;
   },
   setNodeFilter(state: IState, { key, value }: ISetNodeFilter) {
-    state.node_filters[key] = value;
+    state.filters.nodes[key] = value;
   },
   updateNodeFilter(state: IState, { key, value }: ISetNodeFilter) {
-    const filters = state.node_filters[key];
+    const filters = state.filters.nodes[key];
     const idx = filters.indexOf(value.toString());
     if (idx > -1) {
       filters.splice(idx, 1);

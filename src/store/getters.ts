@@ -1,4 +1,5 @@
 import { GetDataQueryType, INode } from "@/graphql/api";
+import { applyFilter, nodeIdFilter } from "@/utils/filters";
 import { IState } from "./state";
 
 function findById(items: any[] = [], key: string) {
@@ -7,36 +8,17 @@ function findById(items: any[] = [], key: string) {
   };
 }
 
-// prettier-ignore
-function fallbackExtractor<T>(key: keyof GetDataQueryType): (state: IState) => T[];
-function fallbackExtractor<T>(key: keyof GetDataQueryType, state: IState): T[];
-function fallbackExtractor(key: keyof GetDataQueryType, state?: any) {
+export function fallbackExtractor<T>(key: keyof GetDataQueryType): (state: IState) => T[]; // prettier-ignore
+export function fallbackExtractor<T>(key: keyof GetDataQueryType, state: IState): T[]; // prettier-ignore
+export function fallbackExtractor(key: keyof GetDataQueryType, state?: any) {
   if (state) return state.data?.[key] ?? [];
   return (state: IState) => state.data?.[key] ?? [];
 }
 
 export default {
   loading: (state: IState) => state.loading,
-  nodes(state: IState) {
-    let nodes = state.data?.nodes ?? [];
-
-    /**
-     * @todo Add filters here
-     */
-    // test ids filter
-    const ids = state.node_filters.ids;
-    if (ids.length) {
-      nodes = nodes.filter(({ nodeId }) => ids.includes(nodeId.toString()));
-    }
-
-    return nodes;
-  },
-  farms(state: IState) {
-    /**
-     * @todo Add filters here
-     */
-    return state.data?.farms ?? [];
-  },
+  nodes: fallbackExtractor("nodes"),
+  farms: fallbackExtractor("farms"),
   locations: fallbackExtractor("locations"),
   twins: fallbackExtractor("twins"),
   countries: fallbackExtractor("countries"),
@@ -52,14 +34,28 @@ export default {
   publicConfig: (state: IState) => findById(state.data?.publicConfigs, "publicConfigId"), // prettier-ignore
   city: (state: IState) => findById(state.data?.cities, "cityId"),
 
-  /* filters */
+  /* filters helpers */
   nodes_id: (state: IState) => {
     const nodes = fallbackExtractor<INode>("nodes", state);
     return nodes.map(({ nodeId }) => nodeId.toString());
   },
   node_filters(state: IState) {
-    return (filter: keyof typeof state["node_filters"]) => {
-      return state.node_filters[filter];
+    return (filter: keyof IState["filters"]["nodes"]) => {
+      return state.filters.nodes[filter];
     };
+  },
+
+  /* filtered values */
+  filtered_nodes: (state: IState) => {
+    return applyFilter(
+      state,
+      "nodes",
+      nodeIdFilter,
+      nodeIdFilter,
+      nodeIdFilter,
+      nodeIdFilter,
+      nodeIdFilter,
+      nodeIdFilter
+    );
   },
 };

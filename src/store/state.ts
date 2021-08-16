@@ -3,10 +3,14 @@ import { GetDataQueryType } from "@/graphql/api";
 export interface IState {
   data: GetDataQueryType | null;
   loading: boolean;
-  node_filters: {
-    ids: string[];
+  filters: {
+    nodes: {
+      ids: string[];
+    };
+    farms: {
+      ids: string[];
+    };
   };
-  farm_filters: null;
 }
 
 export default {
@@ -15,5 +19,12 @@ export default {
   node_filters: {
     ids: [],
   },
-  farm_filters: null,
+  filters: {
+    nodes: {
+      ids: [],
+    },
+    farms: {
+      ids: [],
+    },
+  },
 } as IState;

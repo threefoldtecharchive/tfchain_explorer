@@ -1,3 +1,9 @@
+tasks:
+  - name: install deps
+    command: yarn
+  - name: serve ui
+    command: yarn serve
+
 ports:
   - port: 8080
     onOpen: open-browser

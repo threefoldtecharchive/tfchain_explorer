@@ -3,9 +3,16 @@ import { applyFilters, nodeIdFilter } from "@/utils/filters";
 import { GetterTree } from "vuex";
 import { IState } from "./state";
 
-function findById(items: any[] = [], key: string) {
-  return (id?: string) => {
-    return id ? items.find((item) => item[key] === id) : null;
+type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
+type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
+
+function findById<T = GetDataQueryType, K extends keyof T = keyof T, R extends ExtractKeyOf<T, K> = T[K] extends (infer Q)[] ? keyof Q : T[K]>(key1: K, key2: R): (state: IState) => (id?: string) => ExtractValue<T, K> | null; // prettier-ignore
+function findById(key1: any, key2: any) {
+  return (state: IState) => {
+    return (id?: string) => {
+      const items = fallbackDataExtractor(key1, state);
+      return id ? items.find((item: any) => item[key2] === id) : null;
+    };
   };
 }
 
@@ -27,13 +34,13 @@ export default {
   cities: fallbackDataExtractor("cities"),
 
   /* Getters By Id */
-  node: (state) => findById(state.data?.nodes, "nodeId"),
-  farm: (state) => findById(state.data?.farms, "farmId"),
-  location: (state) => findById(state.data?.locations, "locationId"),
-  twin: (state) => findById(state.data?.twins, "twinId"),
-  country: (state) => findById(state.data?.countries, "countryId"),
-  publicConfig: (state) => findById(state.data?.publicConfigs, "publicConfigId"), // prettier-ignore
-  city: (state) => findById(state.data?.cities, "cityId"),
+  node: findById("nodes", "nodeId"),
+  farm: findById("farms", "farmId"),
+  location: findById("locations", "id"),
+  twin: findById("twins", "twinId"),
+  country: findById("countries", "id"),
+  publicConfig: findById("publicConfigs", "id"),
+  city: findById("cities", "id"),
 
   /* filters helpers */
   nodes_id: (state) => {

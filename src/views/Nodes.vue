@@ -69,8 +69,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { nodesQuery, NodeModel } from "@/graphql/node";
-import { generateWhereQuery } from "@/utils/filter";
+import { NodeModel } from "@/graphql/node";
 import NodeDetails from "@/components/NodeDetails.vue";
 import { MutationTypes } from "@/store/mutations";
 
@@ -94,7 +93,7 @@ export default class Nodes extends Vue {
 
   activeNode: NodeModel | null = null;
 
-  openSheet(node: NodeModel) {
+  openSheet(node: NodeModel): void {
     this.activeNode = node;
   }
 
@@ -102,7 +101,7 @@ export default class Nodes extends Vue {
     this.activeNode = null;
   }
 
-  get ids() {
+  get ids(): string[] {
     return this.$store.getters.node_filters("ids");
   }
 
@@ -115,7 +114,7 @@ export default class Nodes extends Vue {
     });
   }
 
-  remove(item: string) {
+  remove(item: string): void {
     this.$store.commit(MutationTypes.UPDATE_NODE_FILTER, {
       key: "ids",
       value: item,

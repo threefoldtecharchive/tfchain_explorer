@@ -4,8 +4,8 @@ export function applyFilters<T, R>(
   items: (state: IState) => T[],
   filters: (state: IState) => R,
   ...fns: Array<(filters: R, items: T[]) => T[]>
-) {
-  return (state: IState) => {
+): (state: IState) => T[] {
+  return (state) => {
     const f = filters(state);
     return fns.reduce((res, fn) => fn(f, res), items(state));
   };

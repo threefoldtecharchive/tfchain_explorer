@@ -12,6 +12,29 @@
           v-on:apply-filter="applyFilter"
           :filters="$store.getters.filters('nodes')"
         /> -->
+        <v-combobox
+          v-model="ids"
+          :items="$store.getters.nodes_id"
+          chips
+          clearable
+          label="Filter by node id."
+          multiple
+          prefix="in:"
+          solo
+          type="text"
+        >
+          <template v-slot:selection="{ attrs, item, select, selected }">
+            <v-chip
+              v-bind="attrs"
+              :input-value="selected"
+              close
+              @click="select"
+              @click:close="remove(item)"
+            >
+              <strong>{{ item }}</strong>
+            </v-chip>
+          </template>
+        </v-combobox>
       </v-col>
       <v-col cols="9">
         <v-data-table
@@ -49,6 +72,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { nodesQuery, NodeModel } from "@/graphql/node";
 import { generateWhereQuery } from "@/utils/filter";
 import NodeDetails from "@/components/NodeDetails.vue";
+import { MutationTypes } from "@/store/mutations";
 
 @Component({
   components: {
@@ -77,6 +101,33 @@ export default class Nodes extends Vue {
   closeSheet(): void {
     this.activeNode = null;
   }
+
+  get ids() {
+    return this.$store.getters.node_filters("ids");
+  }
+
+  set ids(value: string[]) {
+    console.log(value);
+
+    this.$store.commit(MutationTypes.SET_NODE_FILTER, {
+      key: "ids",
+      value,
+    });
+  }
+
+  remove(item: string) {
+    this.$store.commit(MutationTypes.UPDATE_NODE_FILTER, {
+      key: "ids",
+      value: item,
+    });
+  }
+
+  // chips = [];
+
+  // remove(item: any) {
+  //   this.chips.splice(this.chips.indexOf(item), 1);
+  //   this.chips = [...this.chips];
+  // }
 }
 </script>
 

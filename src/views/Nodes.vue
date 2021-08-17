@@ -11,32 +11,42 @@
           Filters
         </h3>
         <br />
+        <v-row>
+          <v-chip
+            v-for="(filter, idx) in filters"
+            :key="filter.key"
+            class="ma-2"
+            v-model="filter.active"
+            @click="toggleActive(idx)"
+            filter
+          >
+            {{ filter.key.toUpperCase() }}
+          </v-chip>
+        </v-row>
+        <br />
         <v-divider />
-        <InFilter key1="nodes" key2="nodeId" label="Filter by node id." />
-        <InFilter
-          key1="nodes"
-          key2="createdById"
-          label="Filter by createdby."
-        />
-        <InFilter key1="nodes" key2="farmId" label="Filter by farm id." />
-        <InFilter key1="nodes" key2="twinId" label="Filter by twin id." />
-        <InFilter
-          key1="nodes"
-          key2="locationId"
-          label="Filter by location id."
-        />
-        <InFilter
-          key1="nodes"
-          key2="farmingPolicyId"
-          label="Filter by farming policy id."
-        />
-        <RangeFilter key1="nodes" key2="hru" label="hru" />
-        <RangeFilter key1="nodes" key2="cru" label="cru" />
-        <RangeFilter key1="nodes" key2="mru" label="mru" />
-        <RangeFilter key1="nodes" key2="sru" label="sru" />
+        <section class="filter-container" ref="filters">
+          <div v-for="filter in activeFilters" :key="filter.key">
+            <InFilter
+              key1="nodes"
+              :key2="filter.key"
+              :label="filter.label"
+              v-if="filter.type === 'in'"
+            />
+            <RangeFilter
+              v-if="filter.type === 'range'"
+              key1="nodes"
+              :key2="filter.key"
+              :label="filter.label"
+            />
+          </div>
+        </section>
       </v-col>
       <v-col cols="9">
         <v-data-table
+          ref="table"
+          :fixed-header="!!tableHeight"
+          :height="tableHeight ? tableHeight + 'px' : undefined"
           :loading="$store.getters.loading"
           loading-text="Loading..."
           :headers="headers"
@@ -92,6 +102,84 @@ export default class Nodes extends Vue {
     { text: "CREATED AT", value: "createdAt", align: "center" },
   ];
 
+  // activeFilters is exactly same as filters
+  // the idea is to allow user to sort filter he wants
+  activeFilters: any[] = [];
+  filters = [
+    {
+      type: "in",
+      active: false,
+      key: "nodeId",
+      label: "Filter by node id.",
+    },
+    {
+      type: "in",
+      active: false,
+      key: "createdById",
+      label: "Filter by createdby.",
+    },
+    {
+      type: "in",
+      active: false,
+      key: "farmId",
+      label: "Filter by farm id.",
+    },
+    {
+      type: "in",
+      active: false,
+      key: "twinId",
+      label: "Filter by twin id.",
+    },
+    {
+      type: "in",
+      active: false,
+      key: "locationId",
+      label: "Filter by location id.",
+    },
+    {
+      type: "in",
+      active: false,
+      key: "farmingPolicyId",
+      label: "Filter by farming policy id.",
+    },
+    {
+      type: "range",
+      active: false,
+      key: "hru",
+      label: "hru",
+    },
+    {
+      type: "range",
+      active: false,
+      key: "mru",
+      label: "mru",
+    },
+    {
+      type: "range",
+      active: false,
+      key: "cru",
+      label: "cru",
+    },
+    {
+      type: "range",
+      active: false,
+      key: "sru",
+      label: "sru",
+    },
+  ];
+
+  toggleActive(idx: number) {
+    const filter = this.filters[idx];
+
+    if (filter.active) {
+      this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
+      filter.active = false;
+    } else {
+      filter.active = true;
+      this.activeFilters.push(filter);
+    }
+  }
+
   activeNode: INode | null = null;
 
   openSheet(node: INode): void {
@@ -101,11 +189,42 @@ export default class Nodes extends Vue {
   closeSheet(): void {
     this.activeNode = null;
   }
+
+  tableHeight: number | null = null;
+  getTableHeight(): number {
+    console.log("here");
+
+    const tableComp = this.$refs.table as any;
+    const table = tableComp.$el as HTMLDivElement;
+    return table.offsetTop;
+  }
+  setHeight() {
+    // filters panel
+    const filtersPanel = this.$refs.filters as HTMLDivElement;
+    filtersPanel.style.maxHeight =
+      window.innerHeight - filtersPanel.offsetTop - 20 + "px";
+
+    // table height
+    this.tableHeight = window.innerHeight - this.getTableHeight() - 80;
+  }
+
+  mounted() {
+    this.setHeight();
+    window.addEventListener("resize", this.setHeight.bind(this));
+  }
+
+  destroyed() {
+    window.removeEventListener("resize", this.setHeight);
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.loader {
-  height: 80vh;
+.filter-container {
+  padding-right: 10px;
+  max-height: 350px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  will-change: transform;
 }
 </style>

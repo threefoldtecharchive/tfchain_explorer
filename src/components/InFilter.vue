@@ -46,8 +46,6 @@ export default class InFilter extends Vue {
   }
 
   set items(value: string[]) {
-    console.log({ key1: this.key1, key2: this.key2, value });
-
     this.$store.commit(MutationTypes.SET_FILTER, {
       key1: this.key1,
       key2: this.key2,
@@ -62,6 +60,11 @@ export default class InFilter extends Vue {
       items.splice(idx, 1);
       this.items = items;
     }
+  }
+
+  // Reset filter if left/hide the page/filter
+  destroyed() {
+    this.items = [];
   }
 }
 </script>

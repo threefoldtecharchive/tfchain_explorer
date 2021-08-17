@@ -74,5 +74,10 @@ export default class RangeFilter extends Vue {
   onChange({ min = this.range[0], max = this.range[1] }): void {
     this.range = [min, max];
   }
+
+  // Reset filter if left/hide the page/filter
+  destroyed() {
+    this.range = [0, Number.MAX_SAFE_INTEGER];
+  }
 }
 </script>

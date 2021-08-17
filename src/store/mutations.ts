@@ -10,7 +10,7 @@ export enum MutationTypes {
 
 interface ISetNodeFilter {
   key1: keyof IState["filters"];
-  key2: keyof IState["filters"]["nodes"];
+  key2: any;
   value: any;
 }
 
@@ -53,6 +53,6 @@ export default {
     };
   },
   setFilter(state: IState, { key1, key2, value }: ISetNodeFilter) {
-    state.filters[key1][key2] = value;
+    (state.filters[key1] as any)[key2] = value;
   },
 };

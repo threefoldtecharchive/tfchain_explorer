@@ -19,3 +19,16 @@ export function nodeIdFilter<T extends { nodeId: number | string }>(
   if (!ids.length) return items;
   return items.filter(({ nodeId }) => ids.some((i) => i == nodeId));
 }
+
+export function rangeFilter(key: string) {
+  return function<T>(
+    filters: { [key: string]: { min: number; max: number } | any },
+    items: T[]
+  ): T[] {
+    const { min, max } = filters[key];
+    return items.filter((i) => {
+      const v: number = (i as any)[key];
+      return v >= min && v <= max;
+    });
+  };
+}

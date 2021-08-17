@@ -8,6 +8,10 @@
     <v-row>
       <v-col cols="3">
         <InFilter key1="nodes" key2="ids" label="Filter by node id." />
+        <RangeFilter key1="nodes" key2="hru" label="hru" />
+        <RangeFilter key1="nodes" key2="cru" label="cru" />
+        <RangeFilter key1="nodes" key2="mru" label="mru" />
+        <RangeFilter key1="nodes" key2="sru" label="sru" />
       </v-col>
       <v-col cols="9">
         <v-data-table
@@ -43,13 +47,15 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import NodeDetails from "@/components/NodeDetails.vue";
-import InFilter from "@/components/InFilter.vue";
 import { INode } from "@/graphql/api";
+import InFilter from "@/components/InFilter.vue";
+import RangeFilter from "@/components/RangeFilter.vue";
 
 @Component({
   components: {
     NodeDetails,
     InFilter,
+    RangeFilter,
   },
 })
 export default class Nodes extends Vue {

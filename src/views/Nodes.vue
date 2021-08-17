@@ -192,8 +192,6 @@ export default class Nodes extends Vue {
 
   tableHeight: number | null = null;
   getTableHeight(): number {
-    console.log("here");
-
     const tableComp = this.$refs.table as any;
     const table = tableComp.$el as HTMLDivElement;
     return table.offsetTop;

@@ -42,11 +42,11 @@ export default class InFilter extends Vue {
   }
 
   get items(): string[] {
-    return this.$store.getters.getFilter(this.key1, this.key2);
+    return this.$store.getters.getFilter(this.key1, this.key2).value;
   }
 
   set items(value: string[]) {
-    this.$store.commit(MutationTypes.SET_FILTER, {
+    this.$store.commit(MutationTypes.SET_FILTER_VALUE, {
       key1: this.key1,
       key2: this.key2,
       value,
@@ -62,9 +62,20 @@ export default class InFilter extends Vue {
     }
   }
 
-  // Reset filter if left/hide the page/filter
+  created() {
+    this.$store.commit(MutationTypes.SET_FILTER_ENABLE, {
+      key1: this.key1,
+      key2: this.key2,
+      value: true,
+    });
+  }
+
   destroyed() {
-    this.items = [];
+    this.$store.commit(MutationTypes.SET_FILTER_ENABLE, {
+      key1: this.key1,
+      key2: this.key2,
+      value: false,
+    });
   }
 }
 </script>

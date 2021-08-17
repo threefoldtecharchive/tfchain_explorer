@@ -4,8 +4,8 @@ import { IState } from "./state";
 export enum MutationTypes {
   SET_LOAD = "setLoad",
   SET_DATA = "setData",
-  SET_FILTER = "setFilter",
-  UPDATE_FILTER = "updateFilter",
+  SET_FILTER_ENABLE = "setFilterEnable",
+  SET_FILTER_VALUE = "setFilterValue",
 }
 
 interface ISetNodeFilter {
@@ -52,7 +52,10 @@ export default {
       ],
     };
   },
-  setFilter(state: IState, { key1, key2, value }: ISetNodeFilter) {
-    (state.filters[key1] as any)[key2] = value;
+  setFilterEnable(state: IState, { key1, key2, value }: ISetNodeFilter) {
+    (state.filters[key1] as any)[key2].enabled = value;
+  },
+  setFilterValue(state: IState, { key1, key2, value }: ISetNodeFilter) {
+    (state.filters[key1] as any)[key2].value = value;
   },
 };

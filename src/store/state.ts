@@ -1,32 +1,36 @@
 import { GetDataQueryType } from "@/graphql/api";
 
+interface IInFilter {
+  enabled: boolean;
+  value: string[];
+}
+const createInFilter = () => ({ enabled: false, value: [] });
+
+interface IRangeFilter {
+  enabled: boolean;
+  value: {
+    min: number;
+    max: number;
+  };
+}
+// prettier-ignore
+const createRangeFilter = () => ({ enabled: false, value: { min: 0, max: Number.MAX_SAFE_INTEGER} });
+
 export interface IState {
   data: GetDataQueryType | null;
   loading: boolean;
   filters: {
     nodes: {
-      nodeId: string[];
-      createdById: string[];
-      farmId: string[];
-      twinId: string[];
-      locationId: string[];
-      farmingPolicyId: string[];
-      hru: {
-        min: number;
-        max: number;
-      };
-      cru: {
-        min: number;
-        max: number;
-      };
-      mru: {
-        min: number;
-        max: number;
-      };
-      sru: {
-        min: number;
-        max: number;
-      };
+      nodeId: IInFilter;
+      createdById: IInFilter;
+      farmId: IInFilter;
+      twinId: IInFilter;
+      locationId: IInFilter;
+      farmingPolicyId: IInFilter;
+      hru: IRangeFilter;
+      cru: IRangeFilter;
+      mru: IRangeFilter;
+      sru: IRangeFilter;
     };
     farms: {
       ids: string[];
@@ -37,33 +41,18 @@ export interface IState {
 export default {
   data: null,
   loading: false,
-  node_filters: {
-    ids: [],
-  },
   filters: {
     nodes: {
-      nodeId: [],
-      createdById: [],
-      farmId: [],
-      twinId: [],
-      locationId: [],
-      farmingPolicyId: [],
-      hru: {
-        min: 0,
-        max: Number.MAX_SAFE_INTEGER,
-      },
-      cru: {
-        min: 0,
-        max: Number.MAX_SAFE_INTEGER,
-      },
-      sru: {
-        min: 0,
-        max: Number.MAX_SAFE_INTEGER,
-      },
-      mru: {
-        min: 0,
-        max: Number.MAX_SAFE_INTEGER,
-      },
+      nodeId: createInFilter(),
+      createdById: createInFilter(),
+      farmId: createInFilter(),
+      twinId: createInFilter(),
+      locationId: createInFilter(),
+      farmingPolicyId: createInFilter(),
+      hru: createRangeFilter(),
+      cru: createRangeFilter(),
+      sru: createRangeFilter(),
+      mru: createRangeFilter(),
     },
     farms: {
       ids: [],

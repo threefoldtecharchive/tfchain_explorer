@@ -11,24 +11,15 @@ export function applyFilters<T, R>(
   };
 }
 
-// export function nodeIdFilter<T extends { nodeId: number | string }>(
-//   filters: { ids: string[] },
-//   items: T[]
-// ): T[] {
-//   const ids = filters.ids;
-//   if (!ids.length) return items;
-//   return items.filter(({ nodeId }) => ids.some((i) => i == nodeId));
-// }
-
 export function inFilter(key: string) {
   return function<T>(
     filters: { [key: string]: (number | string)[] | any },
     items: T[]
   ): T[] {
-    const list = filters[key];
-    if (!list.length) return items;
+    const { enabled, value } = filters[key];
+    if (!enabled || !value.length) return items;
     return items.filter((item) =>
-      list.some((i: any) => i == (item as any)[key])
+      value.some((i: any) => i == (item as any)[key])
     );
   };
 }
@@ -38,7 +29,11 @@ export function rangeFilter(key: string) {
     filters: { [key: string]: { min: number; max: number } | any },
     items: T[]
   ): T[] {
-    const { min, max } = filters[key];
+    const {
+      enabled,
+      value: { min, max },
+    } = filters[key];
+    if (!enabled) return items;
     return items.filter((i) => {
       const v: number = (i as any)[key];
       return v >= min && v <= max;

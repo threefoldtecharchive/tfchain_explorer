@@ -59,12 +59,15 @@ export default class RangeFilter extends Vue {
   }
 
   get range(): [number, number] {
-    const { min, max } = this.$store.getters.getFilter(this.key1, this.key2);
+    const { min, max } = this.$store.getters.getFilter(
+      this.key1,
+      this.key2
+    ).value;
     return [min, max];
   }
 
   set range([min, max]: [number, number]) {
-    this.$store.commit(MutationTypes.SET_FILTER, {
+    this.$store.commit(MutationTypes.SET_FILTER_VALUE, {
       key1: this.key1,
       key2: this.key2,
       value: { min, max },
@@ -75,9 +78,20 @@ export default class RangeFilter extends Vue {
     this.range = [min, max];
   }
 
-  // Reset filter if left/hide the page/filter
+  created() {
+    this.$store.commit(MutationTypes.SET_FILTER_ENABLE, {
+      key1: this.key1,
+      key2: this.key2,
+      value: true,
+    });
+  }
+
   destroyed() {
-    this.range = [0, Number.MAX_SAFE_INTEGER];
+    this.$store.commit(MutationTypes.SET_FILTER_ENABLE, {
+      key1: this.key1,
+      key2: this.key2,
+      value: false,
+    });
   }
 }
 </script>

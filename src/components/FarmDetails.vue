@@ -10,7 +10,7 @@
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    <v-list width="300">
+    <v-list>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>

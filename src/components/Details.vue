@@ -12,15 +12,28 @@
         <br />
         <br />
         <v-divider />
+        <br />
 
-        <FarmDetails :farm="$store.getters.farm(node.farmId)" />
+        <v-row>
+          <v-col cols="4">
+            <FarmDetails :farm="$store.getters.farm(node.farmId)" />
+          </v-col>
+          <v-col cols="3">
+            <CountryDetails
+              :country="$store.getters.country(node.countryId)"
+              :city="$store.getters.city(node.cityId)"
+            />
+          </v-col>
+          <v-col cols="5">
+            <LocationDetails
+              :country="$store.getters.country(node.countryId)"
+              :location="$store.getters.location(node.locationId)"
+            />
+          </v-col>
+        </v-row>
         <br />
         <br />
         <v-divider />
-        <CountryDetails
-          :country="$store.getters.country(node.countryId)"
-          :city="$store.getters.city(node.cityId)"
-        />
 
         <!-- <h2>Node Details</h2>
         <p>node - {{ node.nodeId }}</p>
@@ -66,12 +79,14 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import CountryDetails from "./CountryDetails.vue";
 import NodeDetails from "./NodeDetails.vue";
 import FarmDetails from "./FarmDetails.vue";
+import LocationDetails from "./LocationDetails.vue";
 
 @Component({
   components: {
     CountryDetails,
     NodeDetails,
     FarmDetails,
+    LocationDetails,
   },
 })
 export default class Details extends Vue {

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-card flat>
     <v-list-item>
       <v-list-item-icon>
         <v-icon size="40" class="mr-2">mdi-map-outline</v-icon>
@@ -10,7 +10,7 @@
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    <v-list width="300">
+    <v-list>
       <!-- Flag Item -->
       <v-list-item>
         <v-list-item-content>
@@ -90,7 +90,7 @@
       </template>
       <!-- line -->
     </v-list>
-  </v-container>
+  </v-card>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";

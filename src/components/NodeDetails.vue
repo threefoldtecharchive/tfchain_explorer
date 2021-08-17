@@ -1,19 +1,22 @@
 <template>
-  <v-container>
+  <!-- Container for all html -->
+  <v-card flat color="transparent" tag="div">
+    <!-- Title -->
+    <v-list-item>
+      <v-list-item-icon>
+        <v-icon size="40" class="mr-2">mdi-resistor-nodes</v-icon>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title style="font-size: 30px;">
+          Node Details
+        </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+
+    <!-- Details -->
     <v-row>
-      <div>
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon size="40" class="mr-2">mdi-resistor-nodes</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title style="font-size: 30px;">
-              Node Details
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list width="300">
-          <!-- Flag Item -->
+      <v-col cols="4">
+        <v-list>
           <template v-for="item of items">
             <v-card flat color="transparent" :key="item.key">
               <v-list-item>
@@ -70,110 +73,92 @@
             </template>
           </v-list-item>
         </v-list>
-      </div>
-      <div style="width: 30px" />
-      <v-divider vertical />
-      <div style="width: 30px" />
-      <v-row>
-        <v-spacer />
-        <v-col cols="12">
-          <v-list-item style="padding: 0" class="mb-2">
-            <v-list-item-content>
-              <v-list-item-title style="font-size: 25px;">
-                Resource taken compared to other nodes.
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-row>
-            <v-col cols="5">
-              <div>
-                <p>
-                  CRU
-                </p>
-                <v-row justify="center">
-                  <v-progress-circular
-                    :rotate="360"
-                    :size="size"
-                    :width="width"
-                    :value="getValue('cru')"
-                    color="primary"
-                    :style="'font-size:' + fontSize + 'px'"
-                  >
-                    {{ getValue("cru") }} %
-                  </v-progress-circular>
-                </v-row>
-              </div>
-              <br />
-              <v-divider />
-              <br />
+      </v-col>
 
-              <div>
-                <p>
-                  MRU
-                </p>
-                <v-row justify="center">
-                  <v-progress-circular
-                    :rotate="360"
-                    :size="size"
-                    :width="width"
-                    :value="getValue('mru')"
-                    color="primary"
-                    :style="'font-size:' + fontSize + 'px'"
-                  >
-                    {{ getValue("mru") }} %
-                  </v-progress-circular>
-                </v-row>
-              </div>
-            </v-col>
-            <v-spacer />
-            <v-divider vertical />
-            <v-spacer />
-            <v-col cols="5">
-              <div>
-                <p>
-                  HRU
-                </p>
-                <v-row justify="center">
-                  <v-progress-circular
-                    :rotate="360"
-                    :size="size"
-                    :width="width"
-                    :value="getValue('hru')"
-                    color="primary"
-                    :style="'font-size:' + fontSize + 'px'"
-                  >
-                    {{ getValue("hru") }} %
-                  </v-progress-circular>
-                </v-row>
-              </div>
-              <br />
-              <v-divider />
-              <br />
-
-              <div>
-                <p>
-                  SRU
-                </p>
-                <v-row justify="center">
-                  <v-progress-circular
-                    :rotate="360"
-                    :size="size"
-                    :width="width"
-                    :value="getValue('sru')"
-                    color="primary"
-                    :style="'font-size:' + fontSize + 'px'"
-                  >
-                    {{ getValue("sru") }} %
-                  </v-progress-circular>
-                </v-row>
-              </div>
-            </v-col>
+      <!-- visuals -->
+      <v-col cols="4">
+        <div>
+          <p>
+            CRU
+          </p>
+          <v-row justify="center">
+            <v-progress-circular
+              :rotate="360"
+              :size="size"
+              :width="width"
+              :value="getValue('cru')"
+              color="primary"
+              :style="'font-size:' + fontSize + 'px'"
+            >
+              {{ getValue("cru") }} %
+            </v-progress-circular>
           </v-row>
-        </v-col>
-        <v-spacer />
-      </v-row>
+        </div>
+        <br />
+        <v-divider />
+        <br />
+
+        <div>
+          <p>
+            MRU
+          </p>
+          <v-row justify="center">
+            <v-progress-circular
+              :rotate="360"
+              :size="size"
+              :width="width"
+              :value="getValue('mru')"
+              color="primary"
+              :style="'font-size:' + fontSize + 'px'"
+            >
+              {{ getValue("mru") }} %
+            </v-progress-circular>
+          </v-row>
+        </div>
+      </v-col>
+
+      <v-col cols="4">
+        <div>
+          <p>
+            HRU
+          </p>
+          <v-row justify="center">
+            <v-progress-circular
+              :rotate="360"
+              :size="size"
+              :width="width"
+              :value="getValue('hru')"
+              color="primary"
+              :style="'font-size:' + fontSize + 'px'"
+            >
+              {{ getValue("hru") }} %
+            </v-progress-circular>
+          </v-row>
+        </div>
+        <br />
+        <v-divider />
+        <br />
+
+        <div>
+          <p>
+            SRU
+          </p>
+          <v-row justify="center">
+            <v-progress-circular
+              :rotate="360"
+              :size="size"
+              :width="width"
+              :value="getValue('sru')"
+              color="primary"
+              :style="'font-size:' + fontSize + 'px'"
+            >
+              {{ getValue("sru") }} %
+            </v-progress-circular>
+          </v-row>
+        </div>
+      </v-col>
     </v-row>
-  </v-container>
+  </v-card>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";

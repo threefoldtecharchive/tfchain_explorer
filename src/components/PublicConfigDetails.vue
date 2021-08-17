@@ -2,11 +2,11 @@
   <v-container>
     <v-list-item>
       <v-list-item-icon>
-        <v-icon size="40" class="mr-2">mdi-webpack</v-icon>
+        <v-icon size="40" class="mr-2">mdi-cog</v-icon>
       </v-list-item-icon>
       <v-list-item-content>
         <v-list-item-title style="font-size: 30px;">
-          Farm Details
+          Public Configs
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
@@ -17,17 +17,7 @@
             ID
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.id }}
-      </v-list-item>
-      <v-divider />
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            Name
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ farm.name }}
+        {{ config.id }}
       </v-list-item>
       <v-divider />
 
@@ -37,37 +27,57 @@
             Version
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.version }}
+        {{ config.version }}
       </v-list-item>
       <v-divider />
 
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            Grid Version
+            IPv4
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.gridVersion }}
+        {{ config.ipv4 }}
       </v-list-item>
       <v-divider />
 
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            Certification Type
+            GW4
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.certificationType }}
+        {{ config.gw4 }}
       </v-list-item>
       <v-divider />
 
-      <DatesDetails :item="farm" />
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
+            IPv6
+          </v-list-item-title>
+        </v-list-item-content>
+        {{ config.ipv6 }}
+      </v-list-item>
+      <v-divider />
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
+            GW6
+          </v-list-item-title>
+        </v-list-item-content>
+        {{ config.gw6 }}
+      </v-list-item>
+      <v-divider />
+
+      <DatesDetails :item="config" />
     </v-list>
   </v-container>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { IFarm } from "@/graphql/api";
+import { IPublicConfig } from "@/graphql/api";
 import DatesDetails from "./DatesDetails.vue";
 
 @Component({
@@ -75,7 +85,7 @@ import DatesDetails from "./DatesDetails.vue";
     DatesDetails,
   },
 })
-export default class FarmDetails extends Vue {
-  @Prop({ required: true }) farm!: IFarm;
+export default class PublicConfigDetails extends Vue {
+  @Prop({ required: true }) config!: IPublicConfig;
 }
 </script>

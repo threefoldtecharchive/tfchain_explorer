@@ -30,48 +30,8 @@
               <v-divider />
             </v-card>
           </template>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>
-                Created At
-              </v-list-item-title>
-            </v-list-item-content>
-            {{ node.createdAt | date }}
-          </v-list-item>
-          <v-divider />
 
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>
-                Updated {{ node.updatedAt ? "At" : "" }}
-              </v-list-item-title>
-            </v-list-item-content>
-            <template v-if="node.updatedAt">
-              {{ node.updatedAt | date }}
-            </template>
-            <template v-if="!node.updatedAt">
-              <v-icon color="red">
-                mdi-close
-              </v-icon>
-            </template>
-          </v-list-item>
-          <v-divider />
-
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>
-                Deleted {{ node.deletedAt ? "At" : "" }}
-              </v-list-item-title>
-            </v-list-item-content>
-            <template v-if="node.deletedAt">
-              {{ node.deletedAt | date }}
-            </template>
-            <template v-if="!node.deletedAt">
-              <v-icon color="red">
-                mdi-close
-              </v-icon>
-            </template>
-          </v-list-item>
+          <DatesDetails :item="node" />
         </v-list>
       </v-col>
 
@@ -163,13 +123,18 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { INode } from "@/graphql/api";
+import DatesDetails from "./DatesDetails.vue";
 
 function createItem(value: string, key?: keyof INode) {
   key = key ? key : (value.toLocaleLowerCase() as any);
   return { value, key } as { value: string; key: keyof INode };
 }
 
-@Component({})
+@Component({
+  components: {
+    DatesDetails,
+  },
+})
 export default class NodeDetails_ extends Vue {
   @Prop({ required: true }) node!: INode;
   size = 210;

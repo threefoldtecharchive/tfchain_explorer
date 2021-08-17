@@ -2,11 +2,11 @@
   <v-container>
     <v-list-item>
       <v-list-item-icon>
-        <v-icon size="40" class="mr-2">mdi-webpack</v-icon>
+        <v-icon size="40" class="mr-2">mdi-account</v-icon>
       </v-list-item-icon>
       <v-list-item-content>
         <v-list-item-title style="font-size: 30px;">
-          Farm Details
+          Twin Details
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
@@ -17,17 +17,7 @@
             ID
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.id }}
-      </v-list-item>
-      <v-divider />
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            Name
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ farm.name }}
+        {{ twin.id }}
       </v-list-item>
       <v-divider />
 
@@ -37,7 +27,7 @@
             Version
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.version }}
+        {{ twin.version }}
       </v-list-item>
       <v-divider />
 
@@ -47,27 +37,37 @@
             Grid Version
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.gridVersion }}
+        {{ twin.gridVersion }}
       </v-list-item>
       <v-divider />
 
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            Certification Type
+            Account ID
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.certificationType }}
+        {{ twin.accountId }}
       </v-list-item>
       <v-divider />
 
-      <DatesDetails :item="farm" />
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>
+            IP
+          </v-list-item-title>
+        </v-list-item-content>
+        {{ twin.ip }}
+      </v-list-item>
+      <v-divider />
+
+      <DatesDetails :item="twin" />
     </v-list>
   </v-container>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { IFarm } from "@/graphql/api";
+import { ITwin } from "@/graphql/api";
 import DatesDetails from "./DatesDetails.vue";
 
 @Component({
@@ -75,7 +75,7 @@ import DatesDetails from "./DatesDetails.vue";
     DatesDetails,
   },
 })
-export default class FarmDetails extends Vue {
-  @Prop({ required: true }) farm!: IFarm;
+export default class TwinDetails extends Vue {
+  @Prop({ required: true }) twin!: ITwin;
 }
 </script>

@@ -8,78 +8,63 @@
   >
     <v-sheet class="text-center" height="90vh" v-if="node">
       <div class="content container">
-        <NodeDetails :node="node" />
-        <br />
-        <br />
-        <v-divider />
-        <br />
+        <template v-if="node">
+          <NodeDetails :node="node" />
 
-        <v-row>
-          <v-col cols="4">
-            <FarmDetails :farm="$store.getters.farm(node.farmId)" />
+          <br />
+          <br />
+          <v-divider />
+          <br />
+        </template>
+
+        <template v-if="farm || country || location">
+          <v-row>
+            <v-col cols="4" v-if="farm">
+              <FarmDetails :farm="farm" />
+            </v-col>
+            <v-col cols="3" v-if="country">
+              <CountryDetails :country="country" :city="city" />
+            </v-col>
+            <v-col cols="5" v-if="country && location">
+              <LocationDetails :country="country" :location="location" />
+            </v-col>
+          </v-row>
+          <br />
+          <br />
+          <v-divider />
+        </template>
+
+        <v-row v-if="twin || config">
+          <v-col cols="6" v-if="twin">
+            <TwinDetails :twin="twin" />
           </v-col>
-          <v-col cols="3">
-            <CountryDetails
-              :country="$store.getters.country(node.countryId)"
-              :city="$store.getters.city(node.cityId)"
-            />
-          </v-col>
-          <v-col cols="5">
-            <LocationDetails
-              :country="$store.getters.country(node.countryId)"
-              :location="$store.getters.location(node.locationId)"
-            />
+
+          <v-col cols="6" v-if="config">
+            <PublicConfigDetails :config="config" />
           </v-col>
         </v-row>
-        <br />
-        <br />
-        <v-divider />
-
-        <!-- <h2>Node Details</h2>
-        <p>node - {{ node.nodeId }}</p>
-        {{ node }}
-        <hr />
-        <p>
-          node.farmId - {{ node.farmId }} - {{ $store.getters.farms.length }}
-        </p>
-        {{ $store.getters.farm(node.farmId) }}
-        <hr />
-        <p>
-          node.twinId - {{ node.twinId }} - {{ $store.getters.twins.length }}
-        </p>
-        {{ $store.getters.twin(node.twinId) }}
-        <hr />
-        <CountryDetails :country="$store.getters.country(node.countryId)" />
-        <hr />
-        <p>
-          node.cityId - {{ node.cityId }} - {{ $store.getters.cities.length }}
-        </p>
-        {{ $store.getters.city(node.cityId) }}
-        <hr />
-        <p>
-          node.locationId - {{ node.locationId }} -
-          {{ $store.getters.locations.length }}
-        </p>
-        {{ $store.getters.location(node.locationId) }}
-        <hr />
-        <p>
-          node.publicConfigId - {{ node.publicConfigId }} -
-          {{ $store.getters.publicConfigs.length }}
-        </p>
-        {{ $store.getters.publicConfig(node.publicConfigId) }}
-        <hr /> -->
       </div>
     </v-sheet>
   </v-bottom-sheet>
 </template>
 
 <script lang="ts">
-import { INode } from "@/graphql/api";
+import {
+  ICity,
+  ICountry,
+  IFarm,
+  ILocation,
+  INode,
+  IPublicConfig,
+  ITwin,
+} from "@/graphql/api";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import CountryDetails from "./CountryDetails.vue";
 import NodeDetails from "./NodeDetails.vue";
 import FarmDetails from "./FarmDetails.vue";
 import LocationDetails from "./LocationDetails.vue";
+import TwinDetails from "./TwinDetails.vue";
+import PublicConfigDetails from "./PublicConfigDetails.vue";
 
 @Component({
   components: {
@@ -87,11 +72,19 @@ import LocationDetails from "./LocationDetails.vue";
     NodeDetails,
     FarmDetails,
     LocationDetails,
+    TwinDetails,
+    PublicConfigDetails,
   },
 })
 export default class Details extends Vue {
   @Prop({ required: true }) open!: boolean;
-  @Prop({ required: true }) node!: INode;
+  @Prop() node?: INode;
+  @Prop() farm?: IFarm;
+  @Prop() country?: ICountry;
+  @Prop() city?: ICity;
+  @Prop() location?: ILocation;
+  @Prop() twin?: ITwin;
+  @Prop() config?: IPublicConfig;
 }
 </script>
 <style lang="scss" scoped>

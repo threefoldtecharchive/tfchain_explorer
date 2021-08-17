@@ -69,8 +69,14 @@
       </v-col>
     </v-row>
     <Details
-      :open="!!activeNode"
-      :node="activeNode"
+      :open="!!node"
+      :node="node"
+      :farm="$store.getters.farm(node && node.farmId)"
+      :country="$store.getters.country(node && node.countryId)"
+      :city="$store.getters.city(node && node.cityId)"
+      :location="$store.getters.location(node && node.locationId)"
+      :twin="$store.getters.twin(node && node.twinId)"
+      :config="$store.getters.publicConfig(node && node.publicConfigId)"
       v-on:close-sheet="closeSheet"
     />
   </v-container>
@@ -180,14 +186,14 @@ export default class Nodes extends Vue {
     }
   }
 
-  activeNode: INode | null = null;
+  node: INode | null = null;
 
   openSheet(node: INode): void {
-    this.activeNode = node;
+    this.node = node;
   }
 
   closeSheet(): void {
-    this.activeNode = null;
+    this.node = null;
   }
 
   tableHeight: number | null = null;

@@ -27,6 +27,48 @@
               <v-divider />
             </v-card>
           </template>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Created At
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.createdAt | date }}
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Updated {{ node.updatedAt ? "At" : "" }}
+              </v-list-item-title>
+            </v-list-item-content>
+            <template v-if="node.updatedAt">
+              {{ node.updatedAt | date }}
+            </template>
+            <template v-if="!node.updatedAt">
+              <v-icon color="red">
+                mdi-close
+              </v-icon>
+            </template>
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Deleted {{ node.deletedAt ? "At" : "" }}
+              </v-list-item-title>
+            </v-list-item-content>
+            <template v-if="node.deletedAt">
+              {{ node.deletedAt | date }}
+            </template>
+            <template v-if="!node.deletedAt">
+              <v-icon color="red">
+                mdi-close
+              </v-icon>
+            </template>
+          </v-list-item>
         </v-list>
       </div>
       <div style="width: 30px" />
@@ -145,7 +187,7 @@ function createItem(value: string, key?: keyof INode) {
 @Component({})
 export default class NodeDetails_ extends Vue {
   @Prop({ required: true }) node!: INode;
-  size = 170;
+  size = 210;
   width = 10;
   fontSize = 25;
 
@@ -173,7 +215,7 @@ export default class NodeDetails_ extends Vue {
     const v = this.node[key];
     const value = v ? +v / this.$store.getters.maxValueOf("nodes", key) : 0;
 
-    return Math.round(value * 100);
+    return Math.round(value * 10000) / 100;
   }
 }
 </script>

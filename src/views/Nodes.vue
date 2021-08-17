@@ -7,34 +7,7 @@
     <br />
     <v-row>
       <v-col cols="3">
-        <!-- <FilterPanel
-          :name="'nodes'"
-          v-on:apply-filter="applyFilter"
-          :filters="$store.getters.filters('nodes')"
-        /> -->
-        <v-combobox
-          v-model="ids"
-          :items="$store.getters.nodes_id"
-          chips
-          clearable
-          label="Filter by node id."
-          multiple
-          prefix="in:"
-          solo
-          type="text"
-        >
-          <template v-slot:selection="{ attrs, item, select, selected }">
-            <v-chip
-              v-bind="attrs"
-              :input-value="selected"
-              close
-              @click="select"
-              @click:close="remove(item)"
-            >
-              <strong>{{ item }}</strong>
-            </v-chip>
-          </template>
-        </v-combobox>
+        <InFilter key1="nodes" key2="ids" label="Filter by node id." />
       </v-col>
       <v-col cols="9">
         <v-data-table
@@ -69,13 +42,14 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { NodeModel } from "@/graphql/node";
 import NodeDetails from "@/components/NodeDetails.vue";
-import { MutationTypes } from "@/store/mutations";
+import InFilter from "@/components/InFilter.vue";
+import { INode } from "@/graphql/api";
 
 @Component({
   components: {
     NodeDetails,
+    InFilter,
   },
 })
 export default class Nodes extends Vue {
@@ -91,42 +65,15 @@ export default class Nodes extends Vue {
     { text: "CreatedAt", value: "createdAt", align: "center" },
   ];
 
-  activeNode: NodeModel | null = null;
+  activeNode: INode | null = null;
 
-  openSheet(node: NodeModel): void {
+  openSheet(node: INode): void {
     this.activeNode = node;
   }
 
   closeSheet(): void {
     this.activeNode = null;
   }
-
-  get ids(): string[] {
-    return this.$store.getters.node_filters("ids");
-  }
-
-  set ids(value: string[]) {
-    console.log(value);
-
-    this.$store.commit(MutationTypes.SET_NODE_FILTER, {
-      key: "ids",
-      value,
-    });
-  }
-
-  remove(item: string): void {
-    this.$store.commit(MutationTypes.UPDATE_NODE_FILTER, {
-      key: "ids",
-      value: item,
-    });
-  }
-
-  // chips = [];
-
-  // remove(item: any) {
-  //   this.chips.splice(this.chips.indexOf(item), 1);
-  //   this.chips = [...this.chips];
-  // }
 }
 </script>
 

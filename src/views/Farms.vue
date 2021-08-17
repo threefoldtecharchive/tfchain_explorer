@@ -52,9 +52,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { farmsQuery, FarmModel } from "@/graphql/farm";
-import { generateWhereQuery } from "@/utils/filter";
 import NodeDetails from "@/components/NodeDetails.vue";
+import { IFarm } from "@/graphql/api";
 
 @Component({
   components: {
@@ -74,32 +73,32 @@ export default class Farms extends Vue {
     { text: "CreatedAt", value: "createdAt", align: "center" },
   ];
 
-  farms: FarmModel[] = [];
+  farms: IFarm[] = [];
   initial = true;
   loading = false;
-  activefarm: FarmModel | null = null;
+  activefarm: IFarm | null = null;
 
-  async created(): Promise<void> {
-    const res = await this.$apollo.query<{ farms: FarmModel[] }>({
-      query: farmsQuery,
-    });
-    this.farms = res.data.farms;
-    this.initial = false;
-  }
+  // async created(): Promise<void> {
+  //   const res = await this.$apollo.query<{ farms: IFarm[] }>({
+  //     query: farmsQuery,
+  //   });
+  //   this.farms = res.data.farms;
+  //   this.initial = false;
+  // }
 
   async applyFilter(): Promise<void> {
-    this.loading = true;
-    const res = await this.$apollo.query<{ farms: FarmModel[] }>({
-      query: farmsQuery,
-      variables: {
-        where: generateWhereQuery(this.$store.state.farms),
-      },
-    });
-    this.farms = res.data.farms;
-    this.loading = false;
+    // this.loading = true;
+    // const res = await this.$apollo.query<{ farms: FarmModel[] }>({
+    //   query: farmsQuery,
+    //   variables: {
+    //     where: generateWhereQuery(this.$store.state.farms),
+    //   },
+    // });
+    // this.farms = res.data.farms;
+    // this.loading = false;
   }
 
-  openSheet(farm: FarmModel) {
+  openSheet(farm: IFarm) {
     this.activefarm = farm;
   }
 

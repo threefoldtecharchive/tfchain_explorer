@@ -11,11 +11,11 @@ export function applyFilters<T, R>(
   };
 }
 
-export function nodeIdFilter<T extends { nodeId: number }>(
+export function nodeIdFilter<T extends { nodeId: number | string }>(
   filters: { ids: string[] },
   items: T[]
 ): T[] {
   const ids = filters.ids;
   if (!ids.length) return items;
-  return items.filter(({ nodeId }) => ids.includes(nodeId.toString()));
+  return items.filter(({ nodeId }) => ids.some((i) => i == nodeId));
 }

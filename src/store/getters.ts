@@ -10,8 +10,10 @@ function findById<T = GetDataQueryType, K extends keyof T = keyof T, R extends E
 function findById(key1: any, key2: any) {
   return (state: IState) => {
     return (id?: string) => {
+      if (id === undefined || id === null) return null;
+
       const items = fallbackDataExtractor(key1, state);
-      return id ? items.find((item: any) => item[key2] === id) : null;
+      return items.find((item: any) => item[key2] == id);
     };
   };
 }
@@ -43,9 +45,14 @@ export default {
   city: findById("cities", "id"),
 
   /* filters helpers */
+  getFilter: (state) => {
+    return (key1: string, key2: string) => {
+      return (state.filters as any)[key1][key2];
+    };
+  },
   nodes_id: (state) => {
     const nodes = fallbackDataExtractor("nodes", state);
-    return nodes.map(({ nodeId }) => nodeId.toString());
+    return nodes.map(({ nodeId }) => nodeId);
   },
   node_filters(state) {
     return (filter: keyof IState["filters"]["nodes"]) => {

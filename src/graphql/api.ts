@@ -19,7 +19,6 @@ export interface INode {
   nodeId: number;
   farmId: number;
   twinId: number;
-  location: string;
   locationId: string;
   countryId?: number;
   cityId?: number;

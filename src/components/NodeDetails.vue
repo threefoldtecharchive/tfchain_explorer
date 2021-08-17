@@ -51,13 +51,13 @@
 </template>
 
 <script lang="ts">
-import { NodeModel } from "@/graphql/node";
+import { INode } from "@/graphql/api";
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component({})
 export default class NodeDetails extends Vue {
   @Prop({ required: true }) open!: boolean;
-  @Prop({ required: true }) node!: NodeModel;
+  @Prop({ required: true }) node!: INode;
 }
 </script>
 <style lang="scss" scoped>

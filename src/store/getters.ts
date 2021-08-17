@@ -75,4 +75,14 @@ export default {
     rangeFilter("sru"),
     rangeFilter("cru")
   ),
+
+  /* visual helpers */
+  maxValueOf(state) {
+    return (key: keyof GetDataQueryType, valueOf: string) => {
+      // const items = state.data[key1][key2] as any[];
+      const items = fallbackDataExtractor(key, state);
+      const values = items.map((i) => +(i as any)[valueOf]) as any[];
+      return Math.max(...values);
+    };
+  },
 } as GetterTree<IState, IState>;

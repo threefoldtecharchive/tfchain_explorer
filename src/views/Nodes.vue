@@ -68,7 +68,7 @@
         </v-data-table>
       </v-col>
     </v-row>
-    <NodeDetails
+    <Details
       :open="!!activeNode"
       :node="activeNode"
       v-on:close-sheet="closeSheet"
@@ -78,14 +78,14 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import NodeDetails from "@/components/NodeDetails.vue";
+import Details from "@/components/Details.vue";
 import { INode } from "@/graphql/api";
 import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
 
 @Component({
   components: {
-    NodeDetails,
+    Details,
     InFilter,
     RangeFilter,
   },

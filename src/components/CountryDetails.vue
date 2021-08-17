@@ -75,18 +75,32 @@
         </v-list-item-content>
         {{ iso2Code }}
       </v-list-item>
+
+      <!-- City Item -->
+      <template v-if="city">
+        <v-divider />
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>
+              City
+            </v-list-item-title>
+          </v-list-item-content>
+          {{ city.name }}
+        </v-list-item>
+      </template>
       <!-- line -->
     </v-list>
   </v-container>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { ICountry } from "@/graphql/api";
+import { ICity, ICountry } from "@/graphql/api";
 import iso3To2 from "country-iso-3-to-2";
 
 @Component({})
 export default class CountryDetails extends Vue {
   @Prop({ required: true }) country!: ICountry;
+  @Prop({ required: false }) city?: ICity;
 
   get iso2Code(): string {
     return iso3To2(this.country.code);

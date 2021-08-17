@@ -1,70 +1,179 @@
 <template>
-  <v-bottom-sheet
-    v-model="open"
-    inset
-    persistent
-    no-click-animation
-    @click:outside="$emit('close-sheet')"
-  >
-    <v-sheet class="text-center" height="90vh" v-if="node">
-      <div class="content container">
-        <CountryDetails :country="$store.getters.country(node.countryId)" />
-
-        <!-- <h2>Node Details</h2>
-        <p>node - {{ node.nodeId }}</p>
-        {{ node }}
-        <hr />
-        <p>
-          node.farmId - {{ node.farmId }} - {{ $store.getters.farms.length }}
-        </p>
-        {{ $store.getters.farm(node.farmId) }}
-        <hr />
-        <p>
-          node.twinId - {{ node.twinId }} - {{ $store.getters.twins.length }}
-        </p>
-        {{ $store.getters.twin(node.twinId) }}
-        <hr />
-        <CountryDetails :country="$store.getters.country(node.countryId)" />
-        <hr />
-        <p>
-          node.cityId - {{ node.cityId }} - {{ $store.getters.cities.length }}
-        </p>
-        {{ $store.getters.city(node.cityId) }}
-        <hr />
-        <p>
-          node.locationId - {{ node.locationId }} -
-          {{ $store.getters.locations.length }}
-        </p>
-        {{ $store.getters.location(node.locationId) }}
-        <hr />
-        <p>
-          node.publicConfigId - {{ node.publicConfigId }} -
-          {{ $store.getters.publicConfigs.length }}
-        </p>
-        {{ $store.getters.publicConfig(node.publicConfigId) }}
-        <hr /> -->
+  <v-container>
+    <v-row>
+      <div>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon size="40" class="mr-2">mdi-resistor-nodes</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title style="font-size: 30px;">
+              Node Details
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list width="300">
+          <!-- Flag Item -->
+          <template v-for="item of items">
+            <v-card flat color="transparent" :key="item.key">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ item.value }}
+                  </v-list-item-title>
+                </v-list-item-content>
+                {{ node[item.key] }}
+              </v-list-item>
+              <v-divider />
+            </v-card>
+          </template>
+        </v-list>
       </div>
-    </v-sheet>
-  </v-bottom-sheet>
+      <div style="width: 30px" />
+      <v-divider vertical />
+      <div style="width: 30px" />
+      <v-row>
+        <v-spacer />
+        <v-col cols="12">
+          <v-list-item style="padding: 0" class="mb-2">
+            <v-list-item-content>
+              <v-list-item-title style="font-size: 25px;">
+                Resource taken compared to other nodes.
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-row>
+            <v-col cols="5">
+              <div>
+                <p>
+                  CRU
+                </p>
+                <v-row justify="center">
+                  <v-progress-circular
+                    :rotate="360"
+                    :size="size"
+                    :width="width"
+                    :value="getValue('cru')"
+                    color="primary"
+                    :style="'font-size:' + fontSize + 'px'"
+                  >
+                    {{ getValue("cru") }} %
+                  </v-progress-circular>
+                </v-row>
+              </div>
+              <br />
+              <v-divider />
+              <br />
+
+              <div>
+                <p>
+                  MRU
+                </p>
+                <v-row justify="center">
+                  <v-progress-circular
+                    :rotate="360"
+                    :size="size"
+                    :width="width"
+                    :value="getValue('mru')"
+                    color="primary"
+                    :style="'font-size:' + fontSize + 'px'"
+                  >
+                    {{ getValue("mru") }} %
+                  </v-progress-circular>
+                </v-row>
+              </div>
+            </v-col>
+            <v-spacer />
+            <v-divider vertical />
+            <v-spacer />
+            <v-col cols="5">
+              <div>
+                <p>
+                  HRU
+                </p>
+                <v-row justify="center">
+                  <v-progress-circular
+                    :rotate="360"
+                    :size="size"
+                    :width="width"
+                    :value="getValue('hru')"
+                    color="primary"
+                    :style="'font-size:' + fontSize + 'px'"
+                  >
+                    {{ getValue("hru") }} %
+                  </v-progress-circular>
+                </v-row>
+              </div>
+              <br />
+              <v-divider />
+              <br />
+
+              <div>
+                <p>
+                  SRU
+                </p>
+                <v-row justify="center">
+                  <v-progress-circular
+                    :rotate="360"
+                    :size="size"
+                    :width="width"
+                    :value="getValue('sru')"
+                    color="primary"
+                    :style="'font-size:' + fontSize + 'px'"
+                  >
+                    {{ getValue("sru") }} %
+                  </v-progress-circular>
+                </v-row>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-spacer />
+      </v-row>
+    </v-row>
+  </v-container>
 </template>
-
 <script lang="ts">
-import { INode } from "@/graphql/api";
 import { Component, Prop, Vue } from "vue-property-decorator";
-import CountryDetails from "./CountryDetails.vue";
+import { INode } from "@/graphql/api";
 
-@Component({
-  components: {
-    CountryDetails,
-  },
-})
-export default class NodeDetails extends Vue {
-  @Prop({ required: true }) open!: boolean;
+function createItem(value: string, key?: keyof INode) {
+  key = key ? key : (value.toLocaleLowerCase() as any);
+  return { value, key } as { value: string; key: keyof INode };
+}
+
+@Component({})
+export default class NodeDetails_ extends Vue {
   @Prop({ required: true }) node!: INode;
+  size = 170;
+  width = 10;
+  fontSize = 25;
+
+  // used for animation
+  initLoading = true;
+
+  items = [
+    createItem("ID"),
+    createItem("Version"),
+    createItem("Grid Version", "gridVersion"),
+    createItem("Uptime"),
+    createItem("HRU"),
+    createItem("SRU"),
+    createItem("CRU"),
+    createItem("MRU"),
+  ];
+
+  getValue(key: keyof INode): number {
+    if (this.initLoading) {
+      requestAnimationFrame(() => {
+        this.initLoading = false;
+      });
+      return 0;
+    }
+    const v = this.node[key];
+    const value = v ? +v / this.$store.getters.maxValueOf("nodes", key) : 0;
+
+    return Math.round(value * 100);
+  }
 }
 </script>
-<style lang="scss" scoped>
-.content {
-  text-align: left;
-}
-</style>

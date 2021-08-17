@@ -11,13 +11,26 @@ export function applyFilters<T, R>(
   };
 }
 
-export function nodeIdFilter<T extends { nodeId: number | string }>(
-  filters: { ids: string[] },
-  items: T[]
-): T[] {
-  const ids = filters.ids;
-  if (!ids.length) return items;
-  return items.filter(({ nodeId }) => ids.some((i) => i == nodeId));
+// export function nodeIdFilter<T extends { nodeId: number | string }>(
+//   filters: { ids: string[] },
+//   items: T[]
+// ): T[] {
+//   const ids = filters.ids;
+//   if (!ids.length) return items;
+//   return items.filter(({ nodeId }) => ids.some((i) => i == nodeId));
+// }
+
+export function inFilter(key: string) {
+  return function<T>(
+    filters: { [key: string]: (number | string)[] | any },
+    items: T[]
+  ): T[] {
+    const list = filters[key];
+    if (!list.length) return items;
+    return items.filter((item) =>
+      list.some((i: any) => i == (item as any)[key])
+    );
+  };
 }
 
 export function rangeFilter(key: string) {

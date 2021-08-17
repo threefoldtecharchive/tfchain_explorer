@@ -5,7 +5,12 @@ export interface IState {
   loading: boolean;
   filters: {
     nodes: {
-      ids: string[];
+      nodeId: string[];
+      createdById: string[];
+      farmId: string[];
+      twinId: string[];
+      locationId: string[];
+      farmingPolicyId: string[];
       hru: {
         min: number;
         max: number;
@@ -37,7 +42,12 @@ export default {
   },
   filters: {
     nodes: {
-      ids: [],
+      nodeId: [],
+      createdById: [],
+      farmId: [],
+      twinId: [],
+      locationId: [],
+      farmingPolicyId: [],
       hru: {
         min: 0,
         max: Number.MAX_SAFE_INTEGER,

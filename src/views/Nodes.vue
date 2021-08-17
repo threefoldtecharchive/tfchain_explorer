@@ -7,7 +7,29 @@
     <br />
     <v-row>
       <v-col cols="3">
-        <InFilter key1="nodes" key2="ids" label="Filter by node id." />
+        <h3>
+          Filters
+        </h3>
+        <br />
+        <v-divider />
+        <InFilter key1="nodes" key2="nodeId" label="Filter by node id." />
+        <InFilter
+          key1="nodes"
+          key2="createdById"
+          label="Filter by createdby."
+        />
+        <InFilter key1="nodes" key2="farmId" label="Filter by farm id." />
+        <InFilter key1="nodes" key2="twinId" label="Filter by twin id." />
+        <InFilter
+          key1="nodes"
+          key2="locationId"
+          label="Filter by location id."
+        />
+        <InFilter
+          key1="nodes"
+          key2="farmingPolicyId"
+          label="Filter by farming policy id."
+        />
         <RangeFilter key1="nodes" key2="hru" label="hru" />
         <RangeFilter key1="nodes" key2="cru" label="cru" />
         <RangeFilter key1="nodes" key2="mru" label="mru" />
@@ -61,14 +83,13 @@ import RangeFilter from "@/components/RangeFilter.vue";
 export default class Nodes extends Vue {
   headers = [
     { text: "ID", value: "nodeId" },
-    { text: "Farm ID", value: "farmId", align: "center" },
-    { text: "Ver", value: "version" },
-    { text: "GridVer", value: "gridVersion", align: "center" },
-    { text: "hru", value: "hru", align: "center" },
-    { text: "sru", value: "sru", align: "center" },
-    { text: "cru", value: "cru", align: "center" },
-    { text: "mru", value: "mru", align: "center" },
-    { text: "CreatedAt", value: "createdAt", align: "center" },
+    { text: "VERSION", value: "version" },
+    { text: "GRID VERSION", value: "gridVersion", align: "center" },
+    { text: "HRU", value: "hru", align: "center" },
+    { text: "SRU", value: "sru", align: "center" },
+    { text: "CRU", value: "cru", align: "center" },
+    { text: "MRU", value: "mru", align: "center" },
+    { text: "CREATED AT", value: "createdAt", align: "center" },
   ];
 
   activeNode: INode | null = null;

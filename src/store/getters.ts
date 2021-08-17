@@ -1,5 +1,5 @@
 import { GetDataQueryType } from "@/graphql/api";
-import { applyFilters, nodeIdFilter, rangeFilter } from "@/utils/filters";
+import { applyFilters, inFilter, rangeFilter } from "@/utils/filters";
 import { GetterTree } from "vuex";
 import { IState } from "./state";
 
@@ -64,7 +64,12 @@ export default {
   filtered_nodes: applyFilters(
     fallbackDataExtractor("nodes"),
     (state) => state.filters.nodes,
-    nodeIdFilter,
+    inFilter("nodeId"),
+    inFilter("createdById"),
+    inFilter("farmId"),
+    inFilter("twinId"),
+    inFilter("locationId"),
+    inFilter("farmingPolicyId"),
     rangeFilter("hru"),
     rangeFilter("mru"),
     rangeFilter("sru"),

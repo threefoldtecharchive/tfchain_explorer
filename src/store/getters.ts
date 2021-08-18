@@ -50,15 +50,19 @@ export default {
       return (state.filters as any)[key1][key2];
     };
   },
-  nodes_id: (state) => {
-    const nodes = fallbackDataExtractor("nodes", state);
-    return nodes.map(({ nodeId }) => nodeId);
-  },
-  node_filters(state) {
-    return (filter: keyof IState["filters"]["nodes"]) => {
-      return state.filters.nodes[filter];
-    };
-  },
+  // nodes_id: (state) => {
+  //   const nodes = fallbackDataExtractor("nodes", state);
+  //   return nodes.map(({ nodeId }) => nodeId);
+  // },
+  // nodes_id: (state) => {
+  //   const nodes = fallbackDataExtractor("nodes", state);
+  //   return nodes.map(({ nodeId }) => nodeId);
+  // },
+  // node_filters(state) {
+  //   return (filter: keyof IState["filters"]["nodes"]) => {
+  //     return state.filters.nodes[filter];
+  //   };
+  // },
 
   /* filtered values */
   filtered_nodes: applyFilters(
@@ -74,6 +78,15 @@ export default {
     rangeFilter("mru"),
     rangeFilter("sru"),
     rangeFilter("cru")
+  ),
+
+  filtered_farm: applyFilters(
+    fallbackDataExtractor("farms"),
+    (state) => state.filters.farms,
+    inFilter("createdById"),
+    inFilter("farmId"),
+    inFilter("twinId"),
+    inFilter("certificationType")
   ),
 
   /* visual helpers */

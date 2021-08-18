@@ -5,18 +5,43 @@
     </h1>
     <v-divider />
     <br />
-    <v-row v-if="!initial">
+    <v-row>
       <v-col cols="3">
-        <!-- <FilterPanel
-          v-on:apply-filter="applyFilter"
-          :name="'farms'"
-          :filters="$store.getters.filters('farms')"
-        /> -->
+        <h3>
+          Filters
+        </h3>
+        <br />
+        <v-row>
+          <v-chip
+            v-for="(filter, idx) in filters"
+            :key="filter.key"
+            class="ma-2"
+            v-model="filter.active"
+            @click="toggleActive(idx)"
+            filter
+          >
+            {{ filter.key.toUpperCase() }}
+          </v-chip>
+        </v-row>
+        <br />
+        <v-divider />
+        <section class="filter-container">
+          <div v-for="filter in activeFilters" :key="filter.key">
+            <InFilter
+              key1="farms"
+              :key2="filter.key"
+              :label="filter.label"
+              :value="['Diy', 'Certified']"
+            />
+          </div>
+        </section>
       </v-col>
-      <v-col cols="9" v-if="!loading">
+      <v-col cols="9">
         <v-data-table
+          :loading="$store.getters.loading"
+          loading-text="Loading..."
           :headers="headers"
-          :items="farms"
+          :items="$store.getters.filtered_farm"
           :items-per-page="10"
           class="elevation-1"
           align
@@ -28,23 +53,37 @@
           <template v-slot:[`item.gridVersion`]="{ item }">
             v{{ item.version }}.0
           </template>
+
+          <template v-slot:[`item.certificationType`]="{ item }">
+            <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
+              {{ item.certificationType }}
+            </v-chip>
+          </template>
+
           <template v-slot:[`item.createdAt`]="{ item }">
             {{ item.createdAt | date }}
           </template>
+
+          <template v-slot:[`item.updatedAt`]="{ item }">
+            <v-icon :color="item.updatedAt ? 'green' : 'red'">
+              {{ item.updatedAt ? "mdi-check" : "mdi-close" }}
+            </v-icon>
+          </template>
+
+          <template v-slot:[`item.deletedAt`]="{ item }">
+            <v-icon :color="item.deletedAt ? 'green' : 'red'">
+              {{ item.deletedAt ? "mdi-check" : "mdi-close" }}
+            </v-icon>
+          </template>
         </v-data-table>
       </v-col>
-      <v-col cols="9" v-if="loading">
-        <div class="d-flex justify-center align-center loader">
-          <v-progress-circular indeterminate color="primary" />
-        </div>
-      </v-col>
     </v-row>
-    <div class="d-flex justify-center align-center loader" v-if="initial">
-      <v-progress-circular indeterminate color="primary" />
-    </div>
-    <NodeDetails
-      :open="!!activefarm"
-      :node="activefarm"
+    <Details
+      :open="!!farm"
+      :farm="farm"
+      :country="$store.getters.country(farm && farm.countryId)"
+      :city="$store.getters.city(farm && farm.cityId)"
+      :twin="$store.getters.twin(farm && farm.twinId)"
       v-on:close-sheet="closeSheet"
     />
   </v-container>
@@ -52,64 +91,85 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import NodeDetails from "@/components/NodeDetails.vue";
+import Details from "@/components/Details.vue";
 import { IFarm } from "@/graphql/api";
+import InFilter from "@/components/InFilter.vue";
 
 @Component({
   components: {
-    NodeDetails,
+    Details,
+    InFilter,
   },
 })
 export default class Farms extends Vue {
   headers = [
-    { text: "ID", value: "nodeId" },
-    { text: "Farm ID", value: "farmId", align: "center" },
-    { text: "Ver", value: "version" },
-    { text: "GridVer", value: "gridVersion", align: "center" },
-    { text: "hru", value: "hru", align: "center" },
-    { text: "sru", value: "sru", align: "center" },
-    { text: "cru", value: "cru", align: "center" },
-    { text: "mru", value: "mru", align: "center" },
-    { text: "CreatedAt", value: "createdAt", align: "center" },
+    { text: "ID", value: "farmId" },
+    { text: "NAME", value: "name" },
+    { text: "VERSION", value: "version" },
+    { text: "GRID VERSION", value: "gridVersion", align: "center" },
+    { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
+    { text: "PRICING POLICY ID", value: "pricingPolicyId" },
+    { text: "CREATED AT", value: "createdAt", align: "center" },
+    { text: "UPDATED", value: "updatedAt", align: "center" },
+    { text: "DELETED", value: "deletedAt", align: "center" },
   ];
 
-  farms: IFarm[] = [];
-  initial = true;
-  loading = false;
-  activefarm: IFarm | null = null;
+  // activeFilters is exactly same as filters
+  // the idea is to allow user to sort filter he wants
+  activeFilters: any[] = [];
+  filters = [
+    {
+      active: false,
+      key: "createdById",
+      label: "Filter by createdby.",
+    },
+    {
+      active: false,
+      key: "farmId",
+      label: "Filter by farm id.",
+    },
+    {
+      active: false,
+      key: "twinId",
+      label: "Filter by twin id.",
+    },
+    {
+      active: false,
+      key: "certificationType",
+      label: "Filter by certification type",
+    },
+  ];
 
-  // async created(): Promise<void> {
-  //   const res = await this.$apollo.query<{ farms: IFarm[] }>({
-  //     query: farmsQuery,
-  //   });
-  //   this.farms = res.data.farms;
-  //   this.initial = false;
-  // }
+  toggleActive(idx: number) {
+    const filter = this.filters[idx];
 
-  async applyFilter(): Promise<void> {
-    // this.loading = true;
-    // const res = await this.$apollo.query<{ farms: FarmModel[] }>({
-    //   query: farmsQuery,
-    //   variables: {
-    //     where: generateWhereQuery(this.$store.state.farms),
-    //   },
-    // });
-    // this.farms = res.data.farms;
-    // this.loading = false;
+    if (filter.active) {
+      this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
+      filter.active = false;
+    } else {
+      filter.active = true;
+      this.activeFilters.push(filter);
+    }
   }
 
-  openSheet(farm: IFarm) {
-    this.activefarm = farm;
+  farm: IFarm | null = null;
+
+  openSheet(farm: IFarm): void {
+    this.farm = farm;
   }
 
   closeSheet(): void {
-    this.activefarm = null;
+    this.farm = null;
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.loader {
-  height: 80vh;
+.filter-container {
+  padding-right: 10px;
+  max-height: calc(100vh - 164px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  will-change: transform;
 }
 </style>

@@ -3,7 +3,7 @@
     <v-subheader>{{ label.toLocaleUpperCase() }}</v-subheader>
     <v-combobox
       v-model="items"
-      :items="values"
+      :items="_values"
       chips
       clearable
       :label="label"
@@ -36,8 +36,12 @@ export default class InFilter extends Vue {
   @Prop({ required: true }) key1!: keyof IState["filters"];
   @Prop({ required: true }) key2!: string;
   @Prop({ required: true }) label!: string;
+  @Prop() value?: string[];
 
-  get values(): (string | number)[] {
+  get _values(): (string | number)[] {
+    if (this.value) {
+      return this.value;
+    }
     return this.$store.getters[this.key1].map((e: any) => e[this.key2]);
   }
 

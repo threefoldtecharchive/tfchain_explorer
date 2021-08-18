@@ -33,7 +33,16 @@ export interface IState {
       sru: IRangeFilter;
     };
     farms: {
-      ids: string[];
+      createdById: IInFilter;
+      farmId: IInFilter;
+      twinId: IInFilter;
+      certificationType: IInFilter;
+      // farmingPolicyId: IInFilter;
+      // locationId: IInFilter;
+      // hru: IRangeFilter;
+      // cru: IRangeFilter;
+      // mru: IRangeFilter;
+      // sru: IRangeFilter;
     };
   };
 }
@@ -55,7 +64,10 @@ export default {
       mru: createRangeFilter(),
     },
     farms: {
-      ids: [],
+      createdById: createInFilter(),
+      farmId: createInFilter(),
+      twinId: createInFilter(),
+      certificationType: createInFilter(),
     },
   },
 } as IState;

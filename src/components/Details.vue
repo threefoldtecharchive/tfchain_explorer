@@ -6,7 +6,7 @@
     no-click-animation
     @click:outside="$emit('close-sheet')"
   >
-    <v-sheet class="text-center" height="90vh" v-if="node">
+    <v-sheet class="text-center" height="90vh">
       <div class="content container">
         <template v-if="node">
           <NodeDetails :node="node" />

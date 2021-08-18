@@ -8,33 +8,21 @@
   >
     <v-sheet class="text-center" height="90vh">
       <div class="content container">
-        <template v-if="node">
-          <NodeDetails :node="node" />
+        <v-row>
+          <v-col cols="12" v-if="node">
+            <NodeDetails :node="node" />
+          </v-col>
 
-          <br />
-          <br />
-          <v-divider />
-          <br />
-        </template>
+          <v-col cols="4" v-if="farm">
+            <FarmDetails :farm="farm" />
+          </v-col>
+          <v-col cols="3" v-if="country">
+            <CountryDetails :country="country" :city="city" />
+          </v-col>
+          <v-col cols="5" v-if="country && location">
+            <LocationDetails :country="country" :location="location" />
+          </v-col>
 
-        <template v-if="farm || country || location">
-          <v-row>
-            <v-col cols="4" v-if="farm">
-              <FarmDetails :farm="farm" />
-            </v-col>
-            <v-col cols="3" v-if="country">
-              <CountryDetails :country="country" :city="city" />
-            </v-col>
-            <v-col cols="5" v-if="country && location">
-              <LocationDetails :country="country" :location="location" />
-            </v-col>
-          </v-row>
-          <br />
-          <br />
-          <v-divider />
-        </template>
-
-        <v-row v-if="twin || config">
           <v-col cols="6" v-if="twin">
             <TwinDetails :twin="twin" />
           </v-col>

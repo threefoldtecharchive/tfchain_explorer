@@ -37,12 +37,6 @@ export interface IState {
       farmId: IInFilter;
       twinId: IInFilter;
       certificationType: IInFilter;
-      // farmingPolicyId: IInFilter;
-      // locationId: IInFilter;
-      // hru: IRangeFilter;
-      // cru: IRangeFilter;
-      // mru: IRangeFilter;
-      // sru: IRangeFilter;
     };
   };
 }

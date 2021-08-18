@@ -1,96 +1,86 @@
 <template>
-  <v-container fluid>
-    <h1>
-      Nodes
-    </h1>
-    <v-divider />
-    <br />
-    <v-row>
-      <v-col cols="3">
-        <h3>
-          Filters
-        </h3>
-        <br />
-        <v-row>
-          <v-chip
-            v-for="(filter, idx) in filters"
-            :key="filter.key"
-            class="ma-2"
-            v-model="filter.active"
-            @click="toggleActive(idx)"
-            filter
-          >
-            {{ filter.key.toUpperCase() }}
-          </v-chip>
-        </v-row>
-        <br />
-        <v-divider />
-        <section class="filter-container" ref="filters">
-          <div v-for="filter in activeFilters" :key="filter.key">
-            <InFilter
-              key1="nodes"
-              :key2="filter.key"
-              :label="filter.label"
-              v-if="filter.type === 'in'"
-            />
-            <RangeFilter
-              v-if="filter.type === 'range'"
-              key1="nodes"
-              :key2="filter.key"
-              :label="filter.label"
-            />
-          </div>
-        </section>
-      </v-col>
-      <v-col cols="9">
-        <v-data-table
-          ref="table"
-          :fixed-header="!!tableHeight"
-          :height="tableHeight ? tableHeight + 'px' : undefined"
-          :loading="$store.getters.loading"
-          loading-text="Loading..."
-          :headers="headers"
-          :items="$store.getters.filtered_nodes"
-          :items-per-page="10"
-          class="elevation-1"
-          align
-          @click:row="openSheet"
-        >
-          <template v-slot:[`item.version`]="{ item }">
-            v{{ item.version }}.0
-          </template>
-          <template v-slot:[`item.gridVersion`]="{ item }">
-            v{{ item.version }}.0
-          </template>
-          <template v-slot:[`item.createdAt`]="{ item }">
-            {{ item.createdAt | date }}
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
-    <Details
-      :open="!!node"
-      :node="node"
-      :farm="$store.getters.farm(node && node.farmId)"
-      :country="$store.getters.country(node && node.countryId)"
-      :city="$store.getters.city(node && node.cityId)"
-      :location="$store.getters.location(node && node.locationId)"
-      :twin="$store.getters.twin(node && node.twinId)"
-      :config="$store.getters.publicConfig(node && node.publicConfigId)"
-      v-on:close-sheet="closeSheet"
-    />
-  </v-container>
+  <Layout pageName="Nodes">
+    <template v-slot:filters>
+      <v-chip
+        v-for="(filter, idx) in filters"
+        :key="filter.key"
+        class="ma-2"
+        v-model="filter.active"
+        @click="toggleActive(idx)"
+        filter
+      >
+        {{ filter.key.toUpperCase() }}
+      </v-chip>
+    </template>
+
+    <template v-slot:active-filters>
+      <div v-for="filter in activeFilters" :key="filter.key">
+        <InFilter
+          key1="nodes"
+          :key2="filter.key"
+          :label="filter.label"
+          v-if="filter.type === 'in'"
+        />
+        <RangeFilter
+          v-if="filter.type === 'range'"
+          key1="nodes"
+          :key2="filter.key"
+          :label="filter.label"
+        />
+      </div>
+    </template>
+
+    <template v-slot:table>
+      <v-data-table
+        ref="table"
+        :loading="$store.getters.loading"
+        loading-text="Loading..."
+        :headers="headers"
+        :items="$store.getters.filtered_nodes"
+        :items-per-page="10"
+        class="elevation-1"
+        align
+        @click:row="openSheet"
+      >
+        <template v-slot:[`item.version`]="{ item }">
+          v{{ item.version }}.0
+        </template>
+        <template v-slot:[`item.gridVersion`]="{ item }">
+          v{{ item.version }}.0
+        </template>
+        <template v-slot:[`item.createdAt`]="{ item }">
+          {{ item.createdAt | date }}
+        </template>
+      </v-data-table>
+    </template>
+
+    <template v-slot:details>
+      <Details
+        :open="!!node"
+        :node="node"
+        :farm="$store.getters.farm(node && node.farmId)"
+        :country="$store.getters.country(node && node.countryId)"
+        :city="$store.getters.city(node && node.cityId)"
+        :location="$store.getters.location(node && node.locationId)"
+        :twin="$store.getters.twin(node && node.twinId)"
+        :config="$store.getters.publicConfig(node && node.publicConfigId)"
+        v-on:close-sheet="closeSheet"
+      />
+    </template>
+  </Layout>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Details from "@/components/Details.vue";
 import { INode } from "@/graphql/api";
+import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
 
 @Component({
   components: {
+    Layout,
     Details,
     InFilter,
     RangeFilter,
@@ -195,40 +185,5 @@ export default class Nodes extends Vue {
   closeSheet(): void {
     this.node = null;
   }
-
-  tableHeight: number | null = null;
-  getTableHeight(): number {
-    const tableComp = this.$refs.table as any;
-    const table = tableComp.$el as HTMLDivElement;
-    return table.offsetTop;
-  }
-  setHeight() {
-    // filters panel
-    const filtersPanel = this.$refs.filters as HTMLDivElement;
-    filtersPanel.style.maxHeight =
-      window.innerHeight - filtersPanel.offsetTop - 20 + "px";
-
-    // table height
-    this.tableHeight = window.innerHeight - this.getTableHeight() - 80;
-  }
-
-  mounted() {
-    this.setHeight();
-    window.addEventListener("resize", this.setHeight.bind(this));
-  }
-
-  destroyed() {
-    window.removeEventListener("resize", this.setHeight);
-  }
 }
 </script>
-
-<style lang="scss" scoped>
-.filter-container {
-  padding-right: 10px;
-  max-height: 350px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  will-change: transform;
-}
-</style>

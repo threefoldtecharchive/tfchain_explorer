@@ -50,19 +50,6 @@ export default {
       return (state.filters as any)[key1][key2];
     };
   },
-  // nodes_id: (state) => {
-  //   const nodes = fallbackDataExtractor("nodes", state);
-  //   return nodes.map(({ nodeId }) => nodeId);
-  // },
-  // nodes_id: (state) => {
-  //   const nodes = fallbackDataExtractor("nodes", state);
-  //   return nodes.map(({ nodeId }) => nodeId);
-  // },
-  // node_filters(state) {
-  //   return (filter: keyof IState["filters"]["nodes"]) => {
-  //     return state.filters.nodes[filter];
-  //   };
-  // },
 
   /* filtered values */
   filtered_nodes: applyFilters(
@@ -92,7 +79,6 @@ export default {
   /* visual helpers */
   maxValueOf(state) {
     return (key: keyof GetDataQueryType, valueOf: string) => {
-      // const items = state.data[key1][key2] as any[];
       const items: any[] = fallbackDataExtractor(key, state);
       const values = items.map((i: any) => +(i as any)[valueOf]) as any[];
       return Math.max(...values);

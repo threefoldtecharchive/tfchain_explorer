@@ -30,3 +30,10 @@ export default class App extends Vue {
   }
 }
 </script>
+
+<style>
+[role="listitem"] {
+  overflow-y: hidden;
+  text-overflow: ellipsis;
+}
+</style>

@@ -41,7 +41,7 @@
       </v-list-item>
       <v-divider />
 
-      <v-list-item>
+      <v-list-item class="accountId">
         <v-list-item-content>
           <v-list-item-title>
             Account ID

@@ -15,7 +15,9 @@
 
     <!-- Details -->
     <v-row>
-      <v-col cols="4">
+      <v-col
+        :cols="screen_max_800.matches ? 12 : screen_max_1000.matches ? 6 : 4"
+      >
         <v-list>
           <template v-for="item of items">
             <v-card flat color="transparent" :key="item.key">
@@ -36,86 +38,110 @@
       </v-col>
 
       <!-- visuals -->
-      <v-col cols="4">
-        <div>
-          <p>
-            CRU
-          </p>
-          <v-row justify="center">
-            <v-progress-circular
-              :rotate="360"
-              :size="size"
-              :width="width"
-              :value="getValue('cru')"
-              color="primary"
-              :style="'font-size:' + fontSize + 'px'"
-            >
-              {{ getValue("cru") }} %
-            </v-progress-circular>
-          </v-row>
-        </div>
-        <br />
-        <v-divider />
-        <br />
+      <v-col
+        :cols="screen_max_800.matches ? 12 : screen_max_1000.matches ? 6 : 4"
+      >
+        <v-layout
+          :column="!screen_max_800.matches || screen_max_500.matches"
+          :row="screen_max_800.matches"
+          justify-space-around
+        >
+          <div>
+            <p>
+              CRU
+            </p>
+            <v-row justify="center">
+              <v-progress-circular
+                :rotate="360"
+                :size="size"
+                :width="width"
+                :value="getValue('cru')"
+                color="primary"
+                :style="'font-size:' + fontSize + 'px'"
+              >
+                {{ getValue("cru") }} %
+              </v-progress-circular>
+            </v-row>
+          </div>
 
-        <div>
-          <p>
-            MRU
-          </p>
-          <v-row justify="center">
-            <v-progress-circular
-              :rotate="360"
-              :size="size"
-              :width="width"
-              :value="getValue('mru')"
-              color="primary"
-              :style="'font-size:' + fontSize + 'px'"
-            >
-              {{ getValue("mru") }} %
-            </v-progress-circular>
-          </v-row>
-        </div>
+          <br v-if="!screen_max_800.matches" />
+          <v-divider :vertical="screen_max_800.matches" />
+          <br v-if="!screen_max_800.matches || screen_max_500.matches" />
+
+          <div>
+            <p>
+              MRU
+            </p>
+            <v-row justify="center">
+              <v-progress-circular
+                :rotate="360"
+                :size="size"
+                :width="width"
+                :value="getValue('mru')"
+                color="primary"
+                :style="'font-size:' + fontSize + 'px'"
+              >
+                {{ getValue("mru") }} %
+              </v-progress-circular>
+            </v-row>
+          </div>
+        </v-layout>
       </v-col>
 
-      <v-col cols="4">
-        <div>
-          <p>
-            HRU
-          </p>
-          <v-row justify="center">
-            <v-progress-circular
-              :rotate="360"
-              :size="size"
-              :width="width"
-              :value="getValue('hru')"
-              color="primary"
-              :style="'font-size:' + fontSize + 'px'"
-            >
-              {{ getValue("hru") }} %
-            </v-progress-circular>
-          </v-row>
-        </div>
+      <v-col cols="12" v-if="screen_max_800.matches && !screen_max_500.matches">
         <br />
         <v-divider />
         <br />
+      </v-col>
 
-        <div>
-          <p>
-            SRU
-          </p>
-          <v-row justify="center">
-            <v-progress-circular
-              :rotate="360"
-              :size="size"
-              :width="width"
-              :value="getValue('sru')"
-              color="primary"
-              :style="'font-size:' + fontSize + 'px'"
-            >
-              {{ getValue("sru") }} %
-            </v-progress-circular>
-          </v-row>
-        </div>
+      <v-col :cols="screen_max_1000.matches ? 12 : 4">
+        <br v-if="screen_max_500.matches" />
+
+        <v-layout
+          :column="!screen_max_1000.matches || screen_max_500.matches"
+          :row="screen_max_1000.matches"
+          justify-space-around
+        >
+          <div>
+            <p>
+              HRU
+            </p>
+            <v-row justify="center">
+              <v-progress-circular
+                :rotate="360"
+                :size="size"
+                :width="width"
+                :value="getValue('hru')"
+                color="primary"
+                :style="'font-size:' + fontSize + 'px'"
+              >
+                {{ getValue("hru") }} %
+              </v-progress-circular>
+            </v-row>
+          </div>
+
+          <br v-if="!screen_max_1000.matches" />
+          <v-divider :vertical="screen_max_1000.matches" />
+          <br v-if="!screen_max_1000.matches || screen_max_500.matches" />
+
+          <div>
+            <p>
+              SRU
+            </p>
+            <v-row justify="center">
+              <v-progress-circular
+                :rotate="360"
+                :size="size"
+                :width="width"
+                :value="getValue('sru')"
+                color="primary"
+                :style="'font-size:' + fontSize + 'px'"
+              >
+                {{ getValue("sru") }} %
+              </v-progress-circular>
+            </v-row>
+          </div>
+        </v-layout>
       </v-col>
     </v-row>
   </v-card>
@@ -124,6 +150,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { INode } from "@/graphql/api";
 import DatesDetails from "./DatesDetails.vue";
+import mediaMatcher from "@/utils/mediaMatcher";
 
 function createItem(value: string, key?: keyof INode) {
   key = key ? key : (value.toLocaleLowerCase() as any);
@@ -166,6 +193,16 @@ export default class NodeDetails_ extends Vue {
     const value = v ? +v / this.$store.getters.maxValueOf("nodes", key) : 0;
 
     return Math.round(value * 10000) / 100;
+  }
+
+  screen_max_1000 = mediaMatcher("(max-width: 1000px)");
+  screen_max_800 = mediaMatcher("(max-width: 800px)");
+  screen_max_500 = mediaMatcher("(max-width: 500px)");
+
+  destroyed() {
+    this.screen_max_1000.destry();
+    this.screen_max_800.destry();
+    this.screen_max_500.destry();
   }
 }
 </script>

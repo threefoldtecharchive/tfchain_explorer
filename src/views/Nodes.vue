@@ -106,7 +106,26 @@ export default class Nodes extends Vue {
 
   // activeFilters is exactly same as filters
   // the idea is to allow user to sort filter he wants
-  activeFilters: any[] = [];
+  activeFilters = [
+    {
+      type: "range",
+      active: true,
+      key: "hru",
+      label: "hru",
+    },
+    {
+      type: "range",
+      active: true,
+      key: "mru",
+      label: "mru",
+    },
+    {
+      type: "range",
+      active: true,
+      key: "cru",
+      label: "cru",
+    },
+  ];
   filters = [
     {
       type: "in",
@@ -147,27 +166,10 @@ export default class Nodes extends Vue {
     {
       type: "range",
       active: false,
-      key: "hru",
-      label: "hru",
-    },
-    {
-      type: "range",
-      active: false,
-      key: "mru",
-      label: "mru",
-    },
-    {
-      type: "range",
-      active: false,
-      key: "cru",
-      label: "cru",
-    },
-    {
-      type: "range",
-      active: false,
       key: "sru",
       label: "sru",
     },
+    ...this.activeFilters,
   ];
 
   toggleActive(idx: number) {

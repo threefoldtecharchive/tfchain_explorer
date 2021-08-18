@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="container">
+  <v-card flat color="transparent" class="container">
     <v-divider />
     <h2>Nodes Distribution</h2>
     <div @mousemove="controllTooltip($event)">
@@ -8,7 +8,7 @@
       <div ref="tooltip" :style="'display: ' + display">
         <v-card class="tooltip">
           <p>{{ country }}</p>
-          <p><span>Value:</span> {{ value || 0 }}</p>
+          <p><span>No.of nodes:</span> {{ value || 0 }}</p>
         </v-card>
       </div>
     </div>
@@ -139,6 +139,10 @@ export default class NodesDistribution extends Vue {
         placement: "top",
       }
     );
+  }
+
+  destroyed() {
+    this._instance?.destroy();
   }
 }
 </script>

@@ -20,6 +20,7 @@
                 single-line
                 type="number"
                 @input="onChange({ min: $event })"
+                style="width: 40px; text-align: center;"
               ></v-text-field>
             </template>
             <template v-slot:append>
@@ -29,6 +30,7 @@
                 hide-details
                 single-line
                 type="number"
+                style="width: 40px; text-align: center;"
                 @change="onChange({ max: $event })"
               ></v-text-field>
             </template>

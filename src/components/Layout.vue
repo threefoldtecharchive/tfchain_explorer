@@ -6,7 +6,10 @@
     <v-divider />
     <br />
     <v-row>
-      <v-col cols="3">
+      <v-col
+        :cols="screen_max_1400 ? 12 : 3"
+        :order="screen_max_1400 ? 1 : undefined"
+      >
         <h3>
           Filters
         </h3>
@@ -16,11 +19,11 @@
         </v-row>
         <br />
         <v-divider />
-        <section class="filter-container">
+        <section class="filter-container" ref="container">
           <slot name="active-filters"></slot>
         </section>
       </v-col>
-      <v-col cols="9">
+      <v-col :cols="screen_max_1400 ? 12 : 9" class="table-container">
         <slot name="table"></slot>
       </v-col>
     </v-row>
@@ -35,15 +38,44 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component({})
 export default class Layout extends Vue {
   @Prop({ required: true }) pageName!: string;
+
+  private _screen_max_1400?: MediaQueryList;
+  screen_max_1400 = false;
+
+  private _resizePanel() {
+    const panel = this.$refs.container as HTMLElement;
+    const maxHeight = this.screen_max_1400 ? 350 : panel.offsetTop + 20;
+    panel.style.maxHeight = `calc(100vh - ${maxHeight}px)`;
+  }
+
+  mounted() {
+    this._screen_max_1400 = window.matchMedia("(max-width: 1400px)");
+    this.screen_max_1400 = this._screen_max_1400.matches;
+    this._screen_max_1400.onchange = (e) => {
+      this.screen_max_1400 = e.matches;
+      this._resizePanel();
+    };
+
+    this._resizePanel();
+  }
+
+  destroyed() {
+    if (!this._screen_max_1400) return;
+    this._screen_max_1400.onchange = null;
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .filter-container {
   padding-right: 10px;
-  max-height: 350px;
   overflow-x: hidden;
   overflow-y: auto;
   will-change: transform;
+  min-height: 100px;
+}
+
+.table-container {
+  white-space: nowrap;
 }
 </style>

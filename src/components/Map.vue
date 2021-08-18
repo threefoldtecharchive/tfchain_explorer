@@ -9,6 +9,12 @@ export default class Map extends Vue {
 }
 </script>
 
+<style scoped>
+path:hover {
+  stroke: rgb(165, 165, 165);
+}
+</style>
+
 <template>
   <!-- Don't Edit this file -->
   <svg

@@ -67,6 +67,10 @@
         v-on:close-sheet="closeSheet"
       />
     </template>
+
+    <template v-slot:default>
+      <NodesDistribution />
+    </template>
   </Layout>
 </template>
 
@@ -77,6 +81,7 @@ import { INode } from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
+import NodesDistribution from "@/components/NodesDistribution.vue";
 
 @Component({
   components: {
@@ -84,6 +89,7 @@ import RangeFilter from "@/components/RangeFilter.vue";
     Details,
     InFilter,
     RangeFilter,
+    NodesDistribution,
   },
 })
 export default class Nodes extends Vue {

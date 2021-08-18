@@ -25,6 +25,7 @@
       </v-col>
     </v-row>
     <slot name="details"></slot>
+    <slot></slot>
   </v-container>
 </template>
 

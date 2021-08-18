@@ -1,7 +1,5 @@
 tasks:
-  - name: install deps
-    command: yarn
-  - name: serve ui
+  - before: yarn
     command: yarn serve
 
 ports:

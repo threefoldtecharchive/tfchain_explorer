@@ -1,102 +1,94 @@
 <template>
-  <v-container fluid>
-    <h1>
-      Farms
-    </h1>
-    <v-divider />
-    <br />
-    <v-row>
-      <v-col cols="3">
-        <h3>
-          Filters
-        </h3>
-        <br />
-        <v-row>
-          <v-chip
-            v-for="(filter, idx) in filters"
-            :key="filter.key"
-            class="ma-2"
-            v-model="filter.active"
-            @click="toggleActive(idx)"
-            filter
-          >
-            {{ filter.key.toUpperCase() }}
+  <Layout pageName="Farms">
+    <template v-slot:filters>
+      <v-chip
+        v-for="(filter, idx) in filters"
+        :key="filter.key"
+        class="ma-2"
+        v-model="filter.active"
+        @click="toggleActive(idx)"
+        filter
+      >
+        {{ filter.key.toUpperCase() }}
+      </v-chip>
+    </template>
+
+    <template v-slot:active-filters>
+      <div v-for="filter in activeFilters" :key="filter.key">
+        <InFilter
+          key1="farms"
+          :key2="filter.key"
+          :label="filter.label"
+          :value="filter.value"
+        />
+      </div>
+    </template>
+
+    <template v-slot:table>
+      <v-data-table
+        :loading="$store.getters.loading"
+        loading-text="Loading..."
+        :headers="headers"
+        :items="$store.getters.filtered_farm"
+        :items-per-page="10"
+        class="elevation-1"
+        align
+        @click:row="openSheet"
+      >
+        <template v-slot:[`item.version`]="{ item }">
+          v{{ item.version }}.0
+        </template>
+        <template v-slot:[`item.gridVersion`]="{ item }">
+          v{{ item.version }}.0
+        </template>
+
+        <template v-slot:[`item.certificationType`]="{ item }">
+          <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
+            {{ item.certificationType }}
           </v-chip>
-        </v-row>
-        <br />
-        <v-divider />
-        <section class="filter-container">
-          <div v-for="filter in activeFilters" :key="filter.key">
-            <InFilter
-              key1="farms"
-              :key2="filter.key"
-              :label="filter.label"
-              :value="['Diy', 'Certified']"
-            />
-          </div>
-        </section>
-      </v-col>
-      <v-col cols="9">
-        <v-data-table
-          :loading="$store.getters.loading"
-          loading-text="Loading..."
-          :headers="headers"
-          :items="$store.getters.filtered_farm"
-          :items-per-page="10"
-          class="elevation-1"
-          align
-          @click:row="openSheet"
-        >
-          <template v-slot:[`item.version`]="{ item }">
-            v{{ item.version }}.0
-          </template>
-          <template v-slot:[`item.gridVersion`]="{ item }">
-            v{{ item.version }}.0
-          </template>
+        </template>
 
-          <template v-slot:[`item.certificationType`]="{ item }">
-            <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
-              {{ item.certificationType }}
-            </v-chip>
-          </template>
+        <template v-slot:[`item.createdAt`]="{ item }">
+          {{ item.createdAt | date }}
+        </template>
 
-          <template v-slot:[`item.createdAt`]="{ item }">
-            {{ item.createdAt | date }}
-          </template>
+        <template v-slot:[`item.updatedAt`]="{ item }">
+          <v-icon :color="item.updatedAt ? 'green' : 'red'">
+            {{ item.updatedAt ? "mdi-check" : "mdi-close" }}
+          </v-icon>
+        </template>
 
-          <template v-slot:[`item.updatedAt`]="{ item }">
-            <v-icon :color="item.updatedAt ? 'green' : 'red'">
-              {{ item.updatedAt ? "mdi-check" : "mdi-close" }}
-            </v-icon>
-          </template>
+        <template v-slot:[`item.deletedAt`]="{ item }">
+          <v-icon :color="item.deletedAt ? 'green' : 'red'">
+            {{ item.deletedAt ? "mdi-check" : "mdi-close" }}
+          </v-icon>
+        </template>
+      </v-data-table>
+    </template>
 
-          <template v-slot:[`item.deletedAt`]="{ item }">
-            <v-icon :color="item.deletedAt ? 'green' : 'red'">
-              {{ item.deletedAt ? "mdi-check" : "mdi-close" }}
-            </v-icon>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
-    <Details
-      :open="!!farm"
-      :farm="farm"
-      :country="$store.getters.country(farm && farm.countryId)"
-      :city="$store.getters.city(farm && farm.cityId)"
-      :twin="$store.getters.twin(farm && farm.twinId)"
-      v-on:close-sheet="closeSheet"
-    />
-  </v-container>
+    <template v-slot:details>
+      <Details
+        :open="!!farm"
+        :farm="farm"
+        :country="$store.getters.country(farm && farm.countryId)"
+        :city="$store.getters.city(farm && farm.cityId)"
+        :twin="$store.getters.twin(farm && farm.twinId)"
+        v-on:close-sheet="closeSheet"
+      />
+    </template>
+  </Layout>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Details from "@/components/Details.vue";
 import { IFarm } from "@/graphql/api";
+import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
 
 @Component({
   components: {
+    Layout,
     Details,
     InFilter,
   },
@@ -137,6 +129,7 @@ export default class Farms extends Vue {
       active: false,
       key: "certificationType",
       label: "Filter by certification type",
+      value: ["Diy", "Certified"],
     },
   ];
 
@@ -163,13 +156,3 @@ export default class Farms extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.filter-container {
-  padding-right: 10px;
-  max-height: calc(100vh - 164px);
-  overflow-x: hidden;
-  overflow-y: auto;
-  will-change: transform;
-}
-</style>

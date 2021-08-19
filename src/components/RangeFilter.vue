@@ -13,26 +13,40 @@
             class="align-center"
           >
             <template v-slot:prepend>
-              <v-text-field
-                :value="range[0]"
-                class="mt-0 pt-0"
-                hide-details
-                single-line
-                type="number"
-                @input="onChange({ min: $event })"
-                style="width: 40px; text-align: center;"
-              ></v-text-field>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    :value="range[0]"
+                    class="mt-0 pt-0"
+                    hide-details
+                    single-line
+                    type="number"
+                    @input="onChange({ min: $event })"
+                    style="width: 40px; text-align: center;"
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <span>{{ range[0] }}</span>
+              </v-tooltip>
             </template>
             <template v-slot:append>
-              <v-text-field
-                :value="range[1]"
-                class="mt-0 pt-0"
-                hide-details
-                single-line
-                type="number"
-                style="width: 40px; text-align: center;"
-                @change="onChange({ max: $event })"
-              ></v-text-field>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    :value="range[1]"
+                    class="mt-0 pt-0"
+                    hide-details
+                    single-line
+                    type="number"
+                    style="width: 40px; text-align: center;"
+                    @change="onChange({ max: $event })"
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <span>{{ range[1] }}</span>
+              </v-tooltip>
             </template>
           </v-range-slider>
         </v-col>

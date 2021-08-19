@@ -19,7 +19,7 @@
         :cols="screen_max_800.matches ? 12 : screen_max_1000.matches ? 6 : 4"
       >
         <v-list>
-          <template v-for="item of items">
+          <!-- <template v-for="item of items">
             <v-card flat color="transparent" :key="item.key">
               <v-list-item>
                 <v-list-item-content>
@@ -31,7 +31,87 @@
               </v-list-item>
               <v-divider />
             </v-card>
-          </template>
+          </template> -->
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                ID
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.id }}
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Version
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.version }}
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Grid Version
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.gridVersion }}
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Uptime
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.uptime | secondToRedable }}
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                CPU Resource Unit
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.cru }} CPU
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Disk Resource Unit (HDD)
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.hru | toTeraOrGega }}
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Disk Resource Unit (SSD)
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.sru | toTeraOrGega }}
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Memory Resource Unit
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.mru | toTeraOrGega }}
+          </v-list-item>
+          <v-divider />
 
           <DatesDetails :item="node" />
         </v-list>

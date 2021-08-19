@@ -14,6 +14,11 @@ const routes: Array<RouteConfig> = [
     name: "Farms",
     component: () => import("../views/Farms.vue"),
   },
+  {
+    path: "*",
+    name: "PageNotFound",
+    component: () => import("../views/404.vue"),
+  },
 ];
 
 const router = new VueRouter({

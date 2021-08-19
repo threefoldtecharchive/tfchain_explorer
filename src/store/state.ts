@@ -37,6 +37,7 @@ export interface IState {
       farmId: IInFilter;
       twinId: IInFilter;
       certificationType: IInFilter;
+      name: IInFilter;
     };
   };
 }
@@ -62,6 +63,7 @@ export default {
       farmId: createInFilter(),
       twinId: createInFilter(),
       certificationType: createInFilter(),
+      name: createInFilter(),
     },
   },
 } as IState;

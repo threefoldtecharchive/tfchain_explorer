@@ -73,7 +73,8 @@ export default {
     inFilter("createdById"),
     inFilter("farmId"),
     inFilter("twinId"),
-    inFilter("certificationType")
+    inFilter("certificationType"),
+    inFilter("name")
   ),
 
   /* visual helpers */

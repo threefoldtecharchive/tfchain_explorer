@@ -108,7 +108,25 @@ export default class Farms extends Vue {
 
   // activeFilters is exactly same as filters
   // the idea is to allow user to sort filter he wants
-  activeFilters: any[] = [];
+  activeFilters = [
+    {
+      active: true,
+      key: "name",
+      label: "Filter by node name",
+    },
+    {
+      active: true,
+      key: "twinId",
+      label: "Filter by twin id.",
+    },
+    {
+      active: true,
+      key: "certificationType",
+      label: "Filter by certification type",
+      value: ["Diy", "Certified"],
+    },
+  ];
+
   filters = [
     {
       active: false,
@@ -120,17 +138,7 @@ export default class Farms extends Vue {
       key: "farmId",
       label: "Filter by farm id.",
     },
-    {
-      active: false,
-      key: "twinId",
-      label: "Filter by twin id.",
-    },
-    {
-      active: false,
-      key: "certificationType",
-      label: "Filter by certification type",
-      value: ["Diy", "Certified"],
-    },
+    ...this.activeFilters,
   ];
 
   toggleActive(idx: number) {

@@ -6,7 +6,9 @@
       </v-btn>
     </v-app-bar-nav-icon>
     <v-app-bar-title>
-      TF Explorer
+      <span class="app-title">
+        TF Explorer
+      </span>
     </v-app-bar-title>
     <v-spacer />
     <template v-if="$store.getters.loading">
@@ -44,3 +46,10 @@ export default class Navbar extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.app-title {
+  color: white;
+  font-weight: 500;
+}
+</style>

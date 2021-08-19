@@ -48,6 +48,15 @@ export default function secondToRedable(time?: number) {
   takeIf(isMin, "mins", MIN);
   units["seconds"] = t;
 
+  const keyToUnit = (key: string, v: number) => {
+    return (
+      v +
+      " " +
+      key[0].toUpperCase() +
+      key.slice(1, key.length - 1) +
+      (v > 1 ? "s" : "")
+    );
+  };
   const keys = Object.keys(units) as Array<keyof typeof units>;
   let res = "";
 
@@ -55,11 +64,11 @@ export default function secondToRedable(time?: number) {
     if (units[key] === 0) continue;
 
     if (res.length > 0) {
-      res += ", " + units[key] + " " + key[0].toUpperCase() + key.slice(1);
+      res += ", " + keyToUnit(key, units[key]);
       return res;
     }
 
-    res += units[key] + " " + key[0].toUpperCase() + key.slice(1);
+    res += keyToUnit(key, units[key]);
   }
 
   return res;

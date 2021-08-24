@@ -6,100 +6,6 @@
 
 import { gql } from "graphql-tag";
 
-export interface INode {
-  id: string;
-  createdAt: string;
-  createdById: string;
-  updatedAt?: string;
-  updatedById?: string;
-  deletedAt?: string;
-  deletedById?: string;
-  version: number;
-  gridVersion: number;
-  nodeId: number;
-  farmId: number;
-  twinId: number;
-  locationId: string;
-  countryId?: number;
-  cityId?: number;
-  hru?: string;
-  sru?: string;
-  cru?: string;
-  mru?: string;
-  publicConfigId?: string;
-  uptime?: number;
-  created: number;
-  farmingPolicyId: number;
-}
-
-export const NodeType = gql`
-  fragment NodeType on Node {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    gridVersion
-    nodeId
-    farmId
-    twinId
-    locationId
-    countryId
-    cityId
-    hru
-    sru
-    cru
-    mru
-    publicConfigId
-    uptime
-    created
-    farmingPolicyId
-  }
-`;
-
-export interface IFarm {
-  id: string;
-  createdAt: string;
-  createdById: string;
-  updatedAt?: string;
-  updatedById?: string;
-  deletedAt?: string;
-  deletedById?: string;
-  version: number;
-  gridVersion: number;
-  farmId: number;
-  name: string;
-  twinId: number;
-  pricingPolicyId: number;
-  certificationType: "Diy" | "Certified";
-  countryId?: number;
-  cityId?: number;
-}
-
-export const FarmType = gql`
-  fragment FarmType on Farm {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    gridVersion
-    farmId
-    name
-    twinId
-    pricingPolicyId
-    certificationType
-    countryId
-    cityId
-  }
-`;
-
 export interface ILocation {
   id: string;
   createdAt: string;
@@ -125,6 +31,113 @@ export const LocationType = gql`
     version
     longitude
     latitude
+  }
+`;
+
+export interface INode {
+  id: string;
+  createdAt: string;
+  createdById: string;
+  updatedAt?: string;
+  updatedById?: string;
+  deletedAt?: string;
+  deletedById?: string;
+  version: number;
+  gridVersion: number;
+  nodeId: number;
+  farmId: number;
+  twinId: number;
+  cityId?: number;
+  hru?: string;
+  sru?: string;
+  cru?: string;
+  mru?: string;
+  publicConfigId?: string;
+  uptime?: number;
+  created: number;
+  farmingPolicyId: number;
+  // locationId: string;
+  // countryId?: number;
+
+  location: Location;
+  country?: string;
+}
+
+export const NodeType = gql`
+  ${LocationType}
+
+  fragment NodeType on Node {
+    id
+    createdAt
+    createdById
+    updatedAt
+    updatedById
+    deletedAt
+    deletedById
+    version
+    gridVersion
+    nodeId
+    farmId
+    twinId
+    locationId
+    hru
+    sru
+    cru
+    mru
+    publicConfigId
+    uptime
+    created
+    farmingPolicyId
+    # countryId
+    # cityId
+
+    location {
+      ...LocationType
+    }
+    country
+  }
+`;
+
+export interface IFarm {
+  id: string;
+  createdAt: string;
+  createdById: string;
+  updatedAt?: string;
+  updatedById?: string;
+  deletedAt?: string;
+  deletedById?: string;
+  version: number;
+  gridVersion: number;
+  farmId: number;
+  name: string;
+  twinId: number;
+  pricingPolicyId: number;
+  certificationType: "Diy" | "Certified";
+  // countryId?: number;
+  // cityId?: number;
+
+  location: Location;
+  country?: string;
+}
+
+export const FarmType = gql`
+  fragment FarmType on Farm {
+    id
+    createdAt
+    createdById
+    updatedAt
+    updatedById
+    deletedAt
+    deletedById
+    version
+    gridVersion
+    farmId
+    name
+    twinId
+    pricingPolicyId
+    certificationType
+    # countryId
+    # cityId
   }
 `;
 
@@ -265,7 +278,6 @@ export interface GetDataQueryType {
 export const getDataQuery = gql`
   ${NodeType}
   ${FarmType}
-  ${LocationType}
   ${TwinType}
   ${CountryType}
   ${PublicConfigType}
@@ -278,9 +290,9 @@ export const getDataQuery = gql`
     farms {
       ...FarmType
     }
-    locations {
-      ...LocationType
-    }
+    # locations {
+    #   ...LocationType
+    # }
     twins {
       ...TwinType
     }

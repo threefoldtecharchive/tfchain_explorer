@@ -88,10 +88,7 @@ export default class NodesDistribution extends Vue {
   private _colorizeMap(nodes: INode[]) {
     if (!this.map) return;
 
-    const ids = nodes
-      .map<ICountry>((n) => this.$store.getters.country(n.countryId))
-      .filter((c) => !!c)
-      .map((c) => iso3To2(c.code));
+    const ids = nodes.map((n) => n.country).filter((c) => !!c) as string[];
 
     const counter = {} as { [key: string]: number };
     for (const id of ids) {

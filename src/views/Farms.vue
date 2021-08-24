@@ -35,11 +35,8 @@
         align
         @click:row="openSheet"
       >
-        <template v-slot:[`item.version`]="{ item }">
-          v{{ item.version }}.0
-        </template>
         <template v-slot:[`item.gridVersion`]="{ item }">
-          v{{ item.version }}.0
+          v{{ item.gridVersion }}.0
         </template>
 
         <template v-slot:[`item.certificationType`]="{ item }">
@@ -95,10 +92,9 @@ export default class Farms extends Vue {
   headers = [
     { text: "ID", value: "farmId" },
     { text: "NAME", value: "name" },
-    { text: "VERSION", value: "version" },
     { text: "GRID VERSION", value: "gridVersion", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
-    { text: "PRICING POLICY ID", value: "pricingPolicyId" },
+    { text: "PRICING POLICY ID", value: "pricingPolicyId", align: "center" },
     { text: "CREATED AT", value: "createdAt", align: "center" },
     { text: "UPDATED", value: "updatedAt", align: "center" },
     { text: "DELETED", value: "deletedAt", align: "center" },

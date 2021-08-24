@@ -34,16 +34,6 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            Version
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ farm.version }}
-      </v-list-item>
-      <v-divider />
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
             Grid Version
           </v-list-item-title>
         </v-list-item-content>

@@ -18,20 +18,6 @@
       <v-col cols="12">
         <!-- :cols="screen_max_800.matches ? 12 : screen_max_1000.matches ? 6 : 4" -->
         <v-list>
-          <!-- <template v-for="item of items">
-            <v-card flat color="transparent" :key="item.key">
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ item.value }}
-                  </v-list-item-title>
-                </v-list-item-content>
-                {{ node[item.key] }}
-              </v-list-item>
-              <v-divider />
-            </v-card>
-          </template> -->
-
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title>
@@ -45,10 +31,10 @@
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title>
-                Version
+                Farm ID
               </v-list-item-title>
             </v-list-item-content>
-            {{ node.version }}
+            {{ node.farmId }}
           </v-list-item>
           <v-divider />
 
@@ -252,7 +238,6 @@ export default class NodeDetails_ extends Vue {
 
   items = [
     createItem("ID"),
-    createItem("Version"),
     createItem("Grid Version", "gridVersion"),
     createItem("Uptime"),
     createItem("HRU"),

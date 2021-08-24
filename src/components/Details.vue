@@ -48,15 +48,6 @@
             :cols="
               screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
             "
-            v-if="country && location"
-          >
-            <LocationDetails :country="country" :location="location" />
-          </v-col>
-
-          <v-col
-            :cols="
-              screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
-            "
             v-if="country"
           >
             <CountryDetails
@@ -64,6 +55,15 @@
               :city="city"
               :location="location"
             />
+          </v-col>
+
+          <v-col
+            :cols="
+              screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
+            "
+            v-if="country && location"
+          >
+            <LocationDetails :country="country" :location="location" />
           </v-col>
         </v-row>
       </div>

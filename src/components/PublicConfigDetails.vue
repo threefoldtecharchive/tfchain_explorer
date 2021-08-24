@@ -14,16 +14,6 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            Version
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ config.version }}
-      </v-list-item>
-      <v-divider />
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
             IPv4
           </v-list-item-title>
         </v-list-item-content>

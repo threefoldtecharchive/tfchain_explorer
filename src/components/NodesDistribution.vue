@@ -107,7 +107,10 @@ export default class NodesDistribution extends Vue {
     for (const key in counter) {
       const path = this.map.querySelector(`path[id='${key}']`);
       if (!path) continue;
-      path.setAttribute("fill", `rgba(255, 82, 82, ${counter[key] / max})`);
+      path.setAttribute(
+        "fill",
+        `rgba(255, 82, 82, ${0.5 + counter[key] / (max * 2)})`
+      );
       path.setAttribute("data-value", `${counter[key]}`);
     }
 

@@ -42,14 +42,27 @@
         align
         @click:row="openSheet"
       >
-        <template v-slot:[`item.version`]="{ item }">
-          v{{ item.version }}.0
-        </template>
         <template v-slot:[`item.gridVersion`]="{ item }">
-          v{{ item.version }}.0
+          v{{ item.gridVersion }}.0
         </template>
         <template v-slot:[`item.createdAt`]="{ item }">
           {{ item.createdAt | date }}
+        </template>
+
+        <template v-slot:[`item.hru`]="{ item }">
+          {{ item.hru | toTeraOrGega }}
+        </template>
+
+        <template v-slot:[`item.sru`]="{ item }">
+          {{ item.sru | toTeraOrGega }}
+        </template>
+
+        <template v-slot:[`item.mru`]="{ item }">
+          {{ item.mru | toTeraOrGega }}
+        </template>
+
+        <template v-slot:[`item.uptime`]="{ item }">
+          {{ item.uptime | secondToRedable }}
         </template>
       </v-data-table>
     </template>
@@ -95,12 +108,13 @@ import NodesDistribution from "@/components/NodesDistribution.vue";
 export default class Nodes extends Vue {
   headers = [
     { text: "ID", value: "nodeId" },
-    { text: "VERSION", value: "version" },
+    { text: "Farm ID", value: "farmId", align: "center" },
     { text: "GRID VERSION", value: "gridVersion", align: "center" },
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
-    { text: "CRU", value: "cru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
+    { text: "CRU", value: "cru", align: "center" },
+    { text: "Up Time", value: "uptime", align: "center" },
     { text: "CREATED AT", value: "createdAt", align: "center" },
   ];
 

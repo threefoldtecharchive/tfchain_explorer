@@ -15,11 +15,10 @@
   </v-card>
 </template>
 <script lang="ts">
-import { ICountry, INode } from "@/graphql/api";
+import { INode } from "@/graphql/api";
 import { IState } from "@/store/state";
 import { Component, Vue } from "vue-property-decorator";
 import Map from "./Map.vue";
-import iso3To2 from "country-iso-3-to-2";
 import { createPopper, Instance } from "@popperjs/core/lib/popper-lite";
 
 function generateGetBoundingClientRect(x = 0, y = 0) {

@@ -31,18 +31,14 @@ export default {
   farms: fallbackDataExtractor("farms"),
   locations: fallbackDataExtractor("locations"),
   twins: fallbackDataExtractor("twins"),
-  countries: fallbackDataExtractor("countries"),
   publicConfigs: fallbackDataExtractor("publicConfigs"),
-  cities: fallbackDataExtractor("cities"),
 
   /* Getters By Id */
   node: findById("nodes", "nodeId"),
   farm: findById("farms", "farmId"),
   location: findById("locations", "id"),
   twin: findById("twins", "twinId"),
-  country: findById("countries", "id"),
   publicConfig: findById("publicConfigs", "id"),
-  city: findById("cities", "id"),
 
   /* filters helpers */
   getFilter: (state) => {

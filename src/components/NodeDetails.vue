@@ -98,6 +98,15 @@
           </v-list-item>
           <v-divider />
 
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                Created
+              </v-list-item-title>
+            </v-list-item-content>
+            {{ node.created | date }}
+          </v-list-item>
+
           <DatesDetails :item="node" />
         </v-list>
       </v-col>

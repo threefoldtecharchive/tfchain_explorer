@@ -45,8 +45,8 @@
         <template v-slot:[`item.gridVersion`]="{ item }">
           v{{ item.gridVersion }}.0
         </template>
-        <template v-slot:[`item.createdAt`]="{ item }">
-          {{ item.createdAt | date }}
+        <template v-slot:[`item.created`]="{ item }">
+          {{ item.created | date }}
         </template>
 
         <template v-slot:[`item.hru`]="{ item }">
@@ -115,7 +115,7 @@ export default class Nodes extends Vue {
     { text: "MRU", value: "mru", align: "center" },
     { text: "CRU", value: "cru", align: "center" },
     { text: "Up Time", value: "uptime", align: "center" },
-    { text: "CREATED AT", value: "createdAt", align: "center" },
+    { text: "CREATED", value: "created", align: "center" },
   ];
 
   // activeFilters is exactly same as filters

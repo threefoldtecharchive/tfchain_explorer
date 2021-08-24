@@ -54,12 +54,6 @@
             {{ item.updatedAt ? "mdi-check" : "mdi-close" }}
           </v-icon>
         </template>
-
-        <template v-slot:[`item.deletedAt`]="{ item }">
-          <v-icon :color="item.deletedAt ? 'green' : 'red'">
-            {{ item.deletedAt ? "mdi-check" : "mdi-close" }}
-          </v-icon>
-        </template>
       </v-data-table>
     </template>
 
@@ -95,9 +89,6 @@ export default class Farms extends Vue {
     { text: "GRID VERSION", value: "gridVersion", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
     { text: "PRICING POLICY ID", value: "pricingPolicyId", align: "center" },
-    { text: "CREATED AT", value: "createdAt", align: "center" },
-    { text: "UPDATED", value: "updatedAt", align: "center" },
-    { text: "DELETED", value: "deletedAt", align: "center" },
   ];
 
   // activeFilters is exactly same as filters

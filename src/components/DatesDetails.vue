@@ -1,5 +1,7 @@
 <template>
-  <v-card flat>
+  <!-- 
+    // leave it for now | should be needed later :(
+    <v-card flat>
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title>
@@ -42,7 +44,8 @@
         </v-icon>
       </template>
     </v-list-item>
-  </v-card>
+  </v-card> -->
+  <span />
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";

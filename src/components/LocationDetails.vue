@@ -16,9 +16,7 @@
 </template>
 
 <script lang="ts">
-import { ICountry, ILocation } from "@/graphql/api";
 import { Component, Prop, Vue } from "vue-property-decorator";
-import iso3To2 from "country-iso-3-to-2";
 import Map from "./Map.vue";
 
 @Component({
@@ -27,13 +25,11 @@ import Map from "./Map.vue";
   },
 })
 export default class LocationDetails extends Vue {
-  @Prop({ required: true }) location!: ILocation;
-  @Prop({ required: true }) country!: ICountry;
+  @Prop({ required: false }) country?: string;
 
   onGetMapRef(map: SVGElement) {
-    const country = map.querySelector(
-      "[id=" + iso3To2(this.country.code) + "]"
-    );
+    const country = map.querySelector(`[id=${this.country}]`);
+
     if (country) {
       country.setAttribute("fill", "#ff5252");
     }

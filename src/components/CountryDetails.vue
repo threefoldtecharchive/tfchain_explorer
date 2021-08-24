@@ -22,50 +22,6 @@
       </v-list-item>
       <v-divider />
 
-      <!-- Name Item -->
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            Name
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ country.name }}
-      </v-list-item>
-      <v-divider />
-
-      <!-- Region Item -->
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            Region
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ country.region }}
-      </v-list-item>
-      <v-divider />
-
-      <!-- Subregion Item -->
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            Subregion
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ country.subregion }}
-      </v-list-item>
-      <v-divider />
-
-      <!-- CODE ISO 3 Item -->
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            Code ISO 3
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ country.code }}
-      </v-list-item>
-      <v-divider />
-
       <!-- CODE ISO 3 Item -->
       <v-list-item>
         <v-list-item-content>
@@ -73,7 +29,7 @@
             Code ISO 2
           </v-list-item-title>
         </v-list-item-content>
-        {{ iso2Code }}
+        {{ country }}
       </v-list-item>
 
       <!-- City Item -->
@@ -85,30 +41,50 @@
               City
             </v-list-item-title>
           </v-list-item-content>
-          {{ city.name }}
+          {{ city }}
         </v-list-item>
       </template>
+
+      <template v-if="location">
+        <v-divider />
+        <!-- CODE ISO 3 Item -->
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>
+              Latitude
+            </v-list-item-title>
+          </v-list-item-content>
+          {{ location.latitude }}
+        </v-list-item>
+        <v-divider />
+
+        <!-- CODE ISO 3 Item -->
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>
+              Longitude
+            </v-list-item-title>
+          </v-list-item-content>
+          {{ location.longitude }}
+        </v-list-item>
+      </template>
+
       <!-- line -->
     </v-list>
   </v-card>
 </template>
 <script lang="ts">
+import { ILocation } from "@/graphql/api";
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { ICity, ICountry } from "@/graphql/api";
-import iso3To2 from "country-iso-3-to-2";
 
 @Component({})
 export default class CountryDetails extends Vue {
-  @Prop({ required: true }) country!: ICountry;
-  @Prop({ required: false }) city?: ICity;
-
-  get iso2Code(): string {
-    return iso3To2(this.country.code);
-  }
+  @Prop({ required: false }) country?: string;
+  @Prop({ required: false }) city?: string;
+  @Prop({ required: false }) location?: ILocation;
 
   get src(): string {
-    const code: string = this.iso2Code.toLocaleLowerCase();
-    return `https://www.worldatlas.com/r/w425/img/flag/${code}-flag.jpg`;
+    return `https://www.worldatlas.com/r/w425/img/flag/${this.country?.toLocaleLowerCase()}-flag.jpg`;
   }
 }
 </script>

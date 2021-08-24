@@ -61,6 +61,7 @@ export interface INode {
 
   location: Location;
   country?: string;
+  city?: string;
 }
 
 export const NodeType = gql`
@@ -95,6 +96,7 @@ export const NodeType = gql`
       ...LocationType
     }
     country
+    city
   }
 `;
 
@@ -173,37 +175,37 @@ export const TwinType = gql`
   }
 `;
 
-export interface ICountry {
-  id: string;
-  createdAt: string;
-  createdById: string;
-  updatedAt?: string;
-  updatedById?: string;
-  deletedAt?: string;
-  deletedById?: string;
-  version: number;
-  code: string;
-  name: string;
-  region: string;
-  subregion: string;
-}
+// export interface ICountry {
+//   id: string;
+//   createdAt: string;
+//   createdById: string;
+//   updatedAt?: string;
+//   updatedById?: string;
+//   deletedAt?: string;
+//   deletedById?: string;
+//   version: number;
+//   code: string;
+//   name: string;
+//   region: string;
+//   subregion: string;
+// }
 
-export const CountryType = gql`
-  fragment CountryType on Country {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    code
-    name
-    region
-    subregion
-  }
-`;
+// export const CountryType = gql`
+//   fragment CountryType on Country {
+//     id
+//     createdAt
+//     createdById
+//     updatedAt
+//     updatedById
+//     deletedAt
+//     deletedById
+//     version
+//     code
+//     name
+//     region
+//     subregion
+//   }
+// `;
 
 export interface IPublicConfig {
   id: string;
@@ -237,51 +239,51 @@ export const PublicConfigType = gql`
   }
 `;
 
-export interface ICity {
-  id: string;
-  createdAt: string;
-  createdById: string;
-  updatedAt?: string;
-  updatedById?: string;
-  deletedAt?: string;
-  deletedById?: string;
-  version: number;
-  countryId: number;
-  name: string;
-}
+// export interface ICity {
+//   id: string;
+//   createdAt: string;
+//   createdById: string;
+//   updatedAt?: string;
+//   updatedById?: string;
+//   deletedAt?: string;
+//   deletedById?: string;
+//   version: number;
+//   countryId: number;
+//   name: string;
+// }
 
-export const CityType = gql`
-  fragment CityType on City {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    countryId
-    name
-  }
-`;
+// export const CityType = gql`
+//   fragment CityType on City {
+//     id
+//     createdAt
+//     createdById
+//     updatedAt
+//     updatedById
+//     deletedAt
+//     deletedById
+//     version
+//     countryId
+//     name
+//   }
+// `;
 
 export interface GetDataQueryType {
   nodes: INode[];
   farms: IFarm[];
   locations: ILocation[];
   twins: ITwin[];
-  countries: ICountry[];
+  // countries: ICountry[];
   publicConfigs: IPublicConfig[];
-  cities: ICity[];
+  // cities: ICity[];
 }
 
+// ${CityType}
+// ${CountryType}
 export const getDataQuery = gql`
   ${NodeType}
   ${FarmType}
   ${TwinType}
-  ${CountryType}
   ${PublicConfigType}
-  ${CityType}
 
   query getDataQuery {
     nodes {
@@ -296,14 +298,14 @@ export const getDataQuery = gql`
     twins {
       ...TwinType
     }
-    countries {
-      ...CountryType
-    }
+    # countries {
+    #   ...CountryType
+    # }
     publicConfigs {
       ...PublicConfigType
     }
-    cities {
-      ...CityType
-    }
+    # cities {
+    #   ...CityType
+    # }
   }
 `;

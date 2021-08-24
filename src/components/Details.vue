@@ -26,7 +26,11 @@
             "
             v-if="country"
           >
-            <CountryDetails :country="country" :city="city" />
+            <CountryDetails
+              :country="country"
+              :city="city"
+              :location="location"
+            />
           </v-col>
           <v-col
             :cols="
@@ -61,15 +65,7 @@
 </template>
 
 <script lang="ts">
-import {
-  ICity,
-  ICountry,
-  IFarm,
-  ILocation,
-  INode,
-  IPublicConfig,
-  ITwin,
-} from "@/graphql/api";
+import { IFarm, ILocation, INode, IPublicConfig, ITwin } from "@/graphql/api";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import CountryDetails from "./CountryDetails.vue";
 import NodeDetails from "./NodeDetails.vue";
@@ -93,8 +89,8 @@ export default class Details extends Vue {
   @Prop({ required: true }) open!: boolean;
   @Prop() node?: INode;
   @Prop() farm?: IFarm;
-  @Prop() country?: ICountry;
-  @Prop() city?: ICity;
+  @Prop() country?: string;
+  @Prop() city?: string;
   @Prop() location?: ILocation;
   @Prop() twin?: ITwin;
   @Prop() config?: IPublicConfig;

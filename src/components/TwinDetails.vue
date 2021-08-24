@@ -17,7 +17,7 @@
             ID
           </v-list-item-title>
         </v-list-item-content>
-        {{ twin.id }}
+        {{ twin.twinId }}
       </v-list-item>
       <v-divider />
 

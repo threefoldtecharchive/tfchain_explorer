@@ -15,9 +15,8 @@
 
     <!-- Details -->
     <v-row>
-      <v-col
-        :cols="screen_max_800.matches ? 12 : screen_max_1000.matches ? 6 : 4"
-      >
+      <v-col cols="12">
+        <!-- :cols="screen_max_800.matches ? 12 : screen_max_1000.matches ? 6 : 4" -->
         <v-list>
           <!-- <template v-for="item of items">
             <v-card flat color="transparent" :key="item.key">
@@ -39,7 +38,7 @@
                 ID
               </v-list-item-title>
             </v-list-item-content>
-            {{ node.id }}
+            {{ node.nodeId }}
           </v-list-item>
           <v-divider />
 
@@ -118,7 +117,7 @@
       </v-col>
 
       <!-- visuals -->
-      <v-col
+      <!-- <v-col
         :cols="screen_max_800.matches ? 12 : screen_max_1000.matches ? 6 : 4"
       >
         <v-layout
@@ -222,7 +221,7 @@
             </v-row>
           </div>
         </v-layout>
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-card>
 </template>

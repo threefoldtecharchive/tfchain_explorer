@@ -8,7 +8,12 @@
     <v-sheet class="text-center" height="90vh">
       <div class="content ">
         <v-row>
-          <v-col cols="12" v-if="node">
+          <v-col
+            :cols="
+              screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
+            "
+            v-if="node"
+          >
             <NodeDetails :node="node" />
           </v-col>
 
@@ -19,26 +24,6 @@
             v-if="farm"
           >
             <FarmDetails :farm="farm" />
-          </v-col>
-          <v-col
-            :cols="
-              screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
-            "
-            v-if="country"
-          >
-            <CountryDetails
-              :country="country"
-              :city="city"
-              :location="location"
-            />
-          </v-col>
-          <v-col
-            :cols="
-              screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
-            "
-            v-if="country && location"
-          >
-            <LocationDetails :country="country" :location="location" />
           </v-col>
 
           <v-col
@@ -57,6 +42,28 @@
             v-if="config"
           >
             <PublicConfigDetails :config="config" />
+          </v-col>
+
+          <v-col
+            :cols="
+              screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
+            "
+            v-if="country && location"
+          >
+            <LocationDetails :country="country" :location="location" />
+          </v-col>
+
+          <v-col
+            :cols="
+              screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
+            "
+            v-if="country"
+          >
+            <CountryDetails
+              :country="country"
+              :city="city"
+              :location="location"
+            />
           </v-col>
         </v-row>
       </div>

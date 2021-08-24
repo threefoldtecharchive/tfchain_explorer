@@ -70,8 +70,6 @@
       <Details
         :open="!!farm"
         :farm="farm"
-        :country="$store.getters.country(farm && farm.countryId)"
-        :city="$store.getters.city(farm && farm.cityId)"
         :twin="$store.getters.twin(farm && farm.twinId)"
         v-on:close-sheet="closeSheet"
       />

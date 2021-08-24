@@ -56,9 +56,6 @@ export interface INode {
   uptime?: number;
   created: number;
   farmingPolicyId: number;
-  // locationId: string;
-  // countryId?: number;
-
   location: Location;
   country?: string;
   city?: string;
@@ -89,9 +86,6 @@ export const NodeType = gql`
     uptime
     created
     farmingPolicyId
-    # countryId
-    # cityId
-
     location {
       ...LocationType
     }
@@ -115,11 +109,6 @@ export interface IFarm {
   twinId: number;
   pricingPolicyId: number;
   certificationType: "Diy" | "Certified";
-  // countryId?: number;
-  // cityId?: number;
-
-  location: Location;
-  country?: string;
 }
 
 export const FarmType = gql`
@@ -138,8 +127,6 @@ export const FarmType = gql`
     twinId
     pricingPolicyId
     certificationType
-    # countryId
-    # cityId
   }
 `;
 
@@ -175,38 +162,6 @@ export const TwinType = gql`
   }
 `;
 
-// export interface ICountry {
-//   id: string;
-//   createdAt: string;
-//   createdById: string;
-//   updatedAt?: string;
-//   updatedById?: string;
-//   deletedAt?: string;
-//   deletedById?: string;
-//   version: number;
-//   code: string;
-//   name: string;
-//   region: string;
-//   subregion: string;
-// }
-
-// export const CountryType = gql`
-//   fragment CountryType on Country {
-//     id
-//     createdAt
-//     createdById
-//     updatedAt
-//     updatedById
-//     deletedAt
-//     deletedById
-//     version
-//     code
-//     name
-//     region
-//     subregion
-//   }
-// `;
-
 export interface IPublicConfig {
   id: string;
   createdAt: string;
@@ -239,46 +194,14 @@ export const PublicConfigType = gql`
   }
 `;
 
-// export interface ICity {
-//   id: string;
-//   createdAt: string;
-//   createdById: string;
-//   updatedAt?: string;
-//   updatedById?: string;
-//   deletedAt?: string;
-//   deletedById?: string;
-//   version: number;
-//   countryId: number;
-//   name: string;
-// }
-
-// export const CityType = gql`
-//   fragment CityType on City {
-//     id
-//     createdAt
-//     createdById
-//     updatedAt
-//     updatedById
-//     deletedAt
-//     deletedById
-//     version
-//     countryId
-//     name
-//   }
-// `;
-
 export interface GetDataQueryType {
   nodes: INode[];
   farms: IFarm[];
   locations: ILocation[];
   twins: ITwin[];
-  // countries: ICountry[];
   publicConfigs: IPublicConfig[];
-  // cities: ICity[];
 }
 
-// ${CityType}
-// ${CountryType}
 export const getDataQuery = gql`
   ${NodeType}
   ${FarmType}
@@ -292,20 +215,11 @@ export const getDataQuery = gql`
     farms {
       ...FarmType
     }
-    # locations {
-    #   ...LocationType
-    # }
     twins {
       ...TwinType
     }
-    # countries {
-    #   ...CountryType
-    # }
     publicConfigs {
       ...PublicConfigType
     }
-    # cities {
-    #   ...CityType
-    # }
   }
 `;

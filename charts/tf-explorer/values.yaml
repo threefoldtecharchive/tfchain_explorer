@@ -43,21 +43,19 @@ service:
   port: 80
 
 ingress:
-  # cpied from https://github.com/threefoldtech/vdc-solutions-charts/blob/master/charts/3bot/values.yaml
+  # from https://github.com/threefoldtech/vdc-solutions-charts/blob/master/charts/taiga/values.yaml
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: nginx
-    # ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: my-host.local
-      paths:
-        - /
-  tls:
-    - secretName: secret_name
-      hosts:
-        - my-host.local
+    kubernetes.io/ingress.class: traefik
+    ingress.kubernetes.io/ssl-passthrough: "true"
+  host: "domain" # replaced when installing chart by --set ingress.host=<domain>
+  paths:
+    - "/"
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious

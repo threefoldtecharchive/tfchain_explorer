@@ -16,12 +16,15 @@ RUN npm run build
 FROM nginx:1.16.0-alpine
 
 # Copy dist from stage(1) 
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app /usr/share/nginx/html
 
 # Add custom nginx conf
 RUN rm /etc/nginx/conf.d/default.conf
 COPY /nginx.conf /etc/nginx/conf.d
 
 # Serve the app
+RUN chmod +x /usr/share/nginx/html/scripts/build-env.sh
+
 EXPOSE 80
+ENTRYPOINT [ "sh", "/usr/share/nginx/html/scripts/build-env.sh" ]
 CMD [ "nginx", "-g", "daemon off;" ]

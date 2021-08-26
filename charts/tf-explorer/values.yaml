@@ -48,15 +48,11 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: traefik
     ingress.kubernetes.io/ssl-passthrough: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: gridca
   host: "domain" # replaced when installing chart by --set ingress.host=<domain>
 
   tls: []
   #  - secretName: chart-example-tls
-  hosts:
-    - host: chart-example.local
-      paths:
-      - path: "/"
-        pathType: Prefix
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious

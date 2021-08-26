@@ -4,7 +4,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import VueApollo from "vue-apollo";
 
 const link = createHttpLink({
-  uri: "https://explorer.devnet.grid.tf/graphql/",
+  uri: window.configs.gql_url,
 });
 
 const cache = new InMemoryCache();

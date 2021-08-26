@@ -1,4 +1,8 @@
-import Vue, { VNode } from 'vue'
+import Vue, { VNode } from "vue";
+
+interface AppConfigs {
+  gql_url: string;
+}
 
 declare global {
   namespace JSX {
@@ -7,7 +11,11 @@ declare global {
     // tslint:disable no-empty-interface
     interface ElementClass extends Vue {}
     interface IntrinsicElements {
-      [elem: string]: any
+      [elem: string]: any;
     }
+  }
+
+  interface Window {
+    configs: AppConfigs;
   }
 }

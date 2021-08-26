@@ -1,9 +1,10 @@
 #!/bin/sh
 
-if [ ! -d dist ] 
+if [ -d dist ] 
 then
-    echo 'Error! cannot run this script before build.'
-    exit 64
+    file="dist/config.js"
+else
+    file="config.js"
 fi
 
 if [ -z ${GQL_URL+x} ]
@@ -12,16 +13,14 @@ then
     exit 64
 fi
 
-echo $GQL_URL
-
 configs="
 window.configs = window.configs || {};
 window.configs.gql_url = '$GQL_URL';
 "
 
-if [ -e dist/config.js ]
+if [ -e $file ]
 then
-    rm dist/config.js
+    rm $file
 fi
 
-echo $configs > dist/config.js
+echo $configs > $file

@@ -10,7 +10,7 @@ Explorer UI for grid 3 using the new [graphql api](https://explorer.devnet.grid.
 - [Serve UI](#serve-ui)
 - [Run Docker](#run-docker)
 - [Deploy Helm Chart](#deploy-helm-chart)
-- [Screen Shoots](#screen-shoots)
+- [Screenshots](#screenshots)
 
 ---
 
@@ -86,7 +86,7 @@ $ helm install --set ingress.host=dashboard.com --set GQL_URL=https://explorer.d
 
 ---
 
-### Screen Shoots
+### Screenshots
 
 ![image](https://user-images.githubusercontent.com/64129/130027646-16317aee-624a-4e85-ae90-3935199c93f3.png)
 

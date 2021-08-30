@@ -6,66 +6,90 @@ Explorer UI for grid 3 using the new [graphql api](https://explorer.devnet.grid.
 
 ## Content
 
+- [Download](#download)
 - [Serve UI](#serve-ui)
 - [Run Docker](#run-docker)
+- [Deploy Helm Chart](#deploy-helm-chart)
+- [Screen Shoots](#screen-shoots)
 
-### serve-ui
+---
 
-1. clone the project
+### Download
 
-```git
-$ git clone git@github.com:MohamedElmdary/cat-frontend-circle-road-map.git
+1. Clone the project
+
+```
+$ git@github.com:threefoldtech/grid_explorer_ui.git
 ```
 
-2. install dependencies
+2. Install dependencies
 
-```git
+```
 // You must have yarn installed globaly
 $ yarn
 ```
 
-3. serve project
+3. Change Directory
 
-```git
+```
+$ cd grid_explorer_ui
+```
+
+---
+
+### serve-ui
+
+```
 $ yarn serve
 ```
 
+---
+
 ### Run Docker
 
-<!-- # Project setup
+| Name    | Required | Default |
+| ------- | -------- | ------- |
+| GQL_URL | True     |         |
+
+1. Build local image
+
 ```
-yarn install
+$ docker build -t explorer-ui .
 ```
 
-### Compiles and hot-reloads for development
+2. Run container
+
 ```
-yarn serve
+$ docker run -p 8080:80 -e GQL_URL=https://explorer.devnet.grid.tf/graphql/ explorer-ui
 ```
 
-### Compiles and minifies for production
+---
+
+### Deploy Helm Chart
+
+| Name         | Required | Default                                  |
+| ------------ | -------- | ---------------------------------------- |
+| GQL_URL      | False    | https://explorer.devnet.grid.tf/graphql/ |
+| ingress.host | False    | dashboard.com                            |
+
+1. Add repo
+
 ```
-yarn build
+$ helm repo add tf-explorer https://threefoldtech.github.io/grid_explorer_ui/
 ```
 
-### Run your unit tests
+2. Run chart
+
 ```
-yarn test:unit
+$ helm install --set ingress.host=dashboard.com --set GQL_URL=https://explorer.devnet.grid.tf/graphql/ --generate-name tf-explorer/tf-explorer
 ```
 
-### Lints and fixes files
-```
-yarn lint
-```
+---
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Screen Shoots
 
 ![image](https://user-images.githubusercontent.com/64129/130027646-16317aee-624a-4e85-ae90-3935199c93f3.png)
 
 ![image](https://user-images.githubusercontent.com/64129/130027811-4cf6dc1b-a65f-40fc-a101-801e137248fb.png)
 
-
-![image](https://user-images.githubusercontent.com/64129/130027729-a78f5465-57#0d-4e89-8197-4f690f1efec9.png)
-
 ![image](https://user-images.githubusercontent.com/64129/130027767-3bd54133-5a8b-4fa6-a0a9-818c305c2ecd.png)
- -->

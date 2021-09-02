@@ -6,6 +6,20 @@ import { IState } from "./state";
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
 
+/**
+ * @param { key1 }
+ * @param { key2 }
+ *
+ * @description
+ * key1: it only accepts one of [GetDataQueryType] keys for example ('nodes' | 'farms' | etc...)
+ * key2: When ever you choose a `key1` value it starts to accept the keys of  [GetDataQueryType[key1]]
+ *       So let's say your choosen key1 was nodes => key2 should be (keyof INode)
+ *
+ * @example
+ * findById('wrong value', 'any value') // Error!
+ * findById('nodes', 'wrong value')     // Error!
+ * findById('nodes', 'nodeId')          // Works!
+ */
 function findById<T = GetDataQueryType, K extends keyof T = keyof T, R extends ExtractKeyOf<T, K> = T[K] extends (infer Q)[] ? keyof Q : T[K]>(key1: K, key2: R): (state: IState) => (id?: string) => ExtractValue<T, K> | null; // prettier-ignore
 function findById(key1: any, key2: any) {
   return (state: IState) => {

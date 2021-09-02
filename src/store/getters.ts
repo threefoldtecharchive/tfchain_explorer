@@ -7,8 +7,8 @@ type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q 
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
 
 /**
- * @param { key1 }
- * @param { key2 }
+ * @param key1
+ * @param key2
  *
  * @description
  * key1: it only accepts one of [GetDataQueryType] keys for example ('nodes' | 'farms' | etc...)

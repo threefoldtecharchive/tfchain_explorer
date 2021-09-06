@@ -74,7 +74,7 @@
                 Disk Resource Unit (HDD)
               </v-list-item-title>
             </v-list-item-content>
-            {{ node.hru | toTeraOrGega }}
+            {{ node.hru | toTeraOrGiga }}
           </v-list-item>
           <v-divider />
 
@@ -84,7 +84,7 @@
                 Disk Resource Unit (SSD)
               </v-list-item-title>
             </v-list-item-content>
-            {{ node.sru | toTeraOrGega }}
+            {{ node.sru | toTeraOrGiga }}
           </v-list-item>
           <v-divider />
 
@@ -94,7 +94,7 @@
                 Memory Resource Unit
               </v-list-item-title>
             </v-list-item-content>
-            {{ node.mru | toTeraOrGega }}
+            {{ node.mru | toTeraOrGiga }}
           </v-list-item>
           <v-divider />
 

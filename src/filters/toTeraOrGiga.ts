@@ -1,4 +1,4 @@
-export default function toTeraOrGega(value?: string) {
+export default function toTeraOrGiga(value?: string) {
   if (!value) return "Unknown";
 
   const val = +value;

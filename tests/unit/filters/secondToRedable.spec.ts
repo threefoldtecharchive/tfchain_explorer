@@ -1,6 +1,6 @@
 import secondToRedable from "@/filters/secondToRedable";
 
-describe("toTeraOrGega.ts", () => {
+describe("secondToRedable.ts", () => {
   it("Should parse time into a readable way by showing at most 2 values.", () => {
     // undefined or zero
     expect(secondToRedable()).toEqual("Unknown");

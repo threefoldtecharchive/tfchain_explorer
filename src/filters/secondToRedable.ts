@@ -4,8 +4,8 @@ const MIN = 60;
 const HOUR = 60 * MIN;
 const DAY = 24 * HOUR;
 const WEEK = 7 * DAY;
-const MONTH = 4 * (30 / 28) * WEEK;
-const YEAR = 12 * MONTH;
+const MONTH = 30 * DAY;
+const YEAR = 365 * DAY;
 
 const isYear = gte(YEAR);
 const isMonth = gte(MONTH);
@@ -17,7 +17,7 @@ const isMin = gte(MIN);
 const calc = (t: number, unit: number) => (t - (t % unit)) / unit;
 
 export default function secondToRedable(time?: number) {
-  if (!time) return "Unknown";
+  if (time != 0 && !time) return "Unknown";
 
   let t = +time;
   if (t === 0 || isNaN(t)) return "0";

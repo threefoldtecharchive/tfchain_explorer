@@ -39,7 +39,6 @@ export interface IState {
       mru: IRangeFilter;
       sru: IRangeFilter;
       uptime: IConditionFilter;
-      gw4: IInFilter;
     };
     farms: {
       createdById: IInFilter;
@@ -67,7 +66,6 @@ export default {
       sru: createRangeFilter(),
       mru: createRangeFilter(),
       uptime: createConditionFilter(),
-      gw4: createInFilter(),
     },
     farms: {
       createdById: createInFilter(),

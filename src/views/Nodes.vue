@@ -9,7 +9,7 @@
         @click="toggleActive(idx)"
         filter
       >
-        {{ filter.key.toUpperCase() }}
+        {{ getChipLabel(filter) }}
       </v-chip>
     </template>
 
@@ -26,6 +26,12 @@
           key1="nodes"
           :key2="filter.key"
           :label="filter.label"
+        />
+        <ConditionFilter
+          v-if="filter.type === 'condition'"
+          key1="nodes"
+          :key2="filter.key"
+          :labels="filter.label"
         />
       </div>
     </template>
@@ -95,6 +101,7 @@ import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
 import NodesDistribution from "@/components/NodesDistribution.vue";
+import ConditionFilter from "@/components/ConditionFilter.vue";
 
 @Component({
   components: {
@@ -103,6 +110,7 @@ import NodesDistribution from "@/components/NodesDistribution.vue";
     InFilter,
     RangeFilter,
     NodesDistribution,
+    ConditionFilter,
   },
 })
 export default class Nodes extends Vue {
@@ -184,10 +192,16 @@ export default class Nodes extends Vue {
       label: "sru",
     },
     ...this.activeFilters,
+    {
+      type: "condition",
+      active: false,
+      key: "uptime",
+      label: ["Status", "Offline", "Online"],
+    },
   ];
 
   toggleActive(idx: number) {
-    const filter = this.filters[idx];
+    const filter: any = this.filters[idx];
 
     if (filter.active) {
       this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
@@ -206,6 +220,14 @@ export default class Nodes extends Vue {
 
   closeSheet(): void {
     this.node = null;
+  }
+
+  getChipLabel(filter: any): string {
+    let v = filter.key;
+    if (filter.type === "condition") {
+      v = filter.label[0];
+    }
+    return v.toUpperCase();
   }
 }
 </script>

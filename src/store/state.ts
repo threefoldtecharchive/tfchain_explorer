@@ -16,6 +16,13 @@ interface IRangeFilter {
 // prettier-ignore
 const createRangeFilter = () => ({ enabled: false, value: { min: 0, max: Number.MAX_SAFE_INTEGER} });
 
+interface IConditionFilter {
+  enabled: boolean;
+  value: boolean;
+}
+
+const createConditionFilter = () => ({ enabled: false, value: true });
+
 export interface IState {
   data: GetDataQueryType | null;
   loading: boolean;
@@ -31,6 +38,7 @@ export interface IState {
       cru: IRangeFilter;
       mru: IRangeFilter;
       sru: IRangeFilter;
+      uptime: IConditionFilter;
     };
     farms: {
       createdById: IInFilter;
@@ -57,6 +65,7 @@ export default {
       cru: createRangeFilter(),
       sru: createRangeFilter(),
       mru: createRangeFilter(),
+      uptime: createConditionFilter(),
     },
     farms: {
       createdById: createInFilter(),

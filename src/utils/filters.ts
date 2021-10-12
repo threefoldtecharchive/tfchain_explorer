@@ -40,3 +40,17 @@ export function rangeFilter(key: string) {
     });
   };
 }
+
+export function conditionFilter(key: string) {
+  return function<T>(
+    filters: { [key: string]: { enabled: boolean; value: boolean } | any },
+    items: T[]
+  ): T[] {
+    const { enabled, value } = filters[key];
+    if (!enabled) return items;
+    return items.filter((i) => {
+      const item: number = (i as any)[key];
+      return value ? item > 0 : item === 0;
+    });
+  };
+}

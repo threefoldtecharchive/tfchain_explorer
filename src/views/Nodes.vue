@@ -37,12 +37,16 @@
     </template>
 
     <template v-slot:table>
+      <v-row align="center" justify="end">
+        Show Nodes With Gateways Only
+        <v-switch v-model="withGateway" class="ml-4"></v-switch>
+      </v-row>
       <v-data-table
         ref="table"
         :loading="$store.getters.loading"
         loading-text="Loading..."
         :headers="headers"
-        :items="$store.getters.filtered_nodes"
+        :items="getNodes()"
         :items-per-page="10"
         class="elevation-1"
         align
@@ -114,6 +118,8 @@ import ConditionFilter from "@/components/ConditionFilter.vue";
   },
 })
 export default class Nodes extends Vue {
+  withGateway = false;
+
   headers = [
     { text: "ID", value: "nodeId" },
     { text: "Farm ID", value: "farmId", align: "center" },
@@ -199,6 +205,14 @@ export default class Nodes extends Vue {
       label: ["Status", "Offline", "Online"],
     },
   ];
+
+  getNodes() {
+    const nodes: INode[] = this.$store.getters.filtered_nodes;
+    if (!this.withGateway) {
+      return nodes;
+    }
+    return nodes.filter(({ publicConfigId }) => publicConfigId !== null);
+  }
 
   toggleActive(idx: number) {
     const filter: any = this.filters[idx];

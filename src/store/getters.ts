@@ -6,7 +6,7 @@ import {
   rangeFilter,
 } from "@/utils/filters";
 import { GetterTree } from "vuex";
-import { IState } from "./state";
+import state, { IState } from "./state";
 
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
@@ -44,6 +44,18 @@ export function fallbackDataExtractor(key: any, state?: any) {
   return (state: any) => state.data?.[key] ?? [];
 }
 
+export function flatProp(key1: string, key2: string) {
+  return (state: any[]) => {
+    return state.map((item: any) => {
+      const x = item[key2];
+      return {
+        ...item,
+        [key1]: x?.[key1] ?? null,
+      };
+    });
+  };
+}
+
 export default {
   loading: (state) => state.loading,
   nodes: fallbackDataExtractor("nodes"),
@@ -51,6 +63,19 @@ export default {
   locations: fallbackDataExtractor("locations"),
   twins: fallbackDataExtractor("twins"),
   publicConfigs: fallbackDataExtractor("publicConfigs"),
+  // gw4: (state) => {
+  //   console.log("here?");
+
+  //   const nodes = fallbackDataExtractor("nodes")(state);
+  //   const data = nodes
+  //     .map(({ publicConfig }) => {
+  //       return {
+  //         gw4: publicConfig?.gw4 ?? null,
+  //       };
+  //     })
+  //     .filter((v) => !!v.gw4);
+  //   return data;
+  // },
 
   /* Getters By Id */
   node: findById("nodes", "nodeId"),
@@ -67,21 +92,25 @@ export default {
   },
 
   /* filtered values */
-  filtered_nodes: applyFilters(
-    fallbackDataExtractor("nodes"),
-    (state) => state.filters.nodes,
-    inFilter("nodeId"),
-    inFilter("createdById"),
-    inFilter("farmId"),
-    inFilter("twinId"),
-    inFilter("locationId"),
-    inFilter("farmingPolicyId"),
-    rangeFilter("hru"),
-    rangeFilter("mru"),
-    rangeFilter("sru"),
-    rangeFilter("cru"),
-    conditionFilter("uptime")
-  ),
+  filtered_nodes: (state) => {
+    return applyFilters(
+      fallbackDataExtractor("nodes"),
+      (state) => state.filters.nodes,
+      inFilter("nodeId"),
+      inFilter("createdById"),
+      inFilter("farmId"),
+      inFilter("twinId"),
+      inFilter("locationId"),
+      inFilter("farmingPolicyId"),
+      rangeFilter("hru"),
+      rangeFilter("mru"),
+      rangeFilter("sru"),
+      rangeFilter("cru"),
+      conditionFilter("uptime"),
+      (filters, nodes) =>
+        inFilter("gw4")(filters, flatProp("gw4", "publicConfig")(nodes))
+    )(state);
+  },
 
   filtered_farm: applyFilters(
     fallbackDataExtractor("farms"),

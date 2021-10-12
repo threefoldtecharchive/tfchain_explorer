@@ -3,7 +3,7 @@
     <template v-slot:filters>
       <v-chip
         v-for="(filter, idx) in filters"
-        :key="filter.key"
+        :key="getChipKey(filter)"
         class="ma-2"
         v-model="filter.active"
         @click="toggleActive(idx)"
@@ -14,7 +14,7 @@
     </template>
 
     <template v-slot:active-filters>
-      <div v-for="filter in activeFilters" :key="filter.key">
+      <div v-for="filter in activeFilters" :key="getChipKey(filter)">
         <InFilter
           key1="nodes"
           :key2="filter.key"
@@ -198,9 +198,15 @@ export default class Nodes extends Vue {
       key: "uptime",
       label: ["Status", "Offline", "Online"],
     },
+    {
+      type: "in",
+      active: false,
+      key: ["publicConfig", "gw4"],
+      label: "Filter by gateway 4.",
+    },
   ];
 
-  toggleActive(idx: number) {
+  toggleActive(idx: number): void {
     const filter: any = this.filters[idx];
 
     if (filter.active) {
@@ -223,11 +229,19 @@ export default class Nodes extends Vue {
   }
 
   getChipLabel(filter: any): string {
-    let v = filter.key;
+    let v = this.getChipKey(filter);
     if (filter.type === "condition") {
       v = filter.label[0];
     }
     return v.toUpperCase();
+  }
+
+  getChipKey(filter: any): string {
+    let v = filter.key;
+    if (Array.isArray(v)) {
+      v = v[1];
+    }
+    return v;
   }
 }
 </script>

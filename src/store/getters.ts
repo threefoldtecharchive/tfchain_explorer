@@ -1,5 +1,10 @@
 import { GetDataQueryType } from "@/graphql/api";
-import { applyFilters, inFilter, rangeFilter } from "@/utils/filters";
+import {
+  applyFilters,
+  conditionFilter,
+  inFilter,
+  rangeFilter,
+} from "@/utils/filters";
 import { GetterTree } from "vuex";
 import { IState } from "./state";
 
@@ -74,7 +79,8 @@ export default {
     rangeFilter("hru"),
     rangeFilter("mru"),
     rangeFilter("sru"),
-    rangeFilter("cru")
+    rangeFilter("cru"),
+    conditionFilter("uptime")
   ),
 
   filtered_farm: applyFilters(

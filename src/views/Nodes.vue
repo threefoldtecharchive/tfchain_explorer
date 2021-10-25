@@ -9,7 +9,7 @@
         @click="toggleActive(idx)"
         filter
       >
-        {{ filter.key.toUpperCase() }}
+        {{ getChipLabel(filter) }}
       </v-chip>
     </template>
 
@@ -27,16 +27,26 @@
           :key2="filter.key"
           :label="filter.label"
         />
+        <ConditionFilter
+          v-if="filter.type === 'condition'"
+          key1="nodes"
+          :key2="filter.key"
+          :labels="filter.label"
+        />
       </div>
     </template>
 
     <template v-slot:table>
+      <v-row align="center" justify="end">
+        Show Nodes With Gateways Only
+        <v-switch v-model="withGateway" class="ml-4"></v-switch>
+      </v-row>
       <v-data-table
         ref="table"
         :loading="$store.getters.loading"
         loading-text="Loading..."
         :headers="headers"
-        :items="$store.getters.filtered_nodes"
+        :items="getNodes()"
         :items-per-page="10"
         class="elevation-1"
         align
@@ -95,6 +105,7 @@ import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
 import NodesDistribution from "@/components/NodesDistribution.vue";
+import ConditionFilter from "@/components/ConditionFilter.vue";
 
 @Component({
   components: {
@@ -103,9 +114,12 @@ import NodesDistribution from "@/components/NodesDistribution.vue";
     InFilter,
     RangeFilter,
     NodesDistribution,
+    ConditionFilter,
   },
 })
 export default class Nodes extends Vue {
+  withGateway = false;
+
   headers = [
     { text: "ID", value: "nodeId" },
     { text: "Farm ID", value: "farmId", align: "center" },
@@ -184,10 +198,24 @@ export default class Nodes extends Vue {
       label: "sru",
     },
     ...this.activeFilters,
+    {
+      type: "condition",
+      active: false,
+      key: "uptime",
+      label: ["Status", "Offline", "Online"],
+    },
   ];
 
+  getNodes() {
+    const nodes: INode[] = this.$store.getters.filtered_nodes;
+    if (!this.withGateway) {
+      return nodes;
+    }
+    return nodes.filter(({ publicConfigId }) => publicConfigId !== null);
+  }
+
   toggleActive(idx: number) {
-    const filter = this.filters[idx];
+    const filter: any = this.filters[idx];
 
     if (filter.active) {
       this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
@@ -206,6 +234,14 @@ export default class Nodes extends Vue {
 
   closeSheet(): void {
     this.node = null;
+  }
+
+  getChipLabel(filter: any): string {
+    let v = filter.key;
+    if (filter.type === "condition") {
+      v = filter.label[0];
+    }
+    return v.toUpperCase();
   }
 }
 </script>

@@ -79,4 +79,4 @@ tolerations: []
 
 affinity: {}
 
-GQL_URL: https://explorer.devnet.grid.tf/graphql/
+GQL_URL: https://tfchain.dev.threefold.io/graphql/graphql

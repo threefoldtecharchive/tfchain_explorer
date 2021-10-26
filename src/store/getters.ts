@@ -6,7 +6,7 @@ import {
   rangeFilter,
 } from "@/utils/filters";
 import { GetterTree } from "vuex";
-import { IState } from "./state";
+import state, { IState } from "./state";
 
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
@@ -42,6 +42,24 @@ export function fallbackDataExtractor<T = GetDataQueryType, K extends keyof T = 
 export function fallbackDataExtractor(key: any, state?: any) {
   if (state) return state.data?.[key] ?? [];
   return (state: any) => state.data?.[key] ?? [];
+}
+export function getTotalCPUs(state: IState) {
+  const nodes: any | undefined = state.data?.nodes;
+}
+
+export function getStatistics(state: IState) {
+  const nodes = fallbackDataExtractor("nodes")(state);
+  const farms = fallbackDataExtractor('farms')(state);
+  const countries = fallbackDataExtractor("countries")(state);
+  return {
+    nodesNo: nodes.length,
+    farmsNo: farms.length,
+    countriesNo: countries.length,
+    cru: nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString(),
+    hru: nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString(),
+    sru: nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString(),
+    mru: nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString(),
+  }
 }
 
 export default {

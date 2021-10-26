@@ -33,7 +33,43 @@ export const LocationType = gql`
     latitude
   }
 `;
+export interface ICountry {
+  id: string;
+  name: string;
+  code: string;
+  lat: string;
+  long: string;
+  region: string;
+  countryId: number;
+  createdAt: string;
+  createdById: string;
+  deletedAt: string;
+  deletedById: string;
+  subregion: string;
+  updatedById: string;
+  updatedAt: string;
+  version: number;
+}
 
+export const CountryType = gql`
+  fragment CountryType on Country {
+    id
+    name
+    code
+    lat
+    long
+    region
+    countryId
+    createdAt
+    createdById
+    deletedAt
+    deletedById
+    subregion
+    updatedById
+    updatedAt
+    version
+  }
+`;
 export interface INode {
   id: string;
   createdAt: string;
@@ -200,6 +236,7 @@ export interface GetDataQueryType {
   locations: ILocation[];
   twins: ITwin[];
   publicConfigs: IPublicConfig[];
+  countries: ICountry[]
 }
 
 export const getDataQuery = gql`
@@ -207,6 +244,7 @@ export const getDataQuery = gql`
   ${FarmType}
   ${TwinType}
   ${PublicConfigType}
+  ${CountryType}
 
   query getDataQuery {
     nodes {
@@ -220,6 +258,9 @@ export const getDataQuery = gql`
     }
     publicConfigs {
       ...PublicConfigType
+    }
+    countries {
+      ... CountryType
     }
   }
 `;

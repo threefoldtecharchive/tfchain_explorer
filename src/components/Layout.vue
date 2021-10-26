@@ -9,10 +9,9 @@
       <v-col
         :cols="screen_max_1400 ? 12 : 3"
         :order="screen_max_1400 ? 1 : undefined"
+        v-if="!noFilter"
       >
-        <h3>
-          Filters
-        </h3>
+        <h3>Filters</h3>
         <br />
         <v-row>
           <slot name="filters"></slot>
@@ -38,6 +37,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component({})
 export default class Layout extends Vue {
   @Prop({ required: true }) pageName!: string;
+  @Prop({ default: false }) noFilter!: boolean;
 
   private _screen_max_1400?: MediaQueryList;
   screen_max_1400 = false;

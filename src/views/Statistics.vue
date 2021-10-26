@@ -3,42 +3,51 @@
     <v-row>
       <!--Nodes-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#26c6da" dark max-width="300">
-          <v-card-title>
-            <v-icon large center :size="50"> mdi-album </v-icon>
-            <span class="text-h4 font-weight-light">Nodes</span>
+        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+          <v-card-title class="justify-center">
+            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+              {{ statistics.nodesNo }}
+            </div>
           </v-card-title>
-
-          <v-card-text class="text-h5 font-weight-bold text-center">
-            {{ statistics.nodesNo }}
+          <v-card-text
+            class="text-h6 font-weight-bold text-center"
+            style="color: black"
+          >
+            <span class="text-h6">Nodes</span>
           </v-card-text>
         </v-card>
       </v-col>
 
       <!--Farms-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#26c6da" dark max-width="300">
-          <v-card-title>
-            <v-icon large right> mdi-tractor </v-icon>
-            <span class="text-h4 font-weight-light">Farms</span>
+        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+          <v-card-title class="justify-center">
+            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+              {{ statistics.farmsNo }}
+            </div>
           </v-card-title>
-
-          <v-card-text class="text-h5 font-weight-bold text-center">
-            {{ statistics.farmsNo }}
+          <v-card-text
+            class="text-h6 font-weight-bold text-center"
+            style="color: black"
+          >
+            <span class="text-h6">Farms</span>
           </v-card-text>
         </v-card>
       </v-col>
 
       <!--Countries-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#26c6da" dark max-width="300">
-          <v-card-title>
-            <v-icon large right> mdi-earth </v-icon>
-            <span class="text-h4 font-weight-light">Countries</span>
+        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+          <v-card-title class="justify-center" style="color: #1976d2">
+            <div class="text-h2 font-weight-bold">
+              {{ statistics.countriesNo }}
+            </div>
           </v-card-title>
-
-          <v-card-text class="text-h5 font-weight-bold text-center">
-            {{ statistics.countriesNo }}
+          <v-card-text
+            class="text-h6 font-weight-bold text-center"
+            style="color: black"
+          >
+            <span class="text-h6">Countries</span>
           </v-card-text>
         </v-card>
       </v-col>
@@ -47,40 +56,49 @@
     <v-row>
       <!--CPUs-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#26c6da" dark max-width="300">
-          <v-card-title>
-            <v-icon large right> mdi-cpu-64-bit </v-icon>
-            <span class="text-h4 font-weight-light">Total CPUs</span>
+        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+          <v-card-title class="justify-center">
+            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+              {{ statistics.cru }}
+            </div>
           </v-card-title>
-
-          <v-card-text class="text-h5 font-weight-bold text-center">
-            {{ statistics.cru }}
+          <v-card-text
+            class="text-h6 font-weight-bold text-center"
+            style="color: black"
+          >
+            <span class="text-h6">Total CPUs</span>
           </v-card-text>
         </v-card>
       </v-col>
       <!--SSD-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#26c6da" dark max-width="300">
-          <v-card-title>
-            <v-icon large right> mdi-nas </v-icon>
-            <span class="text-h4 font-weight-light">Total SSD</span>
+        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+          <v-card-title class="justify-center">
+            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+              {{ statistics.sru | toTeraOrGiga }}
+            </div>
           </v-card-title>
-
-          <v-card-text class="text-h5 font-weight-bold text-center">
-            {{ statistics.sru | toTeraOrGiga }}
+          <v-card-text
+            class="text-h6 font-weight-bold text-center"
+            style="color: black"
+          >
+            <span class="text-h6">Total SSD</span>
           </v-card-text>
         </v-card>
       </v-col>
       <!--HDD-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#26c6da" dark max-width="300">
-          <v-card-title>
-            <v-icon large right> mdi-harddisk </v-icon>
-            <span class="text-h4 font-weight-light">Total HDD</span>
+        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+          <v-card-title class="justify-center">
+            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+              {{ statistics.hru | toTeraOrGiga }}
+            </div>
           </v-card-title>
-
-          <v-card-text class="text-h5 font-weight-bold text-center">
-            {{ statistics.hru | toTeraOrGiga }}
+          <v-card-text
+            class="text-h6 font-weight-bold text-center"
+            style="color: black"
+          >
+            <span class="text-h6">Total HDD</span>
           </v-card-text>
         </v-card>
       </v-col>
@@ -89,14 +107,17 @@
     <v-row>
       <!--RAM-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#26c6da" dark max-width="300">
-          <v-card-title>
-            <v-icon large right> mdi-memory </v-icon>
-            <span class="text-h4 font-weight-light">Total RAM</span>
+        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+          <v-card-title class="justify-center">
+            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+              {{ statistics.mru | toTeraOrGiga }}
+            </div>
           </v-card-title>
-
-          <v-card-text class="text-h5 font-weight-bold text-center">
-            {{ statistics.mru | toTeraOrGiga }}
+          <v-card-text
+            class="text-h6 font-weight-bold text-center"
+            style="color: black"
+          >
+            <span class="text-h6">Total RAM</span>
           </v-card-text>
         </v-card>
       </v-col>

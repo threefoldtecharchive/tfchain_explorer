@@ -1,53 +1,73 @@
+<style scoped>
+.text-white {
+  color: #ffffff;
+}
+.icon-card-size {
+  font-size: 40px;
+}
+</style>
 <template>
   <Layout pageName="Statstics" v-if="statistics" :noFilter="true">
     <v-row>
       <!--Nodes-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
           <v-card-title class="justify-center">
-            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+            <div class="text-h3 font-weight-bold _text-blue">
               {{ statistics.nodesNo }}
             </div>
           </v-card-title>
-          <v-card-text
-            class="text-h6 font-weight-bold text-center"
-            style="color: black"
-          >
-            <span class="text-h6">Nodes</span>
+          <v-card-text class="text-h6 font-weight-bold text-center">
+            <div class="d-flex justify-center">
+              <div>
+                <v-icon class="icon-card-size"> mdi-album </v-icon>
+              </div>
+              <div class="d-flex align-center">
+                <span class="text-h4 text-white">Nodes</span>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
 
       <!--Farms-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
           <v-card-title class="justify-center">
-            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+            <div class="text-h3 font-weight-bold">
               {{ statistics.farmsNo }}
             </div>
           </v-card-title>
-          <v-card-text
-            class="text-h6 font-weight-bold text-center"
-            style="color: black"
-          >
-            <span class="text-h6">Farms</span>
+          <v-card-text class="text-h6 font-weight-bold text-center">
+            <div class="d-flex justify-center">
+              <div>
+                <v-icon class="icon-card-size"> mdi-tractor </v-icon>
+              </div>
+              <div class="d-flex align-center">
+                <span class="text-h4 text-white">Farms</span>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
 
       <!--Countries-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
-          <v-card-title class="justify-center" style="color: #1976d2">
-            <div class="text-h2 font-weight-bold">
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
+          <v-card-title class="justify-center">
+            <div class="text-h3 font-weight-bold">
               {{ statistics.countriesNo }}
             </div>
           </v-card-title>
-          <v-card-text
-            class="text-h6 font-weight-bold text-center"
-            style="color: black"
-          >
-            <span class="text-h6">Countries</span>
+          <v-card-text class="text-h6 font-weight-bold text-center">
+            <div class="d-flex justify-center">
+              <div>
+                <v-icon class="icon-card-size"> mdi-earth </v-icon>
+              </div>
+              <div class="d-flex align-center">
+                <span class="text-h4 text-white">Countries</span>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -56,49 +76,61 @@
     <v-row>
       <!--CPUs-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
           <v-card-title class="justify-center">
-            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+            <div class="text-h3 font-weight-bold">
               {{ statistics.cru }}
             </div>
           </v-card-title>
-          <v-card-text
-            class="text-h6 font-weight-bold text-center"
-            style="color: black"
-          >
-            <span class="text-h6">Total CPUs</span>
+          <v-card-text class="text-h6 font-weight-bold text-center">
+            <div class="d-flex justify-center">
+              <div>
+                <v-icon class="icon-card-size"> mdi-cpu-64-bit </v-icon>
+              </div>
+              <div class="d-flex align-center">
+                <span class="text-h4 text-white">Total CPUs</span>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
       <!--SSD-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
           <v-card-title class="justify-center">
-            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+            <div class="text-h3 font-weight-bold">
               {{ statistics.sru | toTeraOrGiga }}
             </div>
           </v-card-title>
-          <v-card-text
-            class="text-h6 font-weight-bold text-center"
-            style="color: black"
-          >
-            <span class="text-h6">Total SSD</span>
+          <v-card-text class="text-h6 font-weight-bold text-center">
+            <div class="d-flex justify-center">
+              <div>
+                <v-icon class="icon-card-size"> mdi-nas </v-icon>
+              </div>
+              <div class="d-flex align-center">
+                <span class="text-h4 text-white">Total SSD</span>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
       <!--HDD-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
           <v-card-title class="justify-center">
-            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+            <div class="text-h3 font-weight-bold">
               {{ statistics.hru | toTeraOrGiga }}
             </div>
           </v-card-title>
-          <v-card-text
-            class="text-h6 font-weight-bold text-center"
-            style="color: black"
-          >
-            <span class="text-h6">Total HDD</span>
+          <v-card-text class="text-h6 font-weight-bold text-center">
+            <div class="d-flex justify-center">
+              <div>
+                <v-icon class="icon-card-size"> mdi-harddisk </v-icon>
+              </div>
+              <div class="d-flex align-center">
+                <span class="text-h4 text-white">Total HDD</span>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -107,17 +139,21 @@
     <v-row>
       <!--RAM-->
       <v-col>
-        <v-card class="mx-auto ma-3" color="#ffffff" max-width="400">
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
           <v-card-title class="justify-center">
-            <div class="text-h2 font-weight-bold" style="color: #1976d2">
+            <div class="text-h3 font-weight-bold">
               {{ statistics.mru | toTeraOrGiga }}
             </div>
           </v-card-title>
-          <v-card-text
-            class="text-h6 font-weight-bold text-center"
-            style="color: black"
-          >
-            <span class="text-h6">Total RAM</span>
+          <v-card-text class="text-h6 font-weight-bold text-center">
+            <div class="d-flex justify-center">
+              <div>
+                <v-icon class="icon-card-size"> mdi-memory </v-icon>
+              </div>
+              <div class="d-flex align-center">
+                <span class="text-h4 text-white">Total RAM</span>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>

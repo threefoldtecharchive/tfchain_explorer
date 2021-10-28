@@ -84,7 +84,7 @@ export function getStatistics(state: IState): IStatistics[] {
   const sru = nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString();
   const mru = nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString();
   return [
-    { "id": 0, "data": nodes.length, "title": "Nodes", "icon": "mdi-album" },
+    { "id": 0, "data": nodes.length, "title": "Nodes", "icon": "mdi-laptop" },
     { "id": 1, "data": farms.length, "title": "Farms", "icon": "mdi-tractor" },
     { "id": 2, "data": countries.length, "title": "Countries", "icon": "mdi-earth" },
     { "id": 3, "data": cru, "title": "Total CPUs", "icon": "mdi-cpu-64-bit" },
@@ -92,7 +92,7 @@ export function getStatistics(state: IState): IStatistics[] {
     { "id": 5, "data": toTeraOrGiga(hru), "title": "Total HDD", "icon": "mdi-harddisk" },
     { "id": 6, "data": toTeraOrGiga(mru), "title": "Total RAM", "icon": "mdi-memory" },
     { "id": 7, "data": onlineGateways, "title": "Gateways", "icon": "mdi-gate" },
-    { "id": 8, "data": twinsNo, "title": "Twins", "icon": "mdi-chevron-up-circle-outline" },
+    { "id": 8, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
   ]
 }
 

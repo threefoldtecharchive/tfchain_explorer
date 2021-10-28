@@ -3,32 +3,45 @@
   color: #ffffff;
 }
 .icon-card-size {
-  font-size: 60px;
+  font-size: 80px;
 }
 </style>
 <template>
   <Layout pageName="Statstics" v-if="statistics" :noFilter="true">
     <v-row>
-      <!--Nodes-->
       <v-col
         v-for="item in statistics"
         :key="item.id"
         class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12"
       >
-        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
-          <v-card-title class="justify-center">
-            <div class="d-flex flex-no-wrap justify-space-between">
-              <v-icon class="icon-card-size"> {{ item.icon }} </v-icon>
-              <div class="px-4">
-                <div class="text-h3 font-weight-bold">
-                  {{ item.data }}
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="440" dark>
+          <div>
+            <v-row class="ml-6">
+              <!--Icon-->
+              <v-col
+                class="d-flex col-xl-3 col-lg-3 col justify-center align-center"
+              >
+                <div class="">
+                  <v-icon class="icon-card-size">
+                    {{ item.icon }}
+                  </v-icon>
                 </div>
-                <div class="d-flex align-center">
-                  <span class="text-h4 text-white">{{ item.title }}</span>
+              </v-col>
+              <!--Data-Title-->
+              <v-col class="col-xl-9 col-lg-9">
+                <div class="pl-6 ml-4">
+                  <!--Data-->
+                  <div class="text-h3 font-weight-bold">
+                    {{ item.data }}
+                  </div>
+                  <!--Title-->
+                  <div class="d-flex align-center">
+                    <span class="text-h4 text-white">{{ item.title }}</span>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </v-card-title>
+              </v-col>
+            </v-row>
+          </div>
         </v-card>
       </v-col>
     </v-row>

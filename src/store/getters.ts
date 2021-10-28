@@ -68,13 +68,13 @@ export function getStatistics(state: IState) {
   const farms = fallbackDataExtractor('farms')(state);
   const countries = fallbackDataExtractor("countries")(state);
   const gateways = fallbackDataExtractor("publicConfigs")(state);
-  console.log("all gateways", gateways)
+  const twins = fallbackDataExtractor("twins")(state);
   const onlineGateways = getGatewaysCount(gateways)
-  console.log("online_gateways", onlineGateways)
   return {
     nodesNo: nodes.length,
     farmsNo: farms.length,
     countriesNo: countries.length,
+    twinsNo: twins.length,
     cru: nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString(),
     hru: nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString(),
     sru: nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString(),

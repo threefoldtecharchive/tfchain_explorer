@@ -178,6 +178,28 @@
           </v-card-text>
         </v-card>
       </v-col>
+      <!--TWINS-->
+      <v-col>
+        <v-card class="mx-auto ma-3" color="#2196f3" max-width="400" dark>
+          <v-card-title class="justify-center">
+            <div class="text-h3 font-weight-bold">
+              {{ statistics.twinsNo }}
+            </div>
+          </v-card-title>
+          <v-card-text class="text-h6 font-weight-bold text-center">
+            <div class="d-flex justify-center">
+              <div>
+                <v-icon class="icon-card-size">
+                  mdi-chevron-up-circle-outline
+                </v-icon>
+              </div>
+              <div class="d-flex align-center">
+                <span class="text-h4 text-white">Twins</span>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
     </v-row>
   </Layout>
 </template>

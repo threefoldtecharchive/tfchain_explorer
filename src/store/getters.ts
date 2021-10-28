@@ -7,6 +7,7 @@ import {
 } from "@/utils/filters";
 import { GetterTree } from "vuex";
 import state, { IState } from "./state";
+import toTeraOrGiga from '../filters/toTeraOrGiga'
 
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
@@ -63,24 +64,36 @@ function getGatewaysCount(gateways: any[]) {
   });
   return gatewaysCounter
 }
-export function getStatistics(state: IState) {
+
+export interface IStatistics {
+  id: number;
+  data: number | string;
+  title: string;
+  icon: string;
+}
+export function getStatistics(state: IState): IStatistics[] {
   const nodes = fallbackDataExtractor("nodes")(state);
   const farms = fallbackDataExtractor('farms')(state);
   const countries = fallbackDataExtractor("countries")(state);
   const gateways = fallbackDataExtractor("publicConfigs")(state);
   const twins = fallbackDataExtractor("twins")(state);
+  const twinsNo = twins.length
   const onlineGateways = getGatewaysCount(gateways)
-  return {
-    nodesNo: nodes.length,
-    farmsNo: farms.length,
-    countriesNo: countries.length,
-    twinsNo: twins.length,
-    cru: nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString(),
-    hru: nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString(),
-    sru: nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString(),
-    mru: nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString(),
-    onlineGateways: onlineGateways
-  }
+  const cru = nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString();
+  const hru = nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString();
+  const sru = nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString();
+  const mru = nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString();
+  return [
+    { "id": 0, "data": nodes.length, "title": "Nodes", "icon": "mdi-album" },
+    { "id": 1, "data": farms.length, "title": "Farms", "icon": "mdi-tractor" },
+    { "id": 2, "data": countries.length, "title": "Countries", "icon": "mdi-earth" },
+    { "id": 3, "data": cru, "title": "Total CPUs", "icon": "mdi-cpu-64-bit" },
+    { "id": 4, "data": toTeraOrGiga(sru), "title": "Total SSD", "icon": "mdi-nas" },
+    { "id": 5, "data": toTeraOrGiga(hru), "title": "Total HDD", "icon": "mdi-harddisk" },
+    { "id": 6, "data": toTeraOrGiga(mru), "title": "Total RAM", "icon": "mdi-memory" },
+    { "id": 7, "data": onlineGateways, "title": "Gateways", "icon": "mdi-gate" },
+    { "id": 8, "data": twinsNo, "title": "Twins", "icon": "mdi-chevron-up-circle-outline" },
+  ]
 }
 
 export default {

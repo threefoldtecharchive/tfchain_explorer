@@ -47,10 +47,30 @@ export function getTotalCPUs(state: IState) {
   const nodes: any | undefined = state.data?.nodes;
 }
 
+function isPrivateIP(ip: string) {
+  const parts = ip.split('.');
+  return parts[0] === '10' ||
+    (parts[0] === '172' && (parseInt(parts[1], 10) >= 16 && parseInt(parts[1], 10) <= 31)) ||
+    (parts[0] === '192' && parts[1] === '168');
+}
+
+function getGatewaysCount(gateways: any[]) {
+  let gatewaysCounter = 0;
+  gateways.forEach((gateway) => {
+    if (gateway.ipv4 && !isPrivateIP(gateway.ipv4)) {
+      gatewaysCounter += 1
+    }
+  });
+  return gatewaysCounter
+}
 export function getStatistics(state: IState) {
   const nodes = fallbackDataExtractor("nodes")(state);
   const farms = fallbackDataExtractor('farms')(state);
   const countries = fallbackDataExtractor("countries")(state);
+  const gateways = fallbackDataExtractor("publicConfigs")(state);
+  console.log("all gateways", gateways)
+  const onlineGateways = getGatewaysCount(gateways)
+  console.log("online_gateways", onlineGateways)
   return {
     nodesNo: nodes.length,
     farmsNo: farms.length,
@@ -59,6 +79,7 @@ export function getStatistics(state: IState) {
     hru: nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString(),
     sru: nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString(),
     mru: nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString(),
+    onlineGateways: onlineGateways
   }
 }
 

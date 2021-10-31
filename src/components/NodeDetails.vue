@@ -7,7 +7,7 @@
         <v-icon size="40" class="mr-2">mdi-resistor-nodes</v-icon>
       </v-list-item-icon>
       <v-list-item-content>
-        <v-list-item-title style="font-size: 30px;">
+        <v-list-item-title style="font-size: 30px">
           Node Details
         </v-list-item-title>
       </v-list-item-content>
@@ -20,9 +20,7 @@
         <v-list>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                ID
-              </v-list-item-title>
+              <v-list-item-title> ID </v-list-item-title>
             </v-list-item-content>
             {{ node.nodeId }}
           </v-list-item>
@@ -30,9 +28,7 @@
 
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                Farm ID
-              </v-list-item-title>
+              <v-list-item-title> Farm ID </v-list-item-title>
             </v-list-item-content>
             {{ node.farmId }}
           </v-list-item>
@@ -40,9 +36,7 @@
 
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                Grid Version
-              </v-list-item-title>
+              <v-list-item-title> Grid Version </v-list-item-title>
             </v-list-item-content>
             {{ node.gridVersion }}
           </v-list-item>
@@ -50,9 +44,7 @@
 
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                Uptime
-              </v-list-item-title>
+              <v-list-item-title> Uptime </v-list-item-title>
             </v-list-item-content>
             {{ node.uptime | secondToRedable }}
           </v-list-item>
@@ -60,9 +52,7 @@
 
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                CPU Resource Unit
-              </v-list-item-title>
+              <v-list-item-title> CPU Resource Unit </v-list-item-title>
             </v-list-item-content>
             {{ node.cru }} CPU
           </v-list-item>
@@ -70,39 +60,31 @@
 
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                Disk Resource Unit (HDD)
-              </v-list-item-title>
+              <v-list-item-title> Disk Resource Unit (HDD) </v-list-item-title>
             </v-list-item-content>
-            {{ node.hru | toTeraOrGiga }}
+            {{ node.hru | toTeraOrGigaOrPeta }}
           </v-list-item>
           <v-divider />
 
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                Disk Resource Unit (SSD)
-              </v-list-item-title>
+              <v-list-item-title> Disk Resource Unit (SSD) </v-list-item-title>
             </v-list-item-content>
-            {{ node.sru | toTeraOrGiga }}
+            {{ node.sru | toTeraOrGigaOrPeta }}
           </v-list-item>
           <v-divider />
 
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                Memory Resource Unit
-              </v-list-item-title>
+              <v-list-item-title> Memory Resource Unit </v-list-item-title>
             </v-list-item-content>
-            {{ node.mru | toTeraOrGiga }}
+            {{ node.mru | toTeraOrGigaOrPeta }}
           </v-list-item>
           <v-divider />
 
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>
-                Created
-              </v-list-item-title>
+              <v-list-item-title> Created </v-list-item-title>
             </v-list-item-content>
             {{ node.created | date }}
           </v-list-item>

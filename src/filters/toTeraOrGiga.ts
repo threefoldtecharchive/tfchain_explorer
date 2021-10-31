@@ -10,5 +10,10 @@ export default function toTeraOrGiga(value?: string) {
 
   gb /= 10;
   gb = Math.round(gb) / 1e2;
-  return `${gb} TB`;
+
+  if (gb < 1000) return `${gb} TB`;
+
+  gb /= 10;
+  gb = Math.round(gb) / 1e2;
+  return `${gb} PB`;
 }

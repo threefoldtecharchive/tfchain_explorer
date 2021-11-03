@@ -8,14 +8,14 @@ import apolloProvider from "@/plugins/apollo";
 import dateFiler from "@/filters/date";
 import optionTitleFiler from "@/filters/optionTitle";
 import store from "./store";
-import toTeraOrGiga from "./filters/toTeraOrGiga";
+import toTeraOrGigaOrPeta from "./filters/toTeraOrGigaOrPeta";
 import secondToRedable from "./filters/secondToRedable";
 
 Vue.config.productionTip = false;
 Vue.use(VueApollo);
 Vue.filter("date", dateFiler);
 Vue.filter("optionTitle", optionTitleFiler);
-Vue.filter("toTeraOrGiga", toTeraOrGiga);
+Vue.filter("toTeraOrGigaOrPeta", toTeraOrGigaOrPeta);
 Vue.filter("secondToRedable", secondToRedable);
 
 new Vue({

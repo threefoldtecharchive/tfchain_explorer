@@ -60,15 +60,15 @@
         </template>
 
         <template v-slot:[`item.hru`]="{ item }">
-          {{ item.hru | toTeraOrGiga }}
+          {{ item.hru | toTeraOrGigaOrPeta }}
         </template>
 
         <template v-slot:[`item.sru`]="{ item }">
-          {{ item.sru | toTeraOrGiga }}
+          {{ item.sru | toTeraOrGigaOrPeta }}
         </template>
 
         <template v-slot:[`item.mru`]="{ item }">
-          {{ item.mru | toTeraOrGiga }}
+          {{ item.mru | toTeraOrGigaOrPeta }}
         </template>
 
         <template v-slot:[`item.uptime`]="{ item }">

@@ -6,7 +6,8 @@ import {
   rangeFilter,
 } from "@/utils/filters";
 import { GetterTree } from "vuex";
-import { IState } from "./state";
+import state, { IState } from "./state";
+import toTeraOrGiga from '../filters/toTeraOrGiga'
 
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
@@ -42,6 +43,57 @@ export function fallbackDataExtractor<T = GetDataQueryType, K extends keyof T = 
 export function fallbackDataExtractor(key: any, state?: any) {
   if (state) return state.data?.[key] ?? [];
   return (state: any) => state.data?.[key] ?? [];
+}
+export function getTotalCPUs(state: IState) {
+  const nodes: any | undefined = state.data?.nodes;
+}
+
+function isPrivateIP(ip: string) {
+  const parts = ip.split('.');
+  return parts[0] === '10' ||
+    (parts[0] === '172' && (parseInt(parts[1], 10) >= 16 && parseInt(parts[1], 10) <= 31)) ||
+    (parts[0] === '192' && parts[1] === '168');
+}
+
+function getGatewaysCount(gateways: any[]) {
+  let gatewaysCounter = 0;
+  gateways.forEach((gateway) => {
+    if (gateway.ipv4 && !isPrivateIP(gateway.ipv4)) {
+      gatewaysCounter += 1
+    }
+  });
+  return gatewaysCounter
+}
+
+export interface IStatistics {
+  id: number;
+  data: number | string;
+  title: string;
+  icon: string;
+}
+export function getStatistics(state: IState): IStatistics[] {
+  const nodes = fallbackDataExtractor("nodes")(state);
+  const farms = fallbackDataExtractor('farms')(state);
+  const countries = fallbackDataExtractor("countries")(state);
+  const gateways = fallbackDataExtractor("publicConfigs")(state);
+  const twins = fallbackDataExtractor("twins")(state);
+  const twinsNo = twins.length
+  const onlineGateways = getGatewaysCount(gateways)
+  const cru = nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString();
+  const hru = nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString();
+  const sru = nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString();
+  const mru = nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString();
+  return [
+    { "id": 0, "data": nodes.length, "title": "Nodes", "icon": "mdi-laptop" },
+    { "id": 1, "data": farms.length, "title": "Farms", "icon": "mdi-tractor" },
+    { "id": 2, "data": countries.length, "title": "Countries", "icon": "mdi-earth" },
+    { "id": 3, "data": cru, "title": "Total CPUs", "icon": "mdi-cpu-64-bit" },
+    { "id": 4, "data": toTeraOrGiga(sru), "title": "Total SSD", "icon": "mdi-nas" },
+    { "id": 5, "data": toTeraOrGiga(hru), "title": "Total HDD", "icon": "mdi-harddisk" },
+    { "id": 6, "data": toTeraOrGiga(mru), "title": "Total RAM", "icon": "mdi-memory" },
+    { "id": 7, "data": onlineGateways, "title": "Gateways", "icon": "mdi-gate" },
+    { "id": 8, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
+  ]
 }
 
 export default {

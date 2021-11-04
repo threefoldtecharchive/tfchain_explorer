@@ -93,3 +93,20 @@ $ helm install --set ingress.host=dashboard.com --set GQL_URL=https://tfchain.de
 ![image](https://user-images.githubusercontent.com/64129/130027811-4cf6dc1b-a65f-40fc-a101-801e137248fb.png)
 
 ![image](https://user-images.githubusercontent.com/64129/130027767-3bd54133-5a8b-4fa6-a0a9-818c305c2ecd.png)
+
+
+## Available explorers
+- [Devnet explorer](https://explorer.tfchain.dev.threefold.io)
+- [Testnet explorer](https://explorer.tfchain.test.threefold.io)
+- [Mainnet explorer -not live yet-](https://explorer.tfchain.threefold.io)
+
+> TODO: keep it in todo until all are alive
+
+## GraphQL
+Info on TFChain is indexed over GraphQL and is available for queries. 
+- [Devnet GraphQL](https://tfchain.dev.threefold.io/graphql/graphql)
+- [Testnet GraphQL](https://tfchain.test.threefold.io/graphql/graphql)
+- Mainnet GraphQL - not yet live
+
+
+Manual link: https://library.threefold.me/info/threefold#/manual_tfgrid3/threefold__grid3_explorer

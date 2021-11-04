@@ -14,7 +14,7 @@ interface IRangeFilter {
   };
 }
 // prettier-ignore
-const createRangeFilter = () => ({ enabled: false, value: { min: 0, max: Number.MAX_SAFE_INTEGER} });
+const createRangeFilter = () => ({ enabled: false, value: { min: 0, max: Number.MAX_SAFE_INTEGER } });
 
 interface IConditionFilter {
   enabled: boolean;
@@ -32,7 +32,7 @@ export interface IState {
       createdById: IInFilter;
       farmId: IInFilter;
       twinId: IInFilter;
-      locationId: IInFilter;
+      country: IInFilter;
       farmingPolicyId: IInFilter;
       hru: IRangeFilter;
       cru: IRangeFilter;
@@ -59,7 +59,7 @@ export default {
       createdById: createInFilter(),
       farmId: createInFilter(),
       twinId: createInFilter(),
-      locationId: createInFilter(),
+      country: createInFilter(),
       farmingPolicyId: createInFilter(),
       hru: createRangeFilter(),
       cru: createRangeFilter(),

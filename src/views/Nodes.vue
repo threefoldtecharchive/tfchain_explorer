@@ -182,8 +182,8 @@ export default class Nodes extends Vue {
     {
       type: "in",
       active: false,
-      key: "locationId",
-      label: "Filter by location id.",
+      key: "country",
+      label: "Filter by country.",
     },
     {
       type: "in",

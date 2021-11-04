@@ -7,7 +7,7 @@ import {
 } from "@/utils/filters";
 import { GetterTree } from "vuex";
 import state, { IState } from "./state";
-import toTeraOrGiga from '../filters/toTeraOrGiga'
+import toTeraOrGiga from '../filters/toTeraOrGigaOrPeta'
 
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore

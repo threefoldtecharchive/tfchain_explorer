@@ -70,6 +70,13 @@ export const CountryType = gql`
     version
   }
 `;
+
+export interface Interfaces {
+  name: string;
+  mac: string;
+  ips: string;
+  id: string;
+}
 export interface INode {
   id: string;
   createdAt: string;
@@ -95,6 +102,7 @@ export interface INode {
   location: Location;
   country?: string;
   city?: string;
+  interfaces: Interfaces[];
 }
 
 export const NodeType = gql`
@@ -127,6 +135,12 @@ export const NodeType = gql`
     }
     country
     city
+    interfaces{
+      ips
+      mac
+      name
+      id
+    }
   }
 `;
 

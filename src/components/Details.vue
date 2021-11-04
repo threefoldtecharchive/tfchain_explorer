@@ -6,7 +6,7 @@
     @click:outside="$emit('close-sheet')"
   >
     <v-sheet class="text-center" height="90vh">
-      <div class="content ">
+      <div class="content">
         <v-row>
           <v-col
             :cols="
@@ -65,6 +65,15 @@
           >
             <LocationDetails :country="country" :location="location" />
           </v-col>
+
+          <v-col
+            :cols="
+              screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
+            "
+            v-if="node && node.interfaces"
+          >
+            <InterfacesDetails :interfaces="node.interfaces" />
+          </v-col>
         </v-row>
       </div>
     </v-sheet>
@@ -80,6 +89,7 @@ import FarmDetails from "./FarmDetails.vue";
 import LocationDetails from "./LocationDetails.vue";
 import TwinDetails from "./TwinDetails.vue";
 import PublicConfigDetails from "./PublicConfigDetails.vue";
+import InterfacesDetails from "./InterfacesDetails.vue";
 import mediaMatcher from "@/utils/mediaMatcher";
 
 @Component({
@@ -90,6 +100,7 @@ import mediaMatcher from "@/utils/mediaMatcher";
     LocationDetails,
     TwinDetails,
     PublicConfigDetails,
+    InterfacesDetails,
   },
 })
 export default class Details extends Vue {

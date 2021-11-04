@@ -36,6 +36,14 @@
 
           <v-list-item>
             <v-list-item-content>
+              <v-list-item-title> Farming Policy ID </v-list-item-title>
+            </v-list-item-content>
+            {{ node.farmingPolicyId }}
+          </v-list-item>
+          <v-divider />
+
+          <v-list-item>
+            <v-list-item-content>
               <v-list-item-title> Grid Version </v-list-item-title>
             </v-list-item-content>
             {{ node.gridVersion }}

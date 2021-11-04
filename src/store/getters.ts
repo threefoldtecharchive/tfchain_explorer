@@ -126,7 +126,7 @@ export default {
     inFilter("createdById"),
     inFilter("farmId"),
     inFilter("twinId"),
-    inFilter("locationId"),
+    inFilter("country"),
     inFilter("farmingPolicyId"),
     rangeFilter("hru"),
     rangeFilter("mru"),

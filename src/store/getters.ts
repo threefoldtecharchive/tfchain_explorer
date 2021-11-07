@@ -7,7 +7,7 @@ import {
 } from "@/utils/filters";
 import { GetterTree } from "vuex";
 import state, { IState } from "./state";
-import toTeraOrGiga from '../filters/toTeraOrGigaOrPeta'
+import toTeraOrGigaOrPeta from '../filters/toTeraOrGigaOrPeta'
 
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
@@ -55,10 +55,10 @@ function isPrivateIP(ip: string) {
     (parts[0] === '192' && parts[1] === '168');
 }
 
-function getGatewaysCount(gateways: any[]) {
+function getAccessNodesCount(accessNodes: any[]) {
   let gatewaysCounter = 0;
-  gateways.forEach((gateway) => {
-    if (gateway.ipv4 && !isPrivateIP(gateway.ipv4)) {
+  accessNodes.forEach((accessNode) => {
+    if (accessNode.ipv4 && !isPrivateIP(accessNode.ipv4)) {
       gatewaysCounter += 1
     }
   });
@@ -78,7 +78,7 @@ export function getStatistics(state: IState): IStatistics[] {
   const gateways = fallbackDataExtractor("publicConfigs")(state);
   const twins = fallbackDataExtractor("twins")(state);
   const twinsNo = twins.length
-  const onlineGateways = getGatewaysCount(gateways)
+  const accessNodes = getAccessNodesCount(gateways)
   const cru = nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString();
   const hru = nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString();
   const sru = nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString();
@@ -88,10 +88,10 @@ export function getStatistics(state: IState): IStatistics[] {
     { "id": 1, "data": farms.length, "title": "Farms", "icon": "mdi-tractor" },
     { "id": 2, "data": countries.length, "title": "Countries", "icon": "mdi-earth" },
     { "id": 3, "data": cru, "title": "Total CPUs", "icon": "mdi-cpu-64-bit" },
-    { "id": 4, "data": toTeraOrGiga(sru), "title": "Total SSD", "icon": "mdi-nas" },
-    { "id": 5, "data": toTeraOrGiga(hru), "title": "Total HDD", "icon": "mdi-harddisk" },
-    { "id": 6, "data": toTeraOrGiga(mru), "title": "Total RAM", "icon": "mdi-memory" },
-    { "id": 7, "data": onlineGateways, "title": "Gateways", "icon": "mdi-gate" },
+    { "id": 4, "data": toTeraOrGigaOrPeta(sru), "title": "Total SSD", "icon": "mdi-nas" },
+    { "id": 5, "data": toTeraOrGigaOrPeta(hru), "title": "Total HDD", "icon": "mdi-harddisk" },
+    { "id": 6, "data": toTeraOrGigaOrPeta(mru), "title": "Total RAM", "icon": "mdi-memory" },
+    { "id": 7, "data": accessNodes, "title": "Access Nodes", "icon": "mdi-gate" },
     { "id": 8, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
   ]
 }

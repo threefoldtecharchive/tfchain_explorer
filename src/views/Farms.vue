@@ -35,10 +35,6 @@
         align
         @click:row="openSheet"
       >
-        <template v-slot:[`item.gridVersion`]="{ item }">
-          v{{ item.gridVersion }}.0
-        </template>
-
         <template v-slot:[`item.certificationType`]="{ item }">
           <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
             {{ item.certificationType }}
@@ -86,7 +82,6 @@ export default class Farms extends Vue {
   headers = [
     { text: "ID", value: "farmId" },
     { text: "NAME", value: "name" },
-    { text: "GRID VERSION", value: "gridVersion", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
     { text: "PRICING POLICY ID", value: "pricingPolicyId", align: "center" },
   ];

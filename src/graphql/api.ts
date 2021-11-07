@@ -143,7 +143,13 @@ export const NodeType = gql`
     }
   }
 `;
-
+export interface IPublicIPs {
+  id: string;
+  gateway: string;
+  farmId: string;
+  contractId: number;
+  ip: string
+}
 export interface IFarm {
   id: string;
   createdAt: string;
@@ -159,6 +165,7 @@ export interface IFarm {
   twinId: number;
   pricingPolicyId: number;
   certificationType: "Diy" | "Certified";
+  publicIPs: IPublicIPs[];
 }
 
 export const FarmType = gql`
@@ -177,6 +184,13 @@ export const FarmType = gql`
     twinId
     pricingPolicyId
     certificationType
+    publicIPs{
+      id
+      gateway
+      farmId
+      contractId
+      ip
+    }
   }
 `;
 
@@ -250,7 +264,7 @@ export interface GetDataQueryType {
   locations: ILocation[];
   twins: ITwin[];
   publicConfigs: IPublicConfig[];
-  countries: ICountry[]
+  countries: ICountry[];
 }
 
 export const getDataQuery = gql`

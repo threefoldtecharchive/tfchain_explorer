@@ -93,6 +93,7 @@ export function getStatistics(state: IState): IStatistics[] {
   const hru = nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString();
   const sru = nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString();
   const mru = nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString();
+  const publicIPsNo = farms.reduce((total, next) => total + BigInt(next.publicIPs.length ?? 0), BigInt(0)).toString();
   return [
     { "id": 0, "data": nodes.length, "title": "Nodes", "icon": "mdi-laptop" },
     { "id": 1, "data": farms.length, "title": "Farms", "icon": "mdi-tractor" },
@@ -104,6 +105,7 @@ export function getStatistics(state: IState): IStatistics[] {
     { "id": 7, "data": accessNodes, "title": "Access Nodes", "icon": "mdi-gate" },
     { "id": 8, "data": gateways, "title": "Gateways", "icon": "mdi-boom-gate-outline" },
     { "id": 9, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
+    { "id": 10, "data": publicIPsNo, "title": "Public IPs", "icon": "mdi-brain" },
   ]
 }
 

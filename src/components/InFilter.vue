@@ -30,6 +30,7 @@
 import { MutationTypes } from "@/store/mutations";
 import { IState } from "@/store/state";
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { byInternet, byCountry } from "country-code-lookup";
 
 @Component({})
 export default class InFilter extends Vue {
@@ -42,14 +43,43 @@ export default class InFilter extends Vue {
     if (this.value) {
       return this.value;
     }
+    //In case of country filter: Get the country name from the country Code in case of country filter
+    if (this.key2 == "country") {
+      return this.$store.getters[this.key1].map(
+        (e: any) => byInternet(e[this.key2])?.country
+      );
+    }
     return this.$store.getters[this.key1].map((e: any) => e[this.key2]);
   }
 
   get items(): string[] {
+    if (this.key2 == "country") {
+      let res: any[] = [];
+      let values = this.$store.getters.getFilter(this.key1, this.key2).value;
+      values.forEach((val: any) => {
+        try {
+          res.push(byInternet(val)?.country);
+        } catch (err) {
+          console.log("Error while getting the country name", err);
+        }
+      });
+      return res;
+    }
     return this.$store.getters.getFilter(this.key1, this.key2).value;
   }
 
   set items(value: string[]) {
+    if (this.key2 == "country") {
+      let res: any[] = [];
+      value.forEach((val) => {
+        try {
+          res.push(byCountry(val)?.internet);
+        } catch (err) {
+          console.log("Error while getting the country name", err);
+        }
+      });
+      value = res;
+    }
     this.$store.commit(MutationTypes.SET_FILTER_VALUE, {
       key1: this.key1,
       key2: this.key2,

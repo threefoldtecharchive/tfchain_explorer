@@ -56,9 +56,18 @@ function isPrivateIP(ip: string) {
 }
 
 function getAccessNodesCount(accessNodes: any[]) {
-  let gatewaysCounter = 0;
+  let accessNodeCounter = 0;
   accessNodes.forEach((accessNode) => {
     if (accessNode.ipv4 && !isPrivateIP(accessNode.ipv4)) {
+      accessNodeCounter += 1
+    }
+  });
+  return accessNodeCounter
+}
+function getGatewaysCount(gateways: any[]) {
+  let gatewaysCounter = 0;
+  gateways.forEach((gateway) => {
+    if (gateway.ipv4 && !isPrivateIP(gateway.ipv4) && gateway.domain) {
       gatewaysCounter += 1
     }
   });
@@ -75,10 +84,11 @@ export function getStatistics(state: IState): IStatistics[] {
   const nodes = fallbackDataExtractor("nodes")(state);
   const farms = fallbackDataExtractor('farms')(state);
   const countries = fallbackDataExtractor("countries")(state);
-  const gateways = fallbackDataExtractor("publicConfigs")(state);
+  const publicConfigs = fallbackDataExtractor("publicConfigs")(state);
   const twins = fallbackDataExtractor("twins")(state);
   const twinsNo = twins.length
-  const accessNodes = getAccessNodesCount(gateways)
+  const accessNodes = getAccessNodesCount(publicConfigs)
+  const gateways = getGatewaysCount(publicConfigs)
   const cru = nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString();
   const hru = nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString();
   const sru = nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString();
@@ -92,7 +102,8 @@ export function getStatistics(state: IState): IStatistics[] {
     { "id": 5, "data": toTeraOrGigaOrPeta(hru), "title": "Total HDD", "icon": "mdi-harddisk" },
     { "id": 6, "data": toTeraOrGigaOrPeta(mru), "title": "Total RAM", "icon": "mdi-memory" },
     { "id": 7, "data": accessNodes, "title": "Access Nodes", "icon": "mdi-gate" },
-    { "id": 8, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
+    { "id": 8, "data": gateways, "title": "Gateways", "icon": "mdi-boom-gate-outline" },
+    { "id": 9, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
   ]
 }
 

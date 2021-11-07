@@ -52,9 +52,6 @@
         align
         @click:row="openSheet"
       >
-        <template v-slot:[`item.gridVersion`]="{ item }">
-          v{{ item.gridVersion }}.0
-        </template>
         <template v-slot:[`item.created`]="{ item }">
           {{ item.created | date }}
         </template>
@@ -123,7 +120,6 @@ export default class Nodes extends Vue {
   headers = [
     { text: "ID", value: "nodeId" },
     { text: "Farm ID", value: "farmId", align: "center" },
-    { text: "GRID VERSION", value: "gridVersion", align: "center" },
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
@@ -160,12 +156,6 @@ export default class Nodes extends Vue {
       active: false,
       key: "nodeId",
       label: "Filter by node id.",
-    },
-    {
-      type: "in",
-      active: false,
-      key: "createdById",
-      label: "Filter by createdby.",
     },
     {
       type: "in",

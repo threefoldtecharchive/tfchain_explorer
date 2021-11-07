@@ -115,11 +115,6 @@ export default class Farms extends Vue {
   filters = [
     {
       active: false,
-      key: "createdById",
-      label: "Filter by createdby.",
-    },
-    {
-      active: false,
       key: "farmId",
       label: "Filter by farm id.",
     },

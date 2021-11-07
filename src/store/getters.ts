@@ -105,7 +105,7 @@ export function getStatistics(state: IState): IStatistics[] {
     { "id": 7, "data": accessNodes, "title": "Access Nodes", "icon": "mdi-gate" },
     { "id": 8, "data": gateways, "title": "Gateways", "icon": "mdi-boom-gate-outline" },
     { "id": 9, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
-    { "id": 10, "data": publicIPsNo, "title": "Public IPs", "icon": "mdi-brain" },
+    { "id": 10, "data": publicIPsNo, "title": "Public IPs", "icon": "mdi-access-point" },
   ]
 }
 

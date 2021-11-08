@@ -12,7 +12,7 @@ export function applyFilters<T, R>(
 }
 
 export function inFilter(key: string) {
-  return function<T>(
+  return function <T>(
     filters: { [key: string]: (number | string)[] | any },
     items: T[]
   ): T[] {
@@ -25,7 +25,7 @@ export function inFilter(key: string) {
 }
 
 export function rangeFilter(key: string) {
-  return function<T>(
+  return function <T>(
     filters: { [key: string]: { min: number; max: number } | any },
     items: T[]
   ): T[] {
@@ -42,7 +42,7 @@ export function rangeFilter(key: string) {
 }
 
 export function conditionFilter(key: string) {
-  return function<T>(
+  return function <T>(
     filters: { [key: string]: { enabled: boolean; value: boolean } | any },
     items: T[]
   ): T[] {
@@ -53,4 +53,34 @@ export function conditionFilter(key: string) {
       return value ? item > 0 : item === 0;
     });
   };
+}
+
+export type IOP = "=" | ">" | "<" | ">=" | "<=" | "!=";
+export function comparisonFilter(key: string, operator: IOP) {
+  return function <T>(
+    filters: { [key: string]: { enabled: boolean; value: number; } | any },
+    items: T[]
+  ): T[] {
+    const { enabled, value } = filters[key];
+    if (!enabled) return items;
+    return items.filter((i) => {
+      const item: number = (i as any)[key];
+      switch (operator) {
+        case "=":
+          return item === value;
+        case ">":
+          return item > value;
+        case "<":
+          return item < value;
+        case ">=":
+          return item >= value;
+        case "<=":
+          return item <= value;
+        case "!=":
+          return item != value;
+        default:
+          return false;
+      }
+    });
+  }
 }

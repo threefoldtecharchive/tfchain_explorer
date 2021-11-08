@@ -23,6 +23,13 @@ interface IConditionFilter {
 
 const createConditionFilter = () => ({ enabled: false, value: true });
 
+interface IComparisonFilter {
+  enabled: boolean;
+  value: number;
+}
+
+const createComparisonFilter = () => ({ enabled: false, value: 0 })
+
 export interface IState {
   data: GetDataQueryType | null;
   loading: boolean;
@@ -40,6 +47,7 @@ export interface IState {
       sru: IRangeFilter;
       uptime: IConditionFilter;
       countryFullName: IInFilter;
+      publicIPs: IComparisonFilter;
     };
     farms: {
       createdById: IInFilter;
@@ -47,6 +55,7 @@ export interface IState {
       twinId: IInFilter;
       certificationType: IInFilter;
       name: IInFilter;
+      publicIPsNo: IComparisonFilter;
     };
   };
 }
@@ -68,6 +77,7 @@ export default {
       mru: createRangeFilter(),
       uptime: createConditionFilter(),
       countryFullName: createInFilter(),
+      publicIPs: createComparisonFilter()
     },
     farms: {
       createdById: createInFilter(),
@@ -75,6 +85,7 @@ export default {
       twinId: createInFilter(),
       certificationType: createInFilter(),
       name: createInFilter(),
+      publicIPsNo: createComparisonFilter()
     },
   },
 } as IState;

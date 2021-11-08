@@ -1,6 +1,7 @@
 import { GetDataQueryType } from "@/graphql/api";
 import {
   applyFilters,
+  comparisonFilter,
   conditionFilter,
   inFilter,
   rangeFilter,
@@ -178,17 +179,28 @@ export default {
     rangeFilter("mru"),
     rangeFilter("sru"),
     rangeFilter("cru"),
-    conditionFilter("uptime")
+    conditionFilter("uptime"),
+    comparisonFilter("publicIPs", ">=")
   ),
 
   filtered_farm: applyFilters(
-    fallbackDataExtractor("farms"),
+    state => {
+      const farms = fallbackDataExtractor("farms")(state);
+      return farms.map(f => {
+        return {
+          ...f,
+          publicIPsNo: f.publicIPs.length
+        }
+      })
+    },
     (state) => state.filters.farms,
     inFilter("createdById"),
     inFilter("farmId"),
     inFilter("twinId"),
     inFilter("certificationType"),
-    inFilter("name")
+    inFilter("name"),
+    comparisonFilter("publicIPsNo", ">=")
+
   ),
 
   /* visual helpers */

@@ -33,6 +33,13 @@
           :key2="filter.key"
           :labels="filter.label"
         />
+        <ComparisonFilter
+          key1="nodes"
+          :key2="filter.key"
+          :label="filter.label"
+          :prefix="filter.prefix"
+          v-if="filter.type === 'comparison'"
+        />
       </div>
     </template>
 
@@ -103,7 +110,7 @@ import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
 import NodesDistribution from "@/components/NodesDistribution.vue";
 import ConditionFilter from "@/components/ConditionFilter.vue";
-
+import ComparisonFilter from "@/components/ComparisonFilter.vue";
 @Component({
   components: {
     Layout,
@@ -112,6 +119,7 @@ import ConditionFilter from "@/components/ConditionFilter.vue";
     RangeFilter,
     NodesDistribution,
     ConditionFilter,
+    ComparisonFilter,
   },
 })
 export default class Nodes extends Vue {
@@ -131,7 +139,7 @@ export default class Nodes extends Vue {
 
   // activeFilters is exactly same as filters
   // the idea is to allow user to sort filter he wants
-  activeFilters = [
+  activeFilters: any[] = [
     {
       type: "range",
       active: true,
@@ -194,6 +202,13 @@ export default class Nodes extends Vue {
       active: false,
       key: "uptime",
       label: ["Status", "Offline", "Online"],
+    },
+    {
+      type: "comparison",
+      active: false,
+      key: "publicIPs",
+      label: "Filter by greater than or equal to publicIp Number.",
+      prefix: ">=",
     },
   ];
 

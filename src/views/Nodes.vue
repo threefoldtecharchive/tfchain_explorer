@@ -45,7 +45,7 @@
 
     <template v-slot:table>
       <v-row align="center" justify="end">
-        Show Nodes With Gateways Only
+        Gateways
         <v-switch v-model="withGateway" class="ml-4"></v-switch>
       </v-row>
       <v-data-table

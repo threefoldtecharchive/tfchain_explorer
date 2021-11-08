@@ -8,6 +8,8 @@ import {
 import { GetterTree } from "vuex";
 import state, { IState } from "./state";
 import toTeraOrGigaOrPeta from '../filters/toTeraOrGigaOrPeta'
+import { byInternet } from "country-code-lookup";
+
 
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
@@ -123,9 +125,11 @@ export default {
     const nodes = fallbackDataExtractor("nodes")(state);
     // const farms = findById("farms", "farmId")(state);
     return nodes.map(node => {
+      const country: any = node.country
       return {
         ...node,
-        publicIp: getFarmPublicIPs(state, node.farmId)
+        publicIp: getFarmPublicIPs(state, node.farmId),
+        countryFullName: byInternet(country)?.country
       }
     })
   },
@@ -153,9 +157,12 @@ export default {
     (state) => {
       const nodes = fallbackDataExtractor("nodes")(state);
       return nodes.map(node => {
+        const country: any = node.country
         return {
           ...node,
-          publicIPs: getFarmPublicIPs(state, node.farmId)
+          publicIPs: getFarmPublicIPs(state, node.farmId),
+          countryFullName: byInternet(country)?.country
+
         }
       })
     },
@@ -166,6 +173,7 @@ export default {
     inFilter("twinId"),
     inFilter("country"),
     inFilter("farmingPolicyId"),
+    inFilter("countryFullName"),
     rangeFilter("hru"),
     rangeFilter("mru"),
     rangeFilter("sru"),

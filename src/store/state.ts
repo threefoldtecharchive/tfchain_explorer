@@ -39,6 +39,7 @@ export interface IState {
       mru: IRangeFilter;
       sru: IRangeFilter;
       uptime: IConditionFilter;
+      countryFullName: IInFilter;
     };
     farms: {
       createdById: IInFilter;
@@ -66,6 +67,7 @@ export default {
       sru: createRangeFilter(),
       mru: createRangeFilter(),
       uptime: createConditionFilter(),
+      countryFullName: createInFilter(),
     },
     farms: {
       createdById: createInFilter(),

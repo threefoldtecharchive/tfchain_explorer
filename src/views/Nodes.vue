@@ -173,7 +173,7 @@ export default class Nodes extends Vue {
     {
       type: "in",
       active: false,
-      key: "country",
+      key: "countryFullName",
       label: "Filter by country.",
     },
     {

@@ -73,6 +73,14 @@ function getGatewaysCount(gateways: any[]) {
   });
   return gatewaysCounter
 }
+export function getFarmPublicIPs(state: IState, farmId: number): number {
+  const farms = fallbackDataExtractor('farms')(state);
+  const filtered_farms = farms.filter(x => x.farmId === farmId)
+  if (filtered_farms.length > 0) {
+    return filtered_farms[0].publicIPs.length
+  }
+  return 0
+}
 
 export interface IStatistics {
   id: number;
@@ -111,7 +119,16 @@ export function getStatistics(state: IState): IStatistics[] {
 
 export default {
   loading: (state) => state.loading,
-  nodes: fallbackDataExtractor("nodes"),
+  nodes: (state) => {
+    const nodes = fallbackDataExtractor("nodes")(state);
+    // const farms = findById("farms", "farmId")(state);
+    return nodes.map(node => {
+      return {
+        ...node,
+        publicIp: getFarmPublicIPs(state, node.farmId)
+      }
+    })
+  },
   farms: fallbackDataExtractor("farms"),
   locations: fallbackDataExtractor("locations"),
   twins: fallbackDataExtractor("twins"),
@@ -133,7 +150,15 @@ export default {
 
   /* filtered values */
   filtered_nodes: applyFilters(
-    fallbackDataExtractor("nodes"),
+    (state) => {
+      const nodes = fallbackDataExtractor("nodes")(state);
+      return nodes.map(node => {
+        return {
+          ...node,
+          publicIPs: getFarmPublicIPs(state, node.farmId)
+        }
+      })
+    },
     (state) => state.filters.nodes,
     inFilter("nodeId"),
     inFilter("createdById"),

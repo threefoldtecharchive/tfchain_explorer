@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: elmdary/tf-explorer
+  repository: rafyamgadbenjamin/explorer
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"

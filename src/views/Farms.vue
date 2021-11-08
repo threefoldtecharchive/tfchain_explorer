@@ -41,6 +41,10 @@
           </v-chip>
         </template>
 
+        <template v-slot:[`item.publicIPs`]="{ item }">
+          {{ item.publicIPs.length }}
+        </template>
+
         <template v-slot:[`item.createdAt`]="{ item }">
           {{ item.createdAt | date }}
         </template>
@@ -82,6 +86,7 @@ export default class Farms extends Vue {
   headers = [
     { text: "ID", value: "farmId" },
     { text: "NAME", value: "name" },
+    { text: "PUBLIC IPS", value: "publicIPs", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
     { text: "PRICING POLICY ID", value: "pricingPolicyId", align: "center" },
   ];

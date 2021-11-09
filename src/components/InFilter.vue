@@ -42,7 +42,13 @@ export default class InFilter extends Vue {
     if (this.value) {
       return this.value;
     }
-    return this.$store.getters[this.key1].map((e: any) => e[this.key2]);
+    return this.$store.getters[this.key1]
+      .filter((e: any) => {
+        if (e[this.key2]) {
+          return e[this.key2];
+        }
+      })
+      .map((e: any) => e[this.key2]);
   }
 
   get items(): string[] {

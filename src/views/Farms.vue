@@ -19,7 +19,26 @@
           key1="farms"
           :key2="filter.key"
           :label="filter.label"
-          :value="filter.value"
+          v-if="filter.type === 'in'"
+        />
+        <RangeFilter
+          v-if="filter.type === 'range'"
+          key1="farms"
+          :key2="filter.key"
+          :label="filter.label"
+        />
+        <ConditionFilter
+          v-if="filter.type === 'condition'"
+          key1="farms"
+          :key2="filter.key"
+          :labels="filter.label"
+        />
+        <ComparisonFilter
+          key1="farms"
+          :key2="filter.key"
+          :label="filter.label"
+          :prefix="filter.prefix"
+          v-if="filter.type === 'comparison'"
         />
       </div>
     </template>
@@ -35,14 +54,14 @@
         align
         @click:row="openSheet"
       >
-        <template v-slot:[`item.gridVersion`]="{ item }">
-          v{{ item.gridVersion }}.0
-        </template>
-
         <template v-slot:[`item.certificationType`]="{ item }">
           <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
             {{ item.certificationType }}
           </v-chip>
+        </template>
+
+        <template v-slot:[`item.publicIPs`]="{ item }">
+          {{ item.publicIPs.length }}
         </template>
 
         <template v-slot:[`item.createdAt`]="{ item }">
@@ -74,37 +93,46 @@ import Details from "@/components/Details.vue";
 import { IFarm } from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
+import ComparisonFilter from "@/components/ComparisonFilter.vue";
+import RangeFilter from "@/components/RangeFilter.vue";
+import ConditionFilter from "@/components/ConditionFilter.vue";
 
 @Component({
   components: {
     Layout,
     Details,
     InFilter,
+    ComparisonFilter,
+    RangeFilter,
+    ConditionFilter,
   },
 })
 export default class Farms extends Vue {
   headers = [
     { text: "ID", value: "farmId" },
     { text: "NAME", value: "name" },
-    { text: "GRID VERSION", value: "gridVersion", align: "center" },
+    { text: "PUBLIC IPS", value: "publicIPs", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
     { text: "PRICING POLICY ID", value: "pricingPolicyId", align: "center" },
   ];
 
   // activeFilters is exactly same as filters
   // the idea is to allow user to sort filter he wants
-  activeFilters = [
+  activeFilters: any[] = [
     {
+      type: "in",
       active: true,
       key: "name",
       label: "Filter by node name",
     },
     {
+      type: "in",
       active: true,
       key: "twinId",
       label: "Filter by twin id.",
     },
     {
+      type: "in",
       active: true,
       key: "certificationType",
       label: "Filter by certification type",
@@ -114,16 +142,19 @@ export default class Farms extends Vue {
 
   filters = [
     {
-      active: false,
-      key: "createdById",
-      label: "Filter by createdby.",
-    },
-    {
+      type: "in",
       active: false,
       key: "farmId",
       label: "Filter by farm id.",
     },
     ...this.activeFilters,
+    {
+      type: "comparison",
+      active: false,
+      key: "publicIPsNo",
+      label: "Filter by greater than or equal to publicIp Number.",
+      prefix: ">=",
+    },
   ];
 
   toggleActive(idx: number) {

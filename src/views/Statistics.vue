@@ -7,7 +7,7 @@
 }
 </style>
 <template>
-  <Layout pageName="Statstics" v-if="statistics" :noFilter="true">
+  <Layout pageName="Statistics" v-if="statistics" :noFilter="true">
     <v-row>
       <v-col
         v-for="item in statistics"

@@ -143,7 +143,13 @@ export const NodeType = gql`
     }
   }
 `;
-
+export interface IPublicIPs {
+  id: string;
+  gateway: string;
+  farmId: string;
+  contractId: number;
+  ip: string
+}
 export interface IFarm {
   id: string;
   createdAt: string;
@@ -159,6 +165,7 @@ export interface IFarm {
   twinId: number;
   pricingPolicyId: number;
   certificationType: "Diy" | "Certified";
+  publicIPs: IPublicIPs[];
 }
 
 export const FarmType = gql`
@@ -177,6 +184,33 @@ export const FarmType = gql`
     twinId
     pricingPolicyId
     certificationType
+    publicIPs{
+      id
+      gateway
+      farmId
+      contractId
+      ip
+    }
+  }
+`;
+
+export interface INodeContract {
+  id: string;
+  nodeId: number;
+  contractId: number;
+  deploymentHash: string;
+  state: string;
+  twinId: number;
+}
+
+export const NodeContractType = gql`
+  fragment NodeContractType on NodeContract {
+    id
+    nodeId
+    contractId
+    deploymentHash
+    state
+    twinId
   }
 `;
 
@@ -250,7 +284,8 @@ export interface GetDataQueryType {
   locations: ILocation[];
   twins: ITwin[];
   publicConfigs: IPublicConfig[];
-  countries: ICountry[]
+  countries: ICountry[];
+  nodeContracts: INodeContract[];
 }
 
 export const getDataQuery = gql`
@@ -259,6 +294,7 @@ export const getDataQuery = gql`
   ${TwinType}
   ${PublicConfigType}
   ${CountryType}
+  ${NodeContractType}
 
   query getDataQuery {
     nodes {
@@ -274,7 +310,11 @@ export const getDataQuery = gql`
       ...PublicConfigType
     }
     countries {
-      ... CountryType
+      ...CountryType
+    }
+    nodeContracts{
+      ...NodeContractType
     }
   }
-`;
+  `;
+

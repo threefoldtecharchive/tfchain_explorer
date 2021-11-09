@@ -1,13 +1,16 @@
 import { GetDataQueryType } from "@/graphql/api";
 import {
   applyFilters,
+  comparisonFilter,
   conditionFilter,
   inFilter,
   rangeFilter,
 } from "@/utils/filters";
 import { GetterTree } from "vuex";
 import state, { IState } from "./state";
-import toTeraOrGiga from '../filters/toTeraOrGigaOrPeta'
+import toTeraOrGigaOrPeta from '../filters/toTeraOrGigaOrPeta'
+import { byInternet } from "country-code-lookup";
+
 
 type ExtractKeyOf<T, K extends keyof T> = T[K] extends Array<infer Q> ? keyof Q : T[K]; // prettier-ignore
 type ExtractValue<T, K extends keyof T> = T[K] extends Array<infer Q> ? Q : T[K]; // prettier-ignore
@@ -55,14 +58,31 @@ function isPrivateIP(ip: string) {
     (parts[0] === '192' && parts[1] === '168');
 }
 
+function getAccessNodesCount(accessNodes: any[]) {
+  let accessNodeCounter = 0;
+  accessNodes.forEach((accessNode) => {
+    if (accessNode.ipv4 && !isPrivateIP(accessNode.ipv4)) {
+      accessNodeCounter += 1
+    }
+  });
+  return accessNodeCounter
+}
 function getGatewaysCount(gateways: any[]) {
   let gatewaysCounter = 0;
   gateways.forEach((gateway) => {
-    if (gateway.ipv4 && !isPrivateIP(gateway.ipv4)) {
+    if (gateway.ipv4 && !isPrivateIP(gateway.ipv4) && gateway.domain) {
       gatewaysCounter += 1
     }
   });
   return gatewaysCounter
+}
+export function getFarmPublicIPs(state: IState, farmId: number): number {
+  const farms = fallbackDataExtractor('farms')(state);
+  const filtered_farms = farms.filter(x => x.farmId === farmId)
+  if (filtered_farms.length > 0) {
+    return filtered_farms[0].publicIPs.length
+  }
+  return 0
 }
 
 export interface IStatistics {
@@ -75,30 +95,48 @@ export function getStatistics(state: IState): IStatistics[] {
   const nodes = fallbackDataExtractor("nodes")(state);
   const farms = fallbackDataExtractor('farms')(state);
   const countries = fallbackDataExtractor("countries")(state);
-  const gateways = fallbackDataExtractor("publicConfigs")(state);
+  const publicConfigs = fallbackDataExtractor("publicConfigs")(state);
+  const nodeContracts = fallbackDataExtractor("nodeContracts")(state);
+  const nodeContractsNo = nodeContracts.length
   const twins = fallbackDataExtractor("twins")(state);
   const twinsNo = twins.length
-  const onlineGateways = getGatewaysCount(gateways)
+  const accessNodes = getAccessNodesCount(publicConfigs)
+  const gateways = getGatewaysCount(publicConfigs)
   const cru = nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString();
   const hru = nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString();
   const sru = nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString();
   const mru = nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString();
+  const publicIPsNo = farms.reduce((total, next) => total + BigInt(next.publicIPs.length ?? 0), BigInt(0)).toString();
   return [
     { "id": 0, "data": nodes.length, "title": "Nodes", "icon": "mdi-laptop" },
     { "id": 1, "data": farms.length, "title": "Farms", "icon": "mdi-tractor" },
     { "id": 2, "data": countries.length, "title": "Countries", "icon": "mdi-earth" },
     { "id": 3, "data": cru, "title": "Total CPUs", "icon": "mdi-cpu-64-bit" },
-    { "id": 4, "data": toTeraOrGiga(sru), "title": "Total SSD", "icon": "mdi-nas" },
-    { "id": 5, "data": toTeraOrGiga(hru), "title": "Total HDD", "icon": "mdi-harddisk" },
-    { "id": 6, "data": toTeraOrGiga(mru), "title": "Total RAM", "icon": "mdi-memory" },
-    { "id": 7, "data": onlineGateways, "title": "Gateways", "icon": "mdi-gate" },
-    { "id": 8, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
+    { "id": 4, "data": toTeraOrGigaOrPeta(sru), "title": "Total SSD", "icon": "mdi-nas" },
+    { "id": 5, "data": toTeraOrGigaOrPeta(hru), "title": "Total HDD", "icon": "mdi-harddisk" },
+    { "id": 6, "data": toTeraOrGigaOrPeta(mru), "title": "Total RAM", "icon": "mdi-memory" },
+    { "id": 7, "data": accessNodes, "title": "Access Nodes", "icon": "mdi-gate" },
+    { "id": 8, "data": gateways, "title": "Gateways", "icon": "mdi-boom-gate-outline" },
+    { "id": 9, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
+    { "id": 10, "data": publicIPsNo, "title": "Public IPs", "icon": "mdi-access-point" },
+    { "id": 11, "data": nodeContractsNo, "title": "Contracts", "icon": "mdi-file-document-edit-outline" },
   ]
 }
 
 export default {
   loading: (state) => state.loading,
-  nodes: fallbackDataExtractor("nodes"),
+  nodes: (state) => {
+    const nodes = fallbackDataExtractor("nodes")(state);
+    // const farms = findById("farms", "farmId")(state);
+    return nodes.map(node => {
+      const country: any = node.country
+      return {
+        ...node,
+        publicIp: getFarmPublicIPs(state, node.farmId),
+        countryFullName: byInternet(country)?.country
+      }
+    })
+  },
   farms: fallbackDataExtractor("farms"),
   locations: fallbackDataExtractor("locations"),
   twins: fallbackDataExtractor("twins"),
@@ -120,7 +158,18 @@ export default {
 
   /* filtered values */
   filtered_nodes: applyFilters(
-    fallbackDataExtractor("nodes"),
+    (state) => {
+      const nodes = fallbackDataExtractor("nodes")(state);
+      return nodes.map(node => {
+        const country: any = node.country
+        return {
+          ...node,
+          publicIPs: getFarmPublicIPs(state, node.farmId),
+          countryFullName: byInternet(country)?.country
+
+        }
+      })
+    },
     (state) => state.filters.nodes,
     inFilter("nodeId"),
     inFilter("createdById"),
@@ -128,21 +177,33 @@ export default {
     inFilter("twinId"),
     inFilter("country"),
     inFilter("farmingPolicyId"),
+    inFilter("countryFullName"),
     rangeFilter("hru"),
     rangeFilter("mru"),
     rangeFilter("sru"),
     rangeFilter("cru"),
-    conditionFilter("uptime")
+    conditionFilter("uptime"),
+    comparisonFilter("publicIPs", ">=")
   ),
 
   filtered_farm: applyFilters(
-    fallbackDataExtractor("farms"),
+    state => {
+      const farms = fallbackDataExtractor("farms")(state);
+      return farms.map(f => {
+        return {
+          ...f,
+          publicIPsNo: f.publicIPs.length
+        }
+      })
+    },
     (state) => state.filters.farms,
     inFilter("createdById"),
     inFilter("farmId"),
     inFilter("twinId"),
     inFilter("certificationType"),
-    inFilter("name")
+    inFilter("name"),
+    comparisonFilter("publicIPsNo", ">=")
+
   ),
 
   /* visual helpers */

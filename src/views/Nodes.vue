@@ -33,12 +33,19 @@
           :key2="filter.key"
           :labels="filter.label"
         />
+        <ComparisonFilter
+          key1="nodes"
+          :key2="filter.key"
+          :label="filter.label"
+          :prefix="filter.prefix"
+          v-if="filter.type === 'comparison'"
+        />
       </div>
     </template>
 
     <template v-slot:table>
       <v-row align="center" justify="end">
-        Show Nodes With Gateways Only
+        Gateways
         <v-switch v-model="withGateway" class="ml-4"></v-switch>
       </v-row>
       <v-data-table
@@ -52,9 +59,6 @@
         align
         @click:row="openSheet"
       >
-        <template v-slot:[`item.gridVersion`]="{ item }">
-          v{{ item.gridVersion }}.0
-        </template>
         <template v-slot:[`item.created`]="{ item }">
           {{ item.created | date }}
         </template>
@@ -106,7 +110,7 @@ import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
 import NodesDistribution from "@/components/NodesDistribution.vue";
 import ConditionFilter from "@/components/ConditionFilter.vue";
-
+import ComparisonFilter from "@/components/ComparisonFilter.vue";
 @Component({
   components: {
     Layout,
@@ -115,6 +119,7 @@ import ConditionFilter from "@/components/ConditionFilter.vue";
     RangeFilter,
     NodesDistribution,
     ConditionFilter,
+    ComparisonFilter,
   },
 })
 export default class Nodes extends Vue {
@@ -123,7 +128,7 @@ export default class Nodes extends Vue {
   headers = [
     { text: "ID", value: "nodeId" },
     { text: "Farm ID", value: "farmId", align: "center" },
-    { text: "GRID VERSION", value: "gridVersion", align: "center" },
+    { text: "Farm Public IPs", value: "publicIPs", align: "center" },
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
@@ -134,7 +139,7 @@ export default class Nodes extends Vue {
 
   // activeFilters is exactly same as filters
   // the idea is to allow user to sort filter he wants
-  activeFilters = [
+  activeFilters: any[] = [
     {
       type: "range",
       active: true,
@@ -164,12 +169,6 @@ export default class Nodes extends Vue {
     {
       type: "in",
       active: false,
-      key: "createdById",
-      label: "Filter by createdby.",
-    },
-    {
-      type: "in",
-      active: false,
       key: "farmId",
       label: "Filter by farm id.",
     },
@@ -182,7 +181,7 @@ export default class Nodes extends Vue {
     {
       type: "in",
       active: false,
-      key: "country",
+      key: "countryFullName",
       label: "Filter by country.",
     },
     {
@@ -203,6 +202,13 @@ export default class Nodes extends Vue {
       active: false,
       key: "uptime",
       label: ["Status", "Offline", "Online"],
+    },
+    {
+      type: "comparison",
+      active: false,
+      key: "publicIPs",
+      label: "Filter by greater than or equal to publicIp Number.",
+      prefix: ">=",
     },
   ];
 

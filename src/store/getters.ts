@@ -96,6 +96,8 @@ export function getStatistics(state: IState): IStatistics[] {
   const farms = fallbackDataExtractor('farms')(state);
   const countries = fallbackDataExtractor("countries")(state);
   const publicConfigs = fallbackDataExtractor("publicConfigs")(state);
+  const nodeContracts = fallbackDataExtractor("nodeContracts")(state);
+  const nodeContractsNo = nodeContracts.length
   const twins = fallbackDataExtractor("twins")(state);
   const twinsNo = twins.length
   const accessNodes = getAccessNodesCount(publicConfigs)
@@ -117,6 +119,7 @@ export function getStatistics(state: IState): IStatistics[] {
     { "id": 8, "data": gateways, "title": "Gateways", "icon": "mdi-boom-gate-outline" },
     { "id": 9, "data": twinsNo, "title": "Twins", "icon": "mdi-brain" },
     { "id": 10, "data": publicIPsNo, "title": "Public IPs", "icon": "mdi-access-point" },
+    { "id": 11, "data": nodeContractsNo, "title": "Contracts", "icon": "mdi-file-document-edit-outline" },
   ]
 }
 

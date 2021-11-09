@@ -194,6 +194,26 @@ export const FarmType = gql`
   }
 `;
 
+export interface INodeContract {
+  id: string;
+  nodeId: number;
+  contractId: number;
+  deploymentHash: string;
+  state: string;
+  twinId: number;
+}
+
+export const NodeContractType = gql`
+  fragment NodeContractType on NodeContract {
+    id
+    nodeId
+    contractId
+    deploymentHash
+    state
+    twinId
+  }
+`;
+
 export interface ITwin {
   id: string;
   createdAt: string;
@@ -265,6 +285,7 @@ export interface GetDataQueryType {
   twins: ITwin[];
   publicConfigs: IPublicConfig[];
   countries: ICountry[];
+  nodeContracts: INodeContract[];
 }
 
 export const getDataQuery = gql`
@@ -273,6 +294,7 @@ export const getDataQuery = gql`
   ${TwinType}
   ${PublicConfigType}
   ${CountryType}
+  ${NodeContractType}
 
   query getDataQuery {
     nodes {
@@ -288,7 +310,11 @@ export const getDataQuery = gql`
       ...PublicConfigType
     }
     countries {
-      ... CountryType
+      ...CountryType
+    }
+    nodeContracts{
+      ...NodeContractType
     }
   }
-`;
+  `;
+

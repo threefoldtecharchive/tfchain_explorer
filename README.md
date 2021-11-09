@@ -75,7 +75,7 @@ $ docker run -p 8080:80 -e GQL_URL=https://tfchain.dev.threefold.io/graphql/grap
 1. Add repo
 
 ```
-$ helm repo add tf-explorer https://threefoldtech.github.io/grid_explorer_ui/
+$ helm repo add tf-explorer https://threefoldtech.github.io/tfchain_explorer
 ```
 
 2. Run chart

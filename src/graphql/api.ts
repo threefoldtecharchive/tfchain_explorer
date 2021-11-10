@@ -95,7 +95,7 @@ export interface INode {
   sru?: string;
   cru?: string;
   mru?: string;
-  publicConfigId?: string;
+  publicConfig?: IPublicConfig;
   uptime?: number;
   created: number;
   farmingPolicyId: number;
@@ -105,8 +105,19 @@ export interface INode {
   interfaces: Interfaces[];
 }
 
+export const PublicConfigType = gql`
+  fragment PublicConfigType on PublicConfig {
+    domain
+    ipv4
+    ipv6
+    gw4
+    gw6
+  }
+`;
+
 export const NodeType = gql`
   ${LocationType}
+  ${PublicConfigType}
 
   fragment NodeType on Node {
     id
@@ -126,7 +137,9 @@ export const NodeType = gql`
     sru
     cru
     mru
-    publicConfigId
+    publicConfig {
+      ...PublicConfigType
+    }
     uptime
     created
     farmingPolicyId
@@ -247,36 +260,12 @@ export const TwinType = gql`
 `;
 
 export interface IPublicConfig {
-  id: string;
-  createdAt: string;
-  createdById: string;
-  updatedAt?: string;
-  updatedById?: string;
-  deletedAt?: string;
-  deletedById?: string;
-  version: number;
   ipv4: string;
   ipv6: string;
   gw4: string;
   gw6: string;
+  domain: string;
 }
-
-export const PublicConfigType = gql`
-  fragment PublicConfigType on PublicConfig {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    ipv4
-    ipv6
-    gw4
-    gw6
-  }
-`;
 
 export interface GetDataQueryType {
   nodes: INode[];
@@ -305,9 +294,6 @@ export const getDataQuery = gql`
     }
     twins {
       ...TwinType
-    }
-    publicConfigs {
-      ...PublicConfigType
     }
     countries {
       ...CountryType

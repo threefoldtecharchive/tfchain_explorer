@@ -2,7 +2,7 @@ module.exports = {
   client: {
     service: {
       name: "my-app",
-      url: process.env.VUE_APP_GQL_URL,
+      url: "https://tfchain.dev.threefold.io/graphql/graphql",
     },
     includes: ["src/**/*.vue", "src/**/*.js", "src/**/*.ts"],
   },

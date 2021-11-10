@@ -90,7 +90,7 @@
         :city="node && node.city"
         :location="node && node.location"
         :twin="$store.getters.twin(node && node.twinId)"
-        :config="$store.getters.publicConfig(node && node.publicConfigId)"
+        :config="node && node.publicConfig"
         v-on:close-sheet="closeSheet"
       />
     </template>
@@ -217,7 +217,7 @@ export default class Nodes extends Vue {
     if (!this.withGateway) {
       return nodes;
     }
-    return nodes.filter(({ publicConfigId }) => publicConfigId !== null);
+    return nodes.filter(({ publicConfig }) => publicConfig !== null);
   }
 
   toggleActive(idx: number) {

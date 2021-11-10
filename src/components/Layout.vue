@@ -44,8 +44,10 @@ export default class Layout extends Vue {
 
   private _resizePanel() {
     const panel = this.$refs.container as HTMLElement;
-    const maxHeight = this.screen_max_1400 ? 350 : panel.offsetTop + 20;
-    panel.style.maxHeight = `calc(100vh - ${maxHeight}px)`;
+    if (panel) {
+      const maxHeight = this.screen_max_1400 ? 350 : panel.offsetTop + 20;
+      panel.style.maxHeight = `calc(100vh - ${maxHeight}px)`;
+    }
   }
 
   mounted() {

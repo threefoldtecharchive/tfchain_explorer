@@ -8,7 +8,7 @@ image:
   repository: threefolddev/tf-explorer
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.3"
+  tag: "v3.0.0-rc1"
 
 imagePullSecrets: []
 nameOverride: ""

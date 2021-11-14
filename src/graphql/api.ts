@@ -148,7 +148,7 @@ export const NodeType = gql`
     }
     country
     city
-    interfaces{
+    interfaces {
       ips
       mac
       name
@@ -161,7 +161,7 @@ export interface IPublicIPs {
   gateway: string;
   farmId: string;
   contractId: number;
-  ip: string
+  ip: string;
 }
 export interface IFarm {
   id: string;
@@ -197,7 +197,7 @@ export const FarmType = gql`
     twinId
     pricingPolicyId
     certificationType
-    publicIPs{
+    publicIPs {
       id
       gateway
       farmId
@@ -267,6 +267,34 @@ export interface IPublicConfig {
   domain: string;
 }
 
+type TotalCountType = { totalCount: number };
+export interface GetTotalCountQueryType {
+  nodes: TotalCountType;
+  farms: TotalCountType;
+  twins: TotalCountType;
+  countries: TotalCountType;
+  nodeContracts: TotalCountType;
+}
+
+export const getTotalCountQuery = gql`
+  query getTotalCountQuery {
+    nodes: nodesConnection {
+      totalCount
+    }
+    farms: farmsConnection {
+      totalCount
+    }
+    twins: twinsConnection {
+      totalCount
+    }
+    countries: countriesConnection {
+      totalCount
+    }
+    nodeContracts: nodeContractsConnection {
+      totalCount
+    }
+  }
+`;
 export interface GetDataQueryType {
   nodes: INode[];
   farms: IFarm[];
@@ -285,22 +313,27 @@ export const getDataQuery = gql`
   ${CountryType}
   ${NodeContractType}
 
-  query getDataQuery {
-    nodes {
+  query getDataQuery(
+    $nodes: Int!
+    $farms: Int!
+    $twins: Int!
+    $countries: Int!
+    $nodeContracts: Int!
+  ) {
+    nodes(limit: $nodes) {
       ...NodeType
     }
-    farms {
+    farms(limit: $farms) {
       ...FarmType
     }
-    twins {
+    twins(limit: $twins) {
       ...TwinType
     }
-    countries {
+    countries(limit: $countries) {
       ...CountryType
     }
-    nodeContracts{
+    nodeContracts(limit: $nodeContracts) {
       ...NodeContractType
     }
   }
-  `;
-
+`;

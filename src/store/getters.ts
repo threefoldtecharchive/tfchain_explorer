@@ -92,7 +92,7 @@ export interface IStatistics {
 export function getStatistics(state: IState): IStatistics[] {
   const nodes = fallbackDataExtractor("nodes")(state);
   const farms = fallbackDataExtractor('farms')(state);
-  const countries = fallbackDataExtractor("countries")(state);
+  const countries = [...new Set(nodes.map(node => node.country))]
   const nodeContracts = fallbackDataExtractor("nodeContracts")(state);
   const nodeContractsNo = nodeContracts.length
   const twins = fallbackDataExtractor("twins")(state);

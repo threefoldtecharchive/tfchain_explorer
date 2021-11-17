@@ -75,6 +75,11 @@
             <InterfacesDetails :interfaces="node.interfaces" />
           </v-col>
         </v-row>
+        <v-row>
+          <v-col v-if="node">
+            <NodeUsedResources :node="node" />
+          </v-col>
+        </v-row>
       </div>
     </v-sheet>
   </v-bottom-sheet>
@@ -90,6 +95,7 @@ import LocationDetails from "./LocationDetails.vue";
 import TwinDetails from "./TwinDetails.vue";
 import PublicConfigDetails from "./PublicConfigDetails.vue";
 import InterfacesDetails from "./InterfacesDetails.vue";
+import NodeUsedResources from "./NodeUsedResources.vue";
 import mediaMatcher from "@/utils/mediaMatcher";
 
 @Component({
@@ -101,6 +107,7 @@ import mediaMatcher from "@/utils/mediaMatcher";
     TwinDetails,
     PublicConfigDetails,
     InterfacesDetails,
+    NodeUsedResources,
   },
 })
 export default class Details extends Vue {

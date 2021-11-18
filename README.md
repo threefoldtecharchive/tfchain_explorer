@@ -2,7 +2,7 @@
 
 ![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)
 
-Explorer UI for grid 3 using the new [graphql api](https://tfchain.dev.threefold.io/graphql/graphql).
+Explorer UI for grid 3 using the new [graphql api](https://graphql.dev.grid.tf/graphql).
 
 ## Content
 
@@ -60,7 +60,7 @@ $ docker build -t explorer-ui .
 2. Run container
 
 ```
-$ docker run -p 8080:80 -e GQL_URL=https://tfchain.dev.threefold.io/graphql/graphql explorer-ui
+$ docker run -p 8080:80 -e GQL_URL=https://graphql.dev.grid.tf/graphql explorer-ui
 ```
 
 ---
@@ -69,7 +69,7 @@ $ docker run -p 8080:80 -e GQL_URL=https://tfchain.dev.threefold.io/graphql/grap
 
 | Name         | Required | Default                                  |
 | ------------ | -------- | ---------------------------------------- |
-| GQL_URL      | False    | https://tfchain.dev.threefold.io/graphql/graphql |
+| GQL_URL      | False    | https://graphql.dev.grid.tf/graphql |
 | ingress.host | False    | dashboard.com                            |
 
 1. Add repo
@@ -81,7 +81,7 @@ $ helm repo add tf-explorer https://threefoldtech.github.io/tfchain_explorer
 2. Run chart
 
 ```
-$ helm install --set ingress.host=dashboard.com --set GQL_URL=https://tfchain.dev.threefold.io/graphql/graphql --generate-name tf-explorer/tf-explorer
+$ helm install --set ingress.host=dashboard.com --set GQL_URL=https://graphql.dev.grid.tf/graphql --generate-name tf-explorer/tf-explorer
 ```
 
 ---
@@ -104,7 +104,7 @@ $ helm install --set ingress.host=dashboard.com --set GQL_URL=https://tfchain.de
 
 ## GraphQL
 Info on TFChain is indexed over GraphQL and is available for queries. 
-- [Devnet GraphQL](https://tfchain.dev.threefold.io/graphql/graphql)
+- [Devnet GraphQL](https://graphql.dev.grid.tf/graphql)
 - [Testnet GraphQL](https://tfchain.test.threefold.io/graphql/graphql)
 - Mainnet GraphQL - not yet live
 

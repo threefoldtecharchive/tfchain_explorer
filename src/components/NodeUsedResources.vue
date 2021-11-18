@@ -55,8 +55,12 @@ export default class NodeUsedResources extends Vue {
       .then((res) => res.json())
       .then<any[]>((res) => {
         return ["cru", "sru", "hru", "mru"].map((i, idx) => {
-          const value = (res.data.capacity.used[i] / res.data.capacity.total[i]) * 100; // prettier-ignore
-          return { id: idx + 1, value };
+          const value = (res.capacity.used[i] / res.capacity.total[i]) * 100; // prettier-ignore
+          return {
+            id: idx + 1,
+            value: value.toFixed(2),
+            name: i.toUpperCase(),
+          };
         });
       })
       .catch((err) => console.log("something went wrong", err))

@@ -41,7 +41,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { INode } from "@/graphql/api";
-import axios from "axios";
 
 @Component({})
 export default class NodeUsedResources extends Vue {
@@ -50,37 +49,25 @@ export default class NodeUsedResources extends Vue {
   loader = false;
 
   getNodeUsedResources(nodeId: number) {
-    let resources: any[] = [];
-    const gridProxyUrl = `https://gridproxy.dev.grid.tf/nodes/${nodeId}`;
     this.loader = true;
-    axios
-      .get(gridProxyUrl)
-      .then((res) => {
-        let used_cru_perc =
-          (res.data.capacity.used["cru"] / res.data.capacity.total["cru"]) *
-          100;
-        let used_sru_perc =
-          (res.data.capacity.used["sru"] / res.data.capacity.total["sru"]) *
-          100;
-        let used_hru_perc =
-          (res.data.capacity.used["hru"] / res.data.capacity.total["hru"]) *
-          100;
-        let used_mru_perc =
-          (res.data.capacity.used["mru"] / res.data.capacity.total["mru"]) *
-          100;
 
-        resources.push({ id: 1, name: "CRU", value: used_cru_perc.toFixed(2) });
-        resources.push({ id: 2, name: "SRU", value: used_sru_perc.toFixed(2) });
-        resources.push({ id: 3, name: "HRU", value: used_hru_perc.toFixed(2) });
-        resources.push({ id: 4, name: "MRU", value: used_mru_perc.toFixed(2) });
-        this.loader = false;
+    return fetch(`https://gridproxy.dev.grid.tf/nodes/${nodeId}`)
+      .then((res) => res.json())
+      .then<any[]>((res) => {
+        return ["cru", "sru", "hru", "mru"].map((i, idx) => {
+          const value = (res.data.capacity.used[i] / res.data.capacity.total[i]) * 100; // prettier-ignore
+          return { id: idx + 1, value };
+        });
       })
-      .catch((err) => console.log("something went wrong", err));
-
-    return resources;
+      .catch((err) => console.log("something went wrong", err))
+      .finally(() => (this.loader = false));
   }
   created() {
-    this.resources = this.getNodeUsedResources(this.node.nodeId);
+    this.getNodeUsedResources(this.node.nodeId).then((resources) => {
+      if (resources) {
+        this.resources = resources;
+      }
+    });
   }
 }
 </script>

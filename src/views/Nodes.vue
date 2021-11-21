@@ -26,6 +26,7 @@
           key1="nodes"
           :key2="filter.key"
           :label="filter.label"
+          :max="filter.max"
         />
         <ConditionFilter
           v-if="filter.type === 'condition'"
@@ -145,18 +146,21 @@ export default class Nodes extends Vue {
       active: true,
       key: "hru",
       label: "hru",
+      max: 1e12 * 300, // 1e12 is Terra and we want here 300 Terrabytes
     },
     {
       type: "range",
       active: true,
       key: "mru",
       label: "mru",
+      max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
     },
     {
       type: "range",
       active: true,
       key: "cru",
       label: "cru",
+      max: 60,
     },
   ];
   filters = [
@@ -195,6 +199,7 @@ export default class Nodes extends Vue {
       active: false,
       key: "sru",
       label: "sru",
+      max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
     },
     ...this.activeFilters,
     {

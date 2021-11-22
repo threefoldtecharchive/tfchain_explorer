@@ -5,7 +5,7 @@
         <v-icon size="40" class="mr-2">mdi-map-outline</v-icon>
       </v-list-item-icon>
       <v-list-item-content>
-        <v-list-item-title style="font-size: 30px;">
+        <v-list-item-title style="font-size: 30px">
           Country Details
         </v-list-item-title>
       </v-list-item-content>
@@ -14,9 +14,7 @@
       <!-- Flag Item -->
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title>
-            Flag
-          </v-list-item-title>
+          <v-list-item-title> Flag </v-list-item-title>
         </v-list-item-content>
         <img :src="src" alt="flag" width="40" />
       </v-list-item>
@@ -25,9 +23,7 @@
       <!-- CODE ISO 3 Item -->
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title>
-            Code ISO 2
-          </v-list-item-title>
+          <v-list-item-title> Code ISO 2 </v-list-item-title>
         </v-list-item-content>
         {{ country }}
       </v-list-item>
@@ -37,9 +33,7 @@
         <v-divider />
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>
-              City
-            </v-list-item-title>
+            <v-list-item-title> City </v-list-item-title>
           </v-list-item-content>
           {{ city }}
         </v-list-item>
@@ -50,9 +44,7 @@
         <!-- CODE ISO 3 Item -->
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>
-              Latitude
-            </v-list-item-title>
+            <v-list-item-title> Latitude </v-list-item-title>
           </v-list-item-content>
           {{ location.latitude }}
         </v-list-item>
@@ -61,9 +53,7 @@
         <!-- CODE ISO 3 Item -->
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>
-              Longitude
-            </v-list-item-title>
+            <v-list-item-title> Longitude </v-list-item-title>
           </v-list-item-content>
           {{ location.longitude }}
         </v-list-item>
@@ -76,6 +66,7 @@
 <script lang="ts">
 import { ILocation } from "@/graphql/api";
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { byCountry } from "country-code-lookup";
 
 @Component({})
 export default class CountryDetails extends Vue {
@@ -84,7 +75,11 @@ export default class CountryDetails extends Vue {
   @Prop({ required: false }) location?: ILocation;
 
   get src(): string {
-    return `https://www.worldatlas.com/r/w425/img/flag/${this.country?.toLocaleLowerCase()}-flag.jpg`;
+    const conuntryCode =
+      this.country && this.country?.length > 2
+        ? byCountry(this.country)?.internet
+        : this.country;
+    return `https://www.worldatlas.com/r/w425/img/flag/${conuntryCode?.toLocaleLowerCase()}-flag.jpg`;
   }
 }
 </script>

@@ -55,7 +55,7 @@ export default class NodeUsedResources extends Vue {
       .then((res) => res.json())
       .then<any[]>((res) => {
         return ["cru", "sru", "hru", "mru"].map((i, idx) => {
-          const value = (res.capacity.used[i] / res.capacity.total[i]) * 100; // prettier-ignore
+          const value = (res.capacity.total[i]!=0) ? (res.capacity.used[i] / res.capacity.total[i]) * 100: 100; // prettier-ignore, validate if the total is zero so the usage is 100 else do the division
           return {
             id: idx + 1,
             value: value.toFixed(2),

@@ -8,6 +8,11 @@
     <v-sheet class="text-center" height="90vh">
       <div class="content">
         <v-row>
+          <v-col v-if="node">
+            <NodeUsedResources :node="node" />
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col
             :cols="
               screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
@@ -32,7 +37,7 @@
             "
             v-if="twin"
           >
-            <TwinDetails :twin="twin" />
+            <LocationDetails :country="country" :location="location" />
           </v-col>
 
           <v-col
@@ -63,7 +68,7 @@
             "
             v-if="country && location"
           >
-            <LocationDetails :country="country" :location="location" />
+            <TwinDetails :twin="twin" />
           </v-col>
 
           <v-col
@@ -73,11 +78,6 @@
             v-if="node && node.interfaces"
           >
             <InterfacesDetails :interfaces="node.interfaces" />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col v-if="node">
-            <NodeUsedResources :node="node" />
           </v-col>
         </v-row>
       </div>

@@ -9,7 +9,7 @@
         @click="toggleActive(idx)"
         filter
       >
-        {{ filter.key.toUpperCase() }}
+        {{ filter.name }}
       </v-chip>
     </template>
 
@@ -120,18 +120,21 @@ export default class Farms extends Vue {
   // the idea is to allow user to sort filter he wants
   activeFilters: any[] = [
     {
+      name: "Name",
       type: "in",
       active: true,
       key: "name",
       label: "Filter by node name",
     },
     {
+      name: "Twin ID",
       type: "in",
       active: true,
       key: "twinId",
       label: "Filter by twin id.",
     },
     {
+      name: "Certification Type",
       type: "in",
       active: true,
       key: "certificationType",
@@ -142,6 +145,7 @@ export default class Farms extends Vue {
 
   filters = [
     {
+      name: "Farm ID",
       type: "in",
       active: false,
       key: "farmId",
@@ -149,6 +153,7 @@ export default class Farms extends Vue {
     },
     ...this.activeFilters,
     {
+      name: "Public IP",
       type: "comparison",
       active: false,
       key: "publicIPsNo",

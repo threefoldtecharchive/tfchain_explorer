@@ -9,7 +9,7 @@
         @click="toggleActive(idx)"
         filter
       >
-        {{ getChipLabel(filter) }}
+        {{ filter.name }}
       </v-chip>
     </template>
 
@@ -142,6 +142,7 @@ export default class Nodes extends Vue {
   // the idea is to allow user to sort filter he wants
   activeFilters: any[] = [
     {
+      name: "HRU",
       type: "range",
       active: true,
       key: "hru",
@@ -149,6 +150,7 @@ export default class Nodes extends Vue {
       max: 1e12 * 300, // 1e12 is Terra and we want here 300 Terrabytes
     },
     {
+      name: "MRU",
       type: "range",
       active: true,
       key: "mru",
@@ -156,6 +158,7 @@ export default class Nodes extends Vue {
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
     },
     {
+      name: "CRU",
       type: "range",
       active: true,
       key: "cru",
@@ -163,38 +166,45 @@ export default class Nodes extends Vue {
       max: 60,
     },
   ];
+
   filters = [
     {
+      name: "Node ID",
       type: "in",
       active: false,
       key: "nodeId",
       label: "Filter by node id.",
     },
     {
+      name: "Farm ID",
       type: "in",
       active: false,
       key: "farmId",
       label: "Filter by farm id.",
     },
     {
+      name: "Twin ID",
       type: "in",
       active: false,
       key: "twinId",
       label: "Filter by twin id.",
     },
     {
+      name: "Country Full Name",
       type: "in",
       active: false,
       key: "countryFullName",
       label: "Filter by country.",
     },
     {
+      name: "Farming Policy ID",
       type: "in",
       active: false,
       key: "farmingPolicyId",
       label: "Filter by farming policy id.",
     },
     {
+      name: "SRU",
       type: "range",
       active: false,
       key: "sru",
@@ -203,12 +213,14 @@ export default class Nodes extends Vue {
     },
     ...this.activeFilters,
     {
+      name: "Up Time",
       type: "condition",
       active: false,
       key: "uptime",
       label: ["Status", "Offline", "Online"],
     },
     {
+      name: "Public IP",
       type: "comparison",
       active: false,
       key: "publicIPs",

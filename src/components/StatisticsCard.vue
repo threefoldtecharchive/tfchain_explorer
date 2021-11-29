@@ -2,12 +2,9 @@
   <v-card class="item">
     <h4 class="display-1">{{ item.title }}</h4>
     <div class="item__img">
-      <img
-        :src="require('../assets/statistics/' + item.icon)"
-        width="100"
-        height="100"
-        alt="test"
-      />
+      <v-icon size="100">
+        {{ item.icon }}
+      </v-icon>
     </div>
     <v-divider />
     <p class="display-2 item__data">

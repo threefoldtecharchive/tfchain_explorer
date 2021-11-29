@@ -115,18 +115,18 @@ export function getStatistics(state: IState): IStatistics[] {
   const publicIPsNo = farms.reduce((total, next) => total + BigInt(next.publicIPs.length ?? 0), BigInt(0)).toString();
   
   return [
-    { id: 0, data: nodes.length, title: "Nodes", icon: "node.png" },
-    { id: 1, data: farms.length, title: "Farms", icon: "farm.png" },
-    { id: 2, data: countries.length, title: "Countries", icon: "country.png" },
-    { id: 3, data: cru, title: "Total CPUs", icon: "cpu.png" },
-    { id: 4, data: toTeraOrGigaOrPeta(sru), title: "Total SSD", icon: "ssd.png" },
-    { id: 5, data: toTeraOrGigaOrPeta(hru), title: "Total HDD", icon: "hdd.png" },
-    { id: 6, data: toTeraOrGigaOrPeta(mru), title: "Total RAM", icon: "ram.png" },
-    { id: 7, data: accessNodes, title: "Access Nodes", icon: "access-node.png" },
-    { id: 8, data: gateways, title: "Gateways", icon: "gateway.png" },
-    { id: 9, data: twinsNo, title: "Twins", icon: "twin.png" },
-    { id: 10, data: publicIPsNo, title: "Public IPs", icon: "public-ip.png" },
-    { id: 11, data: nodeContractsNo, title: "Contracts", icon: "contract.png" },
+    { id: 0, data: nodes.length, title: "Nodes", icon: "mdi-laptop" },
+    { id: 1, data: farms.length, title: "Farms", icon: "mdi-tractor" },
+    { id: 2, data: countries.length, title: "Countries", icon: "mdi-earth" },
+    { id: 3, data: cru, title: "Total CPUs", icon: "mdi-cpu-64-bit" },
+    { id: 4, data: toTeraOrGigaOrPeta(sru), title: "Total SSD", icon: "mdi-nas" },
+    { id: 5, data: toTeraOrGigaOrPeta(hru), title: "Total HDD", icon: "mdi-harddisk" },
+    { id: 6, data: toTeraOrGigaOrPeta(mru), title: "Total RAM", icon: "mdi-memory" },
+    { id: 7, data: accessNodes, title: "Access Nodes", icon: "mdi-gate" },
+    { id: 8, data: gateways, title: "Gateways", icon: "mdi-boom-gate-outline" },
+    { id: 9, data: twinsNo, title: "Twins", icon: "mdi-brain" },
+    { id: 10, data: publicIPsNo, title: "Public IPs", icon: "mdi-access-point" },
+    { id: 11, data: nodeContractsNo, title: "Contracts", icon: "mdi-file-document-edit-outline" },
   ]
 }
 

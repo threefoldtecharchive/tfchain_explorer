@@ -175,6 +175,7 @@ export default {
           ...node,
           publicIPs: getFarmPublicIPs(state, node.farmId),
           countryFullName: byInternet(country)?.country,
+          farmingPolicyName: state.policies[node.farmingPolicyId],
         };
       });
     },
@@ -184,7 +185,7 @@ export default {
     inFilter("farmId"),
     inFilter("twinId"),
     inFilter("country"),
-    inFilter("farmingPolicyId"),
+    inFilter("farmingPolicyName"),
     inFilter("countryFullName"),
     rangeFilter("hru"),
     rangeFilter("mru"),

@@ -1,10 +1,14 @@
 <template>
   <Layout pageName="Statistics" v-if="statistics" :noFilter="true">
     <v-container>
-      <section class="items">
+      <section class="items" v-if="statistics.length > 0">
         <div v-for="item of statistics" :key="item.id">
           <StatisticsCard :item="item" />
         </div>
+      </section>
+
+      <section class="loader" v-if="statistics.length === 0">
+        <v-progress-circular size="150" indeterminate />
       </section>
     </v-container>
   </Layout>
@@ -51,5 +55,11 @@ export default class Statistics extends Vue {
       width: 100%;
     }
   }
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 150px 0;
 }
 </style>

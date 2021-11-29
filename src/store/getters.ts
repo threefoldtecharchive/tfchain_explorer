@@ -99,6 +99,10 @@ export interface IStatistics {
 
 // prettier-ignore
 export function getStatistics(state: IState): IStatistics[] {
+  if (!state.data) {
+    return [];
+  }
+  
   const nodes = fallbackDataExtractor("nodes")(state);
   const farms = fallbackDataExtractor('farms')(state);
   const countries = [...new Set(nodes.map(node => node.country))]

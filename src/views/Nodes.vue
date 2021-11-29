@@ -9,7 +9,7 @@
         @click="toggleActive(idx)"
         filter
       >
-        {{ getChipLabel(filter) }}
+        {{ filter.label }}
       </v-chip>
     </template>
 
@@ -18,26 +18,26 @@
         <InFilter
           key1="nodes"
           :key2="filter.key"
-          :label="filter.label"
+          :label="filter.placeholder"
           v-if="filter.type === 'in'"
         />
         <RangeFilter
           v-if="filter.type === 'range'"
           key1="nodes"
           :key2="filter.key"
-          :label="filter.label"
+          :label="filter.placeholder"
           :max="filter.max"
         />
         <ConditionFilter
           v-if="filter.type === 'condition'"
           key1="nodes"
           :key2="filter.key"
-          :labels="filter.label"
+          :labels="filter.placeholder"
         />
         <ComparisonFilter
           key1="nodes"
           :key2="filter.key"
-          :label="filter.label"
+          :label="filter.placeholder"
           :prefix="filter.prefix"
           v-if="filter.type === 'comparison'"
         />
@@ -142,77 +142,89 @@ export default class Nodes extends Vue {
   // the idea is to allow user to sort filter he wants
   activeFilters: any[] = [
     {
+      label: "HRU",
       type: "range",
       active: true,
       key: "hru",
-      label: "hru",
+      placeholder: "hru",
       max: 1e12 * 300, // 1e12 is Terra and we want here 300 Terrabytes
     },
     {
+      label: "MRU",
       type: "range",
       active: true,
       key: "mru",
-      label: "mru",
+      placeholder: "mru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
     },
     {
+      label: "CRU",
       type: "range",
       active: true,
       key: "cru",
-      label: "cru",
+      placeholder: "cru",
       max: 60,
     },
   ];
+
   filters = [
     {
+      label: "Node ID",
       type: "in",
       active: false,
       key: "nodeId",
-      label: "Filter by node id.",
+      placeholder: "Filter by node id.",
     },
     {
+      label: "Farm ID",
       type: "in",
       active: false,
       key: "farmId",
-      label: "Filter by farm id.",
+      placeholder: "Filter by farm id.",
     },
     {
+      label: "Twin ID",
       type: "in",
       active: false,
       key: "twinId",
-      label: "Filter by twin id.",
+      placeholder: "Filter by twin id.",
     },
     {
+      label: "Country Full Name",
       type: "in",
       active: false,
       key: "countryFullName",
-      label: "Filter by country.",
+      placeholder: "Filter by country.",
     },
     {
+      label: "Farming Policy ID",
       type: "in",
       active: false,
       key: "farmingPolicyId",
-      label: "Filter by farming policy id.",
+      placeholder: "Filter by farming policy id.",
     },
     {
+      label: "SRU",
       type: "range",
       active: false,
       key: "sru",
-      label: "sru",
+      placeholder: "sru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
     },
     ...this.activeFilters,
     {
+      label: "Up Time",
       type: "condition",
       active: false,
       key: "uptime",
-      label: ["Status", "Offline", "Online"],
+      placeholder: ["Status", "Offline", "Online"],
     },
     {
+      label: "Public IP",
       type: "comparison",
       active: false,
       key: "publicIPs",
-      label: "Filter by greater than or equal to publicIp Number.",
+      placeholder: "Filter by greater than or equal to publicIp Number.",
       prefix: ">=",
     },
   ];
@@ -245,14 +257,6 @@ export default class Nodes extends Vue {
 
   closeSheet(): void {
     this.node = null;
-  }
-
-  getChipLabel(filter: any): string {
-    let v = filter.key;
-    if (filter.type === "condition") {
-      v = filter.label[0];
-    }
-    return v.toUpperCase();
   }
 }
 </script>

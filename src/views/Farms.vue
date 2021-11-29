@@ -9,7 +9,7 @@
         @click="toggleActive(idx)"
         filter
       >
-        {{ filter.key.toUpperCase() }}
+        {{ filter.label }}
       </v-chip>
     </template>
 
@@ -18,25 +18,25 @@
         <InFilter
           key1="farms"
           :key2="filter.key"
-          :label="filter.label"
+          :label="filter.placeholder"
           v-if="filter.type === 'in'"
         />
         <RangeFilter
           v-if="filter.type === 'range'"
           key1="farms"
           :key2="filter.key"
-          :label="filter.label"
+          :label="filter.placeholder"
         />
         <ConditionFilter
           v-if="filter.type === 'condition'"
           key1="farms"
           :key2="filter.key"
-          :labels="filter.label"
+          :labels="filter.placeholder"
         />
         <ComparisonFilter
           key1="farms"
           :key2="filter.key"
-          :label="filter.label"
+          :label="filter.placeholder"
           :prefix="filter.prefix"
           v-if="filter.type === 'comparison'"
         />
@@ -120,39 +120,44 @@ export default class Farms extends Vue {
   // the idea is to allow user to sort filter he wants
   activeFilters: any[] = [
     {
+      label: "Name",
       type: "in",
       active: true,
       key: "name",
-      label: "Filter by node name",
+      placeholder: "Filter by node name",
     },
     {
+      label: "Twin ID",
       type: "in",
       active: true,
       key: "twinId",
-      label: "Filter by twin id.",
+      placeholder: "Filter by twin id.",
     },
     {
+      label: "Certification Type",
       type: "in",
       active: true,
       key: "certificationType",
-      label: "Filter by certification type",
+      placeholder: "Filter by certification type",
       value: ["Diy", "Certified"],
     },
   ];
 
   filters = [
     {
+      label: "Farm ID",
       type: "in",
       active: false,
       key: "farmId",
-      label: "Filter by farm id.",
+      placeholder: "Filter by farm id.",
     },
     ...this.activeFilters,
     {
+      label: "Public IP",
       type: "comparison",
       active: false,
       key: "publicIPsNo",
-      label: "Filter by greater than or equal to publicIp Number.",
+      placeholder: "Filter by greater than or equal to publicIp Number.",
       prefix: ">=",
     },
   ];

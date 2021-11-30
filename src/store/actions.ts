@@ -6,10 +6,21 @@ import { MutationTypes } from './mutations';
 
 
 export enum ActionTypes {
-    LOAD_DATA = 'loadData'
+    INIT_POLICIES = "initPolicies",
+    LOAD_DATA = "loadData"
 }
 
 export default {
+    initPolicies({ commit }: ActionContext<IState, IState>) {
+        fetch("https://raw.githubusercontent.com/threefoldtech/tfchain/development/farming_policies.json")
+            .then<{id: number, name: string}[]>(res => res.json())
+            .then(items => {
+                return items.map(({ name }) => name);
+            })
+            .then(data => {
+                commit(MutationTypes.SET_POLICIES, data);
+            });
+    },
     loadData({ commit }: ActionContext<IState, IState>) {
         commit(MutationTypes.SET_LOAD, true);
     

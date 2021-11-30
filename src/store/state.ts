@@ -28,10 +28,11 @@ interface IComparisonFilter {
   value: number;
 }
 
-const createComparisonFilter = () => ({ enabled: false, value: 0 })
+const createComparisonFilter = () => ({ enabled: false, value: 0 });
 
 export interface IState {
   data: GetDataQueryType | null;
+  policies: { [key: string]: string };
   loading: boolean;
   filters: {
     nodes: {
@@ -40,7 +41,7 @@ export interface IState {
       farmId: IInFilter;
       twinId: IInFilter;
       country: IInFilter;
-      farmingPolicyId: IInFilter;
+      farmingPolicyName: IInFilter;
       hru: IRangeFilter;
       cru: IRangeFilter;
       mru: IRangeFilter;
@@ -62,6 +63,7 @@ export interface IState {
 
 export default {
   data: null,
+  policies: {},
   loading: false,
   filters: {
     nodes: {
@@ -70,14 +72,14 @@ export default {
       farmId: createInFilter(),
       twinId: createInFilter(),
       country: createInFilter(),
-      farmingPolicyId: createInFilter(),
+      farmingPolicyName: createInFilter(),
       hru: createRangeFilter(),
       cru: createRangeFilter(),
       sru: createRangeFilter(),
       mru: createRangeFilter(),
       uptime: createConditionFilter(),
       countryFullName: createInFilter(),
-      publicIPs: createComparisonFilter()
+      publicIPs: createComparisonFilter(),
     },
     farms: {
       createdById: createInFilter(),
@@ -85,7 +87,7 @@ export default {
       twinId: createInFilter(),
       certificationType: createInFilter(),
       name: createInFilter(),
-      publicIPsNo: createComparisonFilter()
+      publicIPsNo: createComparisonFilter(),
     },
   },
 } as IState;

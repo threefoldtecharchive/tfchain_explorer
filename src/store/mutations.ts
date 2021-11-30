@@ -6,6 +6,7 @@ export enum MutationTypes {
   SET_DATA = "setData",
   SET_FILTER_ENABLE = "setFilterEnable",
   SET_FILTER_VALUE = "setFilterValue",
+  SET_POLICIES = "setPolicies",
 }
 
 interface ISetNodeFilter {
@@ -20,6 +21,9 @@ export default {
   },
   setData(state: IState, payload: GetDataQueryType) {
     state.data = payload;
+  },
+  setPolicies(state: IState, payload: any) {
+    state.policies = payload;
   },
   setFilterEnable(state: IState, { key1, key2, value }: ISetNodeFilter) {
     (state.filters[key1] as any)[key2].enabled = value;

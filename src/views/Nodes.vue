@@ -197,11 +197,11 @@ export default class Nodes extends Vue {
       placeholder: "Filter by country.",
     },
     {
-      label: "Farming Policy ID",
+      label: "Farming Policy",
       type: "in",
       active: false,
-      key: "farmingPolicyId",
-      placeholder: "Filter by farming policy id.",
+      key: "farmingPolicyName",
+      placeholder: "Filter by farming policy name.",
     },
     {
       label: "SRU",

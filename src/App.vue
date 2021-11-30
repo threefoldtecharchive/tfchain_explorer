@@ -12,6 +12,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import Sidenav from "@/components/Sidebar.vue";
 import Navbar from "@/components/Navbar.vue";
+import { ActionTypes } from "./store/actions";
 
 @Component({
   components: {
@@ -23,9 +24,10 @@ export default class App extends Vue {
   mini = true;
 
   created() {
-    this.$store.dispatch("loadData");
+    this.$store.dispatch(ActionTypes.INIT_POLICIES);
+    this.$store.dispatch(ActionTypes.LOAD_DATA);
     setInterval(() => {
-      this.$store.dispatch("loadData");
+      this.$store.dispatch(ActionTypes.LOAD_DATA);
     }, 60 * 1000);
   }
 }

@@ -145,6 +145,7 @@ export default {
         ...node,
         publicIp: getFarmPublicIPs(state, node.farmId),
         countryFullName: byInternet(country)?.country,
+        farmingPolicyName: state.policies[node.farmingPolicyId],
       };
     });
   },

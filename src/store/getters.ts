@@ -146,6 +146,7 @@ export default {
         publicIp: getFarmPublicIPs(state, node.farmId),
         countryFullName: byInternet(country)?.country,
         farmingPolicyName: state.policies[node.farmingPolicyId],
+        status: state.nodes_status[node.nodeId],
       };
     });
   },
@@ -177,6 +178,7 @@ export default {
           publicIPs: getFarmPublicIPs(state, node.farmId),
           countryFullName: byInternet(country)?.country,
           farmingPolicyName: state.policies[node.farmingPolicyId],
+          status: state.nodes_status[node.nodeId],
         };
       });
     },
@@ -192,7 +194,7 @@ export default {
     rangeFilter("mru"),
     rangeFilter("sru"),
     rangeFilter("cru"),
-    conditionFilter("uptime"),
+    conditionFilter("status"),
     comparisonFilter("publicIPs", ">=")
   ),
 

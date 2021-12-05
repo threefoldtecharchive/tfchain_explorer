@@ -213,10 +213,10 @@ export default class Nodes extends Vue {
     },
     ...this.activeFilters,
     {
-      label: "Up Time",
+      label: "Nodes Status",
       type: "condition",
       active: false,
-      key: "uptime",
+      key: "status",
       placeholder: ["Status", "Offline", "Online"],
     },
     {

@@ -105,7 +105,7 @@
     </template>
 
     <template v-slot:default>
-      <NodesDistribution />
+      <NodesDistribution v-if="$store.getters.nodes.length > 0" />
     </template>
   </Layout>
 </template>

@@ -20,6 +20,7 @@ import { IState } from "@/store/state";
 import { Component, Vue } from "vue-property-decorator";
 import Map from "./Map.vue";
 import { createPopper, Instance } from "@popperjs/core/lib/popper-lite";
+import { byCountry } from "country-code-lookup";
 
 function generateGetBoundingClientRect(x = 0, y = 0) {
   return () => ({
@@ -87,7 +88,13 @@ export default class NodesDistribution extends Vue {
   private _colorizeMap(nodes: INode[]) {
     if (!this.map) return;
 
-    const ids = nodes.map((n) => n.country).filter((c) => !!c) as string[];
+    const ids = nodes
+      .map((n) => {
+        return n.country && n.country?.length > 2
+          ? byCountry(n.country)?.internet
+          : n.country;
+      })
+      .filter((c) => !!c) as string[];
 
     const counter = {} as { [key: string]: number };
     for (const id of ids) {
@@ -106,6 +113,8 @@ export default class NodesDistribution extends Vue {
 
     for (const key in counter) {
       const path = this.map.querySelector(`path[id='${key}']`);
+      console.log({ path });
+
       if (!path) continue;
       path.setAttribute(
         "fill",

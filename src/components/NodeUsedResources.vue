@@ -1,10 +1,15 @@
 <template>
-  <v-container v-if="node.status">
+  <v-container>
     <div class="d-flex flex-row justify-center align-center mb-6">
       <div>
         <v-icon size="40" class="mr-2">mdi-chart-pie</v-icon>
       </div>
-      <div style="font-size: 30px">Node Resources</div>
+      <div style="font-size: 30px">
+        Node Resources [<span
+          :style="'color:' + (node.status ? '#4caf50' : '#f44336')"
+          >{{ node.status ? "Online" : "Offline" }}</span
+        >]
+      </div>
     </div>
     <!-- Details -->
     <v-row>
@@ -70,11 +75,17 @@ export default class NodeUsedResources extends Vue {
       .finally(() => (this.loader = false));
   }
   created() {
-    this.getNodeUsedResources(this.node.nodeId).then((resources) => {
-      if (resources) {
-        this.resources = resources;
-      }
-    });
+    if (this.node.status) {
+      this.getNodeUsedResources(this.node.nodeId).then((resources) => {
+        if (resources) {
+          this.resources = resources;
+        }
+      });
+    } else {
+      this.resources = ["cru", "sru", "hru", "mru"].map((i, idx) => {
+        return { id: idx + 1, value: 0, name: i.toLocaleUpperCase() };
+      });
+    }
   }
 }
 </script>

@@ -45,10 +45,18 @@
     </template>
 
     <template v-slot:table>
-      <v-row align="center" justify="end">
-        Gateways
-        <v-switch v-model="withGateway" class="ml-4"></v-switch>
-      </v-row>
+      <div
+        style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;"
+      >
+        <div>
+          <v-switch
+            v-model="withGateway"
+            style="margin-bottom: -30px;"
+            label="Gateways"
+          />
+          <v-switch v-model="onlyOnline" label="Online" />
+        </div>
+      </div>
       <v-data-table
         ref="table"
         :loading="$store.getters.loading"
@@ -97,7 +105,7 @@
     </template>
 
     <template v-slot:default>
-      <NodesDistribution />
+      <NodesDistribution v-if="$store.getters.nodes.length > 0" />
     </template>
   </Layout>
 </template>
@@ -125,6 +133,7 @@ import ComparisonFilter from "@/components/ComparisonFilter.vue";
 })
 export default class Nodes extends Vue {
   withGateway = false;
+  onlyOnline = false;
 
   headers = [
     { text: "ID", value: "nodeId" },
@@ -213,10 +222,10 @@ export default class Nodes extends Vue {
     },
     ...this.activeFilters,
     {
-      label: "Up Time",
+      label: "Nodes Status",
       type: "condition",
       active: false,
-      key: "uptime",
+      key: "status",
       placeholder: ["Status", "Offline", "Online"],
     },
     {
@@ -230,11 +239,16 @@ export default class Nodes extends Vue {
   ];
 
   getNodes() {
-    const nodes: INode[] = this.$store.getters.filtered_nodes;
-    if (!this.withGateway) {
-      return nodes;
+    let nodes: INode[] = this.$store.getters.filtered_nodes;
+    if (this.withGateway) {
+      nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
     }
-    return nodes.filter(({ publicConfig }) => publicConfig !== null);
+
+    if (this.onlyOnline) {
+      nodes = nodes.filter(({ status }) => status === true);
+    }
+
+    return nodes;
   }
 
   toggleActive(idx: number) {

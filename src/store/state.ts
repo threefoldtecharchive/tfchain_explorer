@@ -34,6 +34,7 @@ export interface IState {
   data: GetDataQueryType | null;
   policies: { [key: string]: string };
   loading: boolean;
+  nodes_status: { [key: number]: boolean };
   filters: {
     nodes: {
       nodeId: IInFilter;
@@ -46,7 +47,7 @@ export interface IState {
       cru: IRangeFilter;
       mru: IRangeFilter;
       sru: IRangeFilter;
-      uptime: IConditionFilter;
+      status: IConditionFilter;
       countryFullName: IInFilter;
       publicIPs: IComparisonFilter;
     };
@@ -65,6 +66,7 @@ export default {
   data: null,
   policies: {},
   loading: false,
+  nodes_status: {},
   filters: {
     nodes: {
       nodeId: createInFilter(),
@@ -77,7 +79,7 @@ export default {
       cru: createRangeFilter(),
       sru: createRangeFilter(),
       mru: createRangeFilter(),
-      uptime: createConditionFilter(),
+      status: createConditionFilter(),
       countryFullName: createInFilter(),
       publicIPs: createComparisonFilter(),
     },

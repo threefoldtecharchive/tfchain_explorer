@@ -103,6 +103,7 @@ export interface INode {
   country?: string;
   city?: string;
   interfaces: Interfaces[];
+  status: boolean;
 }
 
 export const PublicConfigType = gql`

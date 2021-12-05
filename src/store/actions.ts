@@ -24,9 +24,22 @@ export default {
     loadData({ commit }: ActionContext<IState, IState>) {
         commit(MutationTypes.SET_LOAD, true);
     
-        apollo.defaultClient.query<GetTotalCountQueryType>({
-            query: getTotalCountQuery
-        })
+        fetch("https://gridproxy.dev.grid.tf/nodes")
+            .then<{nodeId: number, status: "up" | "down"}[]>(res => res.json())
+            .then(nodes => {
+                return nodes.reduce((items, node) => {
+                    items[node.nodeId] = node.status === "up";
+                    return items;
+                }, {} as {[key: number]: boolean});
+            })
+            .then(nodes => {
+                commit(MutationTypes.SET_NODES_STATUS, nodes);
+            })
+            .then(() => {
+                return apollo.defaultClient.query<GetTotalCountQueryType>({
+                    query: getTotalCountQuery
+                })
+            })
         .then(({ data }) => {
             const { nodes, farms, twins, countries, nodeContracts } = data;
             return {

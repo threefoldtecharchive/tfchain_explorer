@@ -56,7 +56,7 @@ export default class NodeUsedResources extends Vue {
   getNodeUsedResources(nodeId: number) {
     this.loader = true;
 
-    return fetch(`https://gridproxy.dev.grid.tf/nodes/${nodeId}`)
+    return fetch(`${window.configs.proxy_url}/nodes/${nodeId}`)
       .then((res) => res.json())
       .then<any[]>((res) => {
         return ["cru", "sru", "hru", "mru"].map((i, idx) => {

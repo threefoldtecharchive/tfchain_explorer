@@ -24,7 +24,7 @@ export default {
     loadData({ commit }: ActionContext<IState, IState>) {
         commit(MutationTypes.SET_LOAD, true);
     
-        fetch("https://gridproxy.dev.grid.tf/nodes")
+        fetch(`${window.configs.proxy_url}/nodes`)
             .then<{nodeId: number, status: "up" | "down"}[]>(res => res.json())
             .then(nodes => {
                 return nodes.reduce((items, node) => {

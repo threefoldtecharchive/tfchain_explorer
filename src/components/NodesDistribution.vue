@@ -113,7 +113,6 @@ export default class NodesDistribution extends Vue {
 
     for (const key in counter) {
       const path = this.map.querySelector(`path[id='${key}']`);
-      console.log({ path });
 
       if (!path) continue;
       path.setAttribute(

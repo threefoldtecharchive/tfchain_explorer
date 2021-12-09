@@ -144,7 +144,7 @@ export default {
       return {
         ...node,
         publicIp: getFarmPublicIPs(state, node.farmId),
-        countryFullName: byInternet(country)?.country,
+        countryFullName: country && country?.length == 2 ? byInternet(country)?.country: country,
         farmingPolicyName: state.policies[node.farmingPolicyId],
         status: state.nodes_status[node.nodeId],
       };
@@ -176,7 +176,7 @@ export default {
         return {
           ...node,
           publicIPs: getFarmPublicIPs(state, node.farmId),
-          countryFullName: byInternet(country)?.country,
+          countryFullName: country && country?.length == 2 ? byInternet(country)?.country: country,
           farmingPolicyName: state.policies[node.farmingPolicyId],
           status: state.nodes_status[node.nodeId],
         };

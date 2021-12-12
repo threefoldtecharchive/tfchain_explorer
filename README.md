@@ -96,8 +96,8 @@ $ helm install --set ingress.host=dashboard.com --set GQL_URL=https://graphql.de
 
 
 ## Available explorers
-- [Devnet explorer](https://explorer.tfchain.dev.threefold.io)
-- [Testnet explorer](https://explorer.tfchain.test.threefold.io)
+- [Devnet explorer](https://explorer.dev.grid.tf)
+- [Testnet explorer](https://explorer.test.grid.tf/)
 - [Mainnet explorer -not live yet-](https://explorer.tfchain.threefold.io)
 
 > TODO: keep it in todo until all are alive

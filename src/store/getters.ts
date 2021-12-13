@@ -95,19 +95,11 @@ export function getFarmPublicIPs(state: IState, farmId: number): [number,number,
 
 export function getFarmFreePublicIps(farm: any): number {
   const freePublicIps = farm.publicIPs.filter((x: any) => x.contractId == 0);
-  if (freePublicIps.length > 0)
-  {
     return freePublicIps.length
-  }
-  return 0;
 }
 export function getFarmUsedPublicIps(farm: any): number {
   const freePublicIps = farm.publicIPs.filter((x: any) => x.contractId != 0);
-  if (freePublicIps.length > 0)
-  {
     return freePublicIps.length
-  }
-  return 0;
 }
 export interface IStatistics {
   id: number;

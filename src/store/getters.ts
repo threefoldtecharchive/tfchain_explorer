@@ -82,12 +82,11 @@ function getGatewaysCount(nodes: INode[]) {
 }
 
 export function getFarmPublicIPs(state: IState, farmId: number): [number,number,number] {
-  const farms = fallbackDataExtractor("farms")(state);
-  const filtered_farm = farms.filter((x) => x.farmId === farmId);
-  if (filtered_farm.length > 0) {
-    const freePublicIps = getFarmFreePublicIps(filtered_farm[0]);
-    const usedPublicIps = getFarmUsedPublicIps(filtered_farm[0]);
-    const totalPublicIps = filtered_farm[0].publicIPs.length;
+  const farm = (fallbackDataExtractor("farms")(state)).find(f => f.farmId === farmId);
+  if (farm) {
+    const freePublicIps = getFarmFreePublicIps(farm);
+    const usedPublicIps = getFarmUsedPublicIps(farm);
+    const totalPublicIps = farm.publicIPs.length;
     return [totalPublicIps, freePublicIps, usedPublicIps];
   }
   return [0,0,0];

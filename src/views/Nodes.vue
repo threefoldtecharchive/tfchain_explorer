@@ -138,7 +138,10 @@ export default class Nodes extends Vue {
   headers = [
     { text: "ID", value: "nodeId" },
     { text: "Farm ID", value: "farmId", align: "center" },
-    { text: "Farm Total Public IPs", value: "publicIPs", align: "center" },
+    { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
+    { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
+    { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
+    // { text: "Public IPs Total | Free | Used", value: "publicIPs", align: "center" },
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },

@@ -81,15 +81,34 @@ function getGatewaysCount(nodes: INode[]) {
   }, 0);
 }
 
-export function getFarmPublicIPs(state: IState, farmId: number): number {
+export function getFarmPublicIPs(state: IState, farmId: number): [number,number,number] {
   const farms = fallbackDataExtractor("farms")(state);
-  const filtered_farms = farms.filter((x) => x.farmId === farmId);
-  if (filtered_farms.length > 0) {
-    return filtered_farms[0].publicIPs.length;
+  const filtered_farm = farms.filter((x) => x.farmId === farmId);
+  if (filtered_farm.length > 0) {
+    const freePublicIps = getFarmFreePublicIps(filtered_farm[0]);
+    const usedPublicIps = getFarmUsedPublicIps(filtered_farm[0]);
+    const totalPublicIps = filtered_farm[0].publicIPs.length;
+    return [totalPublicIps, freePublicIps, usedPublicIps];
+  }
+  return [0,0,0];
+}
+
+export function getFarmFreePublicIps(farm: any): number {
+  const freePublicIps = farm.publicIPs.filter((x: any) => x.contractId == 0);
+  if (freePublicIps.length > 0)
+  {
+    return freePublicIps.length
   }
   return 0;
 }
-
+export function getFarmUsedPublicIps(farm: any): number {
+  const freePublicIps = farm.publicIPs.filter((x: any) => x.contractId != 0);
+  if (freePublicIps.length > 0)
+  {
+    return freePublicIps.length
+  }
+  return 0;
+}
 export interface IStatistics {
   id: number;
   data: number | string;
@@ -141,9 +160,12 @@ export default {
     // const farms = findById("farms", "farmId")(state);
     return nodes.map((node) => {
       const country: any = node.country;
+      const [totalPublicIPs,freePublicIPs,usedPublicIps]=getFarmPublicIPs(state, node.farmId);
       return {
         ...node,
-        publicIp: getFarmPublicIPs(state, node.farmId),
+        totalPublicIPs: totalPublicIPs,
+        freePublicIPs : freePublicIPs,
+        usedPublicIPs : usedPublicIps,
         countryFullName: country && country?.length == 2 ? byInternet(country)?.country: country,
         farmingPolicyName: state.policies[node.farmingPolicyId],
         status: state.nodes_status[node.nodeId],
@@ -173,9 +195,13 @@ export default {
       const nodes = fallbackDataExtractor("nodes")(state);
       return nodes.map((node) => {
         const country: any = node.country;
+        const [totalPublicIPs, freePublicIPs, usedPublicIps]=getFarmPublicIPs(state, node.farmId);
+
         return {
           ...node,
-          publicIPs: getFarmPublicIPs(state, node.farmId),
+          totalPublicIPs: totalPublicIPs,
+          freePublicIPs : freePublicIPs,
+          usedPublicIPs : usedPublicIps,
           countryFullName: country && country?.length == 2 ? byInternet(country)?.country: country,
           farmingPolicyName: state.policies[node.farmingPolicyId],
           status: state.nodes_status[node.nodeId],

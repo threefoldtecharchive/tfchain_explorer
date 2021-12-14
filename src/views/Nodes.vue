@@ -141,13 +141,11 @@ export default class Nodes extends Vue {
     { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
     { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
     { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
-    // { text: "Public IPs Total | Free | Used", value: "publicIPs", align: "center" },
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
     { text: "CRU", value: "cru", align: "center" },
     { text: "Up Time", value: "uptime", align: "center" },
-    { text: "CREATED", value: "created", align: "center" },
   ];
 
   // activeFilters is exactly same as filters

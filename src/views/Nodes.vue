@@ -224,13 +224,6 @@ export default class Nodes extends Vue {
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
     },
     ...this.activeFilters,
-    // {
-    //   label: "Nodes Status",
-    //   type: "condition",
-    //   active: false,
-    //   key: "status",
-    //   placeholder: ["Status", "Offline", "Online"],
-    // },
     {
       label: "Public IP",
       type: "comparison",

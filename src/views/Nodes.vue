@@ -133,7 +133,7 @@ import ComparisonFilter from "@/components/ComparisonFilter.vue";
 })
 export default class Nodes extends Vue {
   withGateway = false;
-  onlyOnline = false;
+  onlyOnline = true;
 
   headers = [
     { text: "ID", value: "nodeId" },
@@ -225,13 +225,6 @@ export default class Nodes extends Vue {
     },
     ...this.activeFilters,
     {
-      label: "Nodes Status",
-      type: "condition",
-      active: false,
-      key: "status",
-      placeholder: ["Status", "Offline", "Online"],
-    },
-    {
       label: "Public IP",
       type: "comparison",
       active: false,
@@ -247,9 +240,8 @@ export default class Nodes extends Vue {
       nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
     }
 
-    if (this.onlyOnline) {
-      nodes = nodes.filter(({ status }) => status === true);
-    }
+    nodes = nodes.filter(({ status }) => status === this.onlyOnline);
+    
 
     return nodes;
   }

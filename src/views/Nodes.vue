@@ -229,10 +229,10 @@ export default class Nodes extends Vue {
     },
     ...this.activeFilters,
     {
-      label: "Public IP",
+      label: "Free Public IP",
       type: "comparison",
       active: false,
-      key: "publicIPs",
+      key: "freePublicIPs",
       placeholder: "Filter by greater than or equal to publicIp Number.",
       prefix: ">=",
     },

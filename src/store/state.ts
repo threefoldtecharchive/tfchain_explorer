@@ -49,7 +49,7 @@ export interface IState {
       sru: IRangeFilter;
       status: IConditionFilter;
       countryFullName: IInFilter;
-      publicIPs: IComparisonFilter;
+      freePublicIPs: IComparisonFilter;
     };
     farms: {
       createdById: IInFilter;
@@ -81,7 +81,7 @@ export default {
       mru: createRangeFilter(),
       status: createConditionFilter(),
       countryFullName: createInFilter(),
-      publicIPs: createComparisonFilter(),
+      freePublicIPs: createComparisonFilter(),
     },
     farms: {
       createdById: createInFilter(),

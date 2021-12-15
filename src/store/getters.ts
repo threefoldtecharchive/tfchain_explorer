@@ -212,7 +212,7 @@ export default {
     rangeFilter("sru"),
     rangeFilter("cru"),
     conditionFilter("status"),
-    comparisonFilter("publicIPs", ">=")
+    comparisonFilter("freePublicIPs", ">=")
   ),
 
   filtered_farm: applyFilters(

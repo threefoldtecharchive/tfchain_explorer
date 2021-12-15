@@ -27,6 +27,7 @@
           :key2="filter.key"
           :label="filter.placeholder"
           :max="filter.max"
+          :unit="filter.unit"
         />
         <ConditionFilter
           v-if="filter.type === 'condition'"
@@ -158,6 +159,8 @@ export default class Nodes extends Vue {
       key: "hru",
       placeholder: "hru",
       max: 1e12 * 300, // 1e12 is Terra and we want here 300 Terrabytes
+      unit: "TB"
+
     },
     {
       label: "MRU",
@@ -166,6 +169,7 @@ export default class Nodes extends Vue {
       key: "mru",
       placeholder: "mru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
+      unit: "TB"
     },
     {
       label: "CRU",
@@ -220,6 +224,8 @@ export default class Nodes extends Vue {
       key: "sru",
       placeholder: "sru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
+      unit: "TB"
+
     },
     ...this.activeFilters,
     {

@@ -1,10 +1,10 @@
 <template>
-  <v-card flat color="transparent">
+  <v-card flat color="transparent" class="mb-6">
     <v-subheader>{{ label.toLocaleUpperCase() }}</v-subheader>
 
-    <v-card-text>
+    <v-card-text class="pt-0">
       <v-row>
-        <v-col class="col-11">
+        <v-col class="col-11 pt-0">
           <v-range-slider
             v-model="range"
             :max="_max"

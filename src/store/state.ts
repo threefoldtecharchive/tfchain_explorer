@@ -49,7 +49,7 @@ export interface IState {
       sru: IRangeFilter;
       status: IConditionFilter;
       countryFullName: IInFilter;
-      publicIPs: IComparisonFilter;
+      freePublicIPs: IComparisonFilter;
     };
     farms: {
       createdById: IInFilter;
@@ -57,7 +57,7 @@ export interface IState {
       twinId: IInFilter;
       certificationType: IInFilter;
       name: IInFilter;
-      publicIPsNo: IComparisonFilter;
+      freePublicIPs: IComparisonFilter;
     };
   };
 }
@@ -81,7 +81,7 @@ export default {
       mru: createRangeFilter(),
       status: createConditionFilter(),
       countryFullName: createInFilter(),
-      publicIPs: createComparisonFilter(),
+      freePublicIPs: createComparisonFilter(),
     },
     farms: {
       createdById: createInFilter(),
@@ -89,7 +89,7 @@ export default {
       twinId: createInFilter(),
       certificationType: createInFilter(),
       name: createInFilter(),
-      publicIPsNo: createComparisonFilter(),
+      freePublicIPs: createComparisonFilter(),
     },
   },
 } as IState;

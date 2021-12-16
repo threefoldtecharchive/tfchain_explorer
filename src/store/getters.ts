@@ -212,7 +212,7 @@ export default {
     rangeFilter("sru"),
     rangeFilter("cru"),
     conditionFilter("status"),
-    comparisonFilter("publicIPs", ">=")
+    comparisonFilter("freePublicIPs", ">=")
   ),
 
   filtered_farm: applyFilters(
@@ -221,7 +221,9 @@ export default {
       return farms.map((f) => {
         return {
           ...f,
-          publicIPsNo: f.publicIPs.length,
+          totalPublicIPs : f.publicIPs.length,
+          freePublicIPs : getFarmFreePublicIps(f),
+          usedPublicIPs : getFarmUsedPublicIps(f),
         };
       });
     },
@@ -231,7 +233,7 @@ export default {
     inFilter("twinId"),
     inFilter("certificationType"),
     inFilter("name"),
-    comparisonFilter("publicIPsNo", ">=")
+    comparisonFilter("freePublicIPs", ">=")
   ),
 
   /* visual helpers */

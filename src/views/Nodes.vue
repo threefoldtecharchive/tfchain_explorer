@@ -27,6 +27,7 @@
           :key2="filter.key"
           :label="filter.placeholder"
           :max="filter.max"
+          :unit="filter.unit"
         />
         <ConditionFilter
           v-if="filter.type === 'condition'"
@@ -105,7 +106,7 @@
     </template>
 
     <template v-slot:default>
-      <NodesDistribution v-if="$store.getters.nodes.length > 0" />
+      <NodesDistribution :nodes="getNodes()" v-if="$store.getters.nodes.length > 0" />
     </template>
   </Layout>
 </template>
@@ -141,13 +142,11 @@ export default class Nodes extends Vue {
     { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
     { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
     { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
-    // { text: "Public IPs Total | Free | Used", value: "publicIPs", align: "center" },
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
     { text: "CRU", value: "cru", align: "center" },
     { text: "Up Time", value: "uptime", align: "center" },
-    { text: "CREATED", value: "created", align: "center" },
   ];
 
   // activeFilters is exactly same as filters
@@ -160,6 +159,8 @@ export default class Nodes extends Vue {
       key: "hru",
       placeholder: "hru",
       max: 1e12 * 300, // 1e12 is Terra and we want here 300 Terrabytes
+      unit: "TB"
+
     },
     {
       label: "MRU",
@@ -168,6 +169,7 @@ export default class Nodes extends Vue {
       key: "mru",
       placeholder: "mru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
+      unit: "TB"
     },
     {
       label: "CRU",
@@ -176,6 +178,7 @@ export default class Nodes extends Vue {
       key: "cru",
       placeholder: "cru",
       max: 60,
+      unit: "core"
     },
   ];
 
@@ -222,13 +225,15 @@ export default class Nodes extends Vue {
       key: "sru",
       placeholder: "sru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
+      unit: "TB"
+
     },
     ...this.activeFilters,
     {
-      label: "Public IP",
+      label: "Free Public IP",
       type: "comparison",
       active: false,
-      key: "publicIPs",
+      key: "freePublicIPs",
       placeholder: "Filter by greater than or equal to publicIp Number.",
       prefix: ">=",
     },

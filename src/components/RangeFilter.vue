@@ -1,10 +1,10 @@
 <template>
-  <v-card flat color="transparent">
+  <v-card flat color="transparent" class="mb-6">
     <v-subheader>{{ label.toLocaleUpperCase() }}</v-subheader>
 
-    <v-card-text>
+    <v-card-text class="pt-0">
       <v-row>
-        <v-col class="px-4">
+        <v-col class="col-11 pt-0">
           <v-range-slider
             v-model="range"
             :max="_max"
@@ -13,42 +13,35 @@
             class="align-center"
           >
             <template v-slot:prepend>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
+                <template >
                   <v-text-field
-                    :value="range[0]"
+                    :value="get_value(range[0])"
                     class="mt-0 pt-0"
                     hide-details
                     single-line
                     type="number"
                     @input="onChange({ min: $event })"
-                    style="width: 40px; text-align: center;"
-                    v-bind="attrs"
-                    v-on="on"
+                    style="width: 45px; text-align: center;"
                   ></v-text-field>
                 </template>
-                <span>{{ range[0] }}</span>
-              </v-tooltip>
             </template>
             <template v-slot:append>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
+                <template >
                   <v-text-field
-                    :value="range[1]"
+                    :value="get_value(range[1])"
                     class="mt-0 pt-0"
                     hide-details
                     single-line
                     type="number"
-                    style="width: 40px; text-align: center;"
+                    style="width: 45px; text-align: center;"
                     @change="onChange({ max: $event })"
-                    v-bind="attrs"
-                    v-on="on"
                   ></v-text-field>
                 </template>
-                <span>{{ range[1] }}</span>
-              </v-tooltip>
             </template>
           </v-range-slider>
+        </v-col>
+        <v-col class="col-1 px-0 pt-2">
+          <span >{{unit}}</span>
         </v-col>
       </v-row>
     </v-card-text>
@@ -57,6 +50,8 @@
 <script lang="ts">
 import { MutationTypes } from "@/store/mutations";
 import { Component, Prop, Vue } from "vue-property-decorator";
+import toTeraOrGigaOrPeta from "@/filters/toTeraOrGigaOrPeta";
+
 
 @Component({})
 export default class RangeFilter extends Vue {
@@ -65,6 +60,7 @@ export default class RangeFilter extends Vue {
   @Prop({ required: true }) label!: string;
   @Prop() min?: number;
   @Prop() max?: number;
+  @Prop() unit?: string;
 
   get _min(): number {
     return this.min || 0;
@@ -90,6 +86,10 @@ export default class RangeFilter extends Vue {
     });
   }
 
+  get_value(val: number){
+    const res = toTeraOrGigaOrPeta(val.toString());
+    return Number(res.split(" ")[0]).toFixed(0);
+  }
   onChange({ min = this.range[0], max = this.range[1] }): void {
     this.range = [min, max];
   }

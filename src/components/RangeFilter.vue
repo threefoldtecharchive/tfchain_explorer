@@ -13,8 +13,7 @@
             class="align-center"
           >
             <template v-slot:prepend>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
+                <template >
                   <v-text-field
                     :value="get_value(range[0])"
                     class="mt-0 pt-0"
@@ -23,16 +22,11 @@
                     type="number"
                     @input="onChange({ min: $event })"
                     style="width: 45px; text-align: center;"
-                    v-bind="attrs"
-                    v-on="on"
                   ></v-text-field>
                 </template>
-                <span>{{ range[0] }}</span>
-              </v-tooltip>
             </template>
             <template v-slot:append>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
+                <template >
                   <v-text-field
                     :value="get_value(range[1])"
                     class="mt-0 pt-0"
@@ -41,16 +35,12 @@
                     type="number"
                     style="width: 45px; text-align: center;"
                     @change="onChange({ max: $event })"
-                    v-bind="attrs"
-                    v-on="on"
                   ></v-text-field>
                 </template>
-                <span>{{ range[1] }}</span>
-              </v-tooltip>
             </template>
           </v-range-slider>
         </v-col>
-        <v-col class="col-1 px-0 pt-5">
+        <v-col class="col-1 px-0 pt-2">
           <span >{{unit}}</span>
         </v-col>
       </v-row>

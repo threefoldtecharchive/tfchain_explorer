@@ -126,7 +126,7 @@ export default class Farms extends Vue {
       type: "in",
       active: true,
       key: "name",
-      placeholder: "Filter by node name",
+      placeholder: "Filter by farm name",
     },
     {
       label: "Twin ID",

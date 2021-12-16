@@ -111,7 +111,9 @@ export default class Farms extends Vue {
   headers = [
     { text: "ID", value: "farmId" },
     { text: "NAME", value: "name" },
-    { text: "PUBLIC IPS", value: "publicIPs", align: "center" },
+    { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
+    { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
+    { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
     { text: "PRICING POLICY ID", value: "pricingPolicyId", align: "center" },
   ];
@@ -153,10 +155,10 @@ export default class Farms extends Vue {
     },
     ...this.activeFilters,
     {
-      label: "Public IP",
+      label: "Free Public IP",
       type: "comparison",
       active: false,
-      key: "publicIPsNo",
+      key: "freePublicIPs",
       placeholder: "Filter by greater than or equal to publicIp Number.",
       prefix: ">=",
     },

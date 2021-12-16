@@ -57,7 +57,7 @@ export interface IState {
       twinId: IInFilter;
       certificationType: IInFilter;
       name: IInFilter;
-      publicIPsNo: IComparisonFilter;
+      freePublicIPs: IComparisonFilter;
     };
   };
 }
@@ -89,7 +89,7 @@ export default {
       twinId: createInFilter(),
       certificationType: createInFilter(),
       name: createInFilter(),
-      publicIPsNo: createComparisonFilter(),
+      freePublicIPs: createComparisonFilter(),
     },
   },
 } as IState;

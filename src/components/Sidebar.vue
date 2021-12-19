@@ -21,11 +21,26 @@
         </v-list-item-content>
       </v-list-item>
     </v-list>
+    <v-divider class="mt-10 mb-10" />
+    <v-list v-if="!mini">
+      <v-list-item
+        v-for="version in versions"
+        :key="version.name"
+        style="min-height: 30px;"
+      >
+        <strong class="mr-2">{{ version.name }}</strong> {{ version.value }}
+      </v-list-item>
+    </v-list>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+
+interface IVersion {
+  name: string;
+  value: string;
+}
 
 @Component({})
 export default class Sidebar extends Vue {
@@ -36,6 +51,24 @@ export default class Sidebar extends Vue {
     { title: "Nodes", icon: "mdi-resistor-nodes", route: "/nodes" },
     { title: "Farms", icon: "mdi-webpack", route: "/farms" },
   ];
+
+  versions: IVersion[] = [
+    {
+      name: "Explorer",
+      value: window.configs.version,
+    },
+  ];
+
+  created() {
+    fetch(window.configs.proxy_url + "/version")
+      .then<{ version: string }>((res) => res.json())
+      .then(({ version: value }) => {
+        this.versions.push({ name: "Grid Proxy", value });
+      })
+      .catch((err) => {
+        console.log("Error", err);
+      });
+  }
 }
 </script>
 

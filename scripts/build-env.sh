@@ -24,6 +24,7 @@ configs="
 window.configs = window.configs || {};
 window.configs.gql_url = '$GQL_URL';
 window.configs.proxy_url = '$PROXY_URL';
+window.configs.version = '$VERSION';
 "
 
 if [ -e $file ]

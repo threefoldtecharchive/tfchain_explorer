@@ -96,6 +96,14 @@
             </v-list-item-content>
             {{ node.created | date }}
           </v-list-item>
+          <v-divider />
+
+          <v-list-item v-if="zosVersion">
+            <v-list-item-content>
+              <v-list-item-title> ZOS Version </v-list-item-title>
+            </v-list-item-content>
+            {{ zosVersion }}
+          </v-list-item>
 
           <DatesDetails :item="node" />
         </v-list>
@@ -231,6 +239,7 @@ export default class NodeDetails_ extends Vue {
   size = 210;
   width = 10;
   fontSize = 25;
+  zosVersion = ""
 
   // used for animation
   initLoading = true;
@@ -257,6 +266,23 @@ export default class NodeDetails_ extends Vue {
 
     return Math.round(value * 10000) / 100;
   }
+
+    getZOSVersion(nodeId: number){
+      return fetch(`${window.configs.proxy_url}/nodes/${nodeId}`)
+      .then((res)=>res.json())
+      .then<string>((res)=>{
+        return res.zosVersion
+      })
+      .catch((err) => console.log("something went wrong", err))
+    }
+   created() {
+     if (this.node.status) {
+       this.getZOSVersion(this.node.nodeId).then((zosVersion) =>{
+         if(zosVersion)
+         this.zosVersion = zosVersion!;
+       })
+     }
+   }
 
   screen_max_1000 = mediaMatcher("(max-width: 1000px)");
   screen_max_800 = mediaMatcher("(max-width: 800px)");

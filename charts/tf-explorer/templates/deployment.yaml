@@ -35,6 +35,8 @@ spec:
           env:
           - name: GQL_URL
             value: {{ .Values.GQL_URL }}
+          - name: VERSION
+            value: {{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

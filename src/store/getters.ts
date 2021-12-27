@@ -159,7 +159,7 @@ export default {
         usedPublicIPs : usedPublicIps,
         countryFullName: country && country?.length == 2 ? byInternet(country)?.country: country,
         farmingPolicyName: state.policies[node.farmingPolicyId],
-        status: state.nodes_status[node.nodeId],
+        status: state.nodes_status[node.nodeId]? state.nodes_status[node.nodeId]: false,
       };
     });
   },
@@ -195,7 +195,7 @@ export default {
           usedPublicIPs : usedPublicIps,
           countryFullName: country && country?.length == 2 ? byInternet(country)?.country: country,
           farmingPolicyName: state.policies[node.farmingPolicyId],
-          status: state.nodes_status[node.nodeId],
+          status: state.nodes_status[node.nodeId]? state.nodes_status[node.nodeId]: false,
         };
       });
     },

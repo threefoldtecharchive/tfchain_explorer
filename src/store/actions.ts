@@ -23,24 +23,24 @@ export default {
     },
     loadData({ commit }: ActionContext<IState, IState>) {
         commit(MutationTypes.SET_LOAD, true);
-    
-        fetch(`${window.configs.proxy_url}/nodes`)
-            .then<{nodeId: number, status: "up" | "down"}[]>(res => res.json())
-            .then(nodes => {
-                return nodes.reduce((items, node) => {
-                    items[node.nodeId] = node.status === "up";
-                    return items;
-                }, {} as {[key: number]: boolean});
+            apollo.defaultClient.query<GetTotalCountQueryType>({
+                query: getTotalCountQuery
             })
-            .then(nodes => {
-                commit(MutationTypes.SET_NODES_STATUS, nodes);
+            .then(({ data }) => {
+                return fetch(`${window.configs.proxy_url}/nodes?max_result=${data.nodes.totalCount}`)
+                    .then<{nodeId: number, status: "up" | "down"}[]>(res => res.json())
+                    .then(nodes => {
+                        return nodes.reduce((items, node) => {
+                            items[node.nodeId] = node.status === "up";
+                            return items;
+                        }, {} as {[key: number]: boolean});
+                    })
+                    .then(nodes => {
+                        commit(MutationTypes.SET_NODES_STATUS, nodes);
+                    })
+                    .then(() => data);
             })
-            .then(() => {
-                return apollo.defaultClient.query<GetTotalCountQueryType>({
-                    query: getTotalCountQuery
-                })
-            })
-        .then(({ data }) => {
+        .then((data) => {
             const { nodes, farms, twins, countries, nodeContracts } = data;
             return {
                 nodes: nodes.totalCount,

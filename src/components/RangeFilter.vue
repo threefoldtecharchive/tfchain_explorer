@@ -34,7 +34,7 @@
                   single-line
                   type="number"
                   style="width: 45px; text-align: center;"
-                  @change="onChange({ max: $event })"
+                  @input="onChange({ max: $event })"
                 ></v-text-field>
               </template>
             </template>
@@ -89,8 +89,13 @@ export default class RangeFilter extends Vue {
     const res = toTera(val.toString());
     return Number(res.split(" ")[0]).toFixed(0);
   }
-  onChange({ min = this.range[0], max = this.range[1] }): void {
-    this.range = [min, max];
+  onChange({ min, max }: { min?: number; max?: number }) {
+    const { unit, range: [__min, __max]} = this; // prettier-ignore
+    const multiplier = unit === "TB" ? 1e12 : 1;
+    this.range = [
+      min ? min * multiplier : __min,
+      max ? max * multiplier : __max,
+    ];
   }
 
   created() {

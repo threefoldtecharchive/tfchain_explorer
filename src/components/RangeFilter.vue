@@ -21,7 +21,7 @@
                   single-line
                   type="number"
                   @input="onChange({ min: $event })"
-                  style="width: 45px; text-align: center;"
+                  style="width: 52px; text-align: center;"
                 ></v-text-field>
               </template>
             </template>
@@ -33,7 +33,7 @@
                   hide-details
                   single-line
                   type="number"
-                  style="width: 45px; text-align: center;"
+                  style="width: 52px; text-align: center;"
                   @input="onChange({ max: $event })"
                 ></v-text-field>
               </template>

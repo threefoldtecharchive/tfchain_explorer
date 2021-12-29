@@ -158,7 +158,7 @@ export default class Nodes extends Vue {
       active: true,
       key: "hru",
       placeholder: "hru",
-      max: 1e12 * 300, // 1e12 is Terra and we want here 300 Terrabytes
+      max: 1e12 * 1000, // 1e12 is Terra and we want here 1000 Terrabytes
       unit: "TB"
 
     },
@@ -177,7 +177,7 @@ export default class Nodes extends Vue {
       active: true,
       key: "cru",
       placeholder: "cru",
-      max: 60,
+      max: 64,
       unit: "core"
     },
   ];

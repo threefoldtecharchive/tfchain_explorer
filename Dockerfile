@@ -1,5 +1,5 @@
 # stage 1
-FROM node:12.4.0-alpine as build
+FROM node:14.4.0-alpine as build
 
 WORKDIR /app
 
@@ -7,8 +7,7 @@ WORKDIR /app
 COPY . /app/
 
 # Install yarn and build project
-RUN npm i -g yarn
-RUN yarn cache clean 
+RUN yarn cache clean
 RUN yarn install
 RUN npm run build
 

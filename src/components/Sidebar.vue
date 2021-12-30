@@ -67,7 +67,7 @@ export default class Sidebar extends Vue {
     
     const wsProvider = new WsProvider(URL);
     ApiPromise.create({ provider: wsProvider }).then((api) =>{
-      api.query.system.lastRuntimeUpgrade().then((result=>{
+      api.query.system.lastRuntimeUpgrade().then(((result: any)=>{
        const {specName, specVersion} = (result?.toJSON() as {specName: string, specVersion: number})
        this.versions.push({name:"Chain", value:`${specName} v${specVersion}`})
       })).catch((err)=>

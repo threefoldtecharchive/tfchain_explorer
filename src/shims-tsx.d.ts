@@ -2,6 +2,7 @@ import Vue, { VNode } from "vue";
 
 interface AppConfigs {
   gql_url: string;
+  polkadot_url: string;
   proxy_url: string;
   version: string;
 }

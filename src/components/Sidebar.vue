@@ -36,6 +36,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { ApiPromise, WsProvider } from '@polkadot/api';
+
 
 interface IVersion {
   name: string;
@@ -60,6 +62,20 @@ export default class Sidebar extends Vue {
   ];
 
   created() {
+    // Construct
+    const URL = window.configs.polkadot_url;
+    
+    const wsProvider = new WsProvider(URL);
+    ApiPromise.create({ provider: wsProvider }).then((api) =>{
+      api.query.system.lastRuntimeUpgrade().then((result=>{
+       const {specName, specVersion} = (result?.toJSON() as {specName: string, specVersion: number})
+       this.versions.push({name:"Chain", value:`${specName} v${specVersion}`})
+      })).catch((err)=>
+        console.log("something went wrong", err)
+      );
+    }
+  );
+
     fetch(window.configs.proxy_url + "/version")
       .then<{ version: string }>((res) => res.json())
       .then(({ version: value }) => {

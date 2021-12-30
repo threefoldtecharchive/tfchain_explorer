@@ -98,6 +98,14 @@
           </v-list-item>
           <v-divider />
 
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title> Certification Type </v-list-item-title>
+            </v-list-item-content>
+            {{ node.certificationType }}
+          </v-list-item>
+          <v-divider />
+
           <v-list-item v-if="zosVersion">
             <v-list-item-content>
               <v-list-item-title> ZOS Version </v-list-item-title>

@@ -104,6 +104,7 @@ export interface INode {
   city?: string;
   interfaces: Interfaces[];
   status: boolean;
+  certificationType: string
 }
 
 export const PublicConfigType = gql`
@@ -155,6 +156,7 @@ export const NodeType = gql`
       name
       id
     }
+    certificationType
   }
 `;
 export interface IPublicIPs {

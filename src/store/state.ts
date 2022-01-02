@@ -49,6 +49,7 @@ export interface IState {
       sru: IRangeFilter;
       status: IConditionFilter;
       countryFullName: IInFilter;
+      certificationType: IInFilter;
       freePublicIPs: IComparisonFilter;
     };
     farms: {
@@ -75,6 +76,7 @@ export default {
       twinId: createInFilter(),
       country: createInFilter(),
       farmingPolicyName: createInFilter(),
+      certificationType: createInFilter(),
       hru: createRangeFilter(),
       cru: createRangeFilter(),
       sru: createRangeFilter(),

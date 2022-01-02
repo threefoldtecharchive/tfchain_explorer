@@ -104,7 +104,7 @@ export interface INode {
   city?: string;
   interfaces: Interfaces[];
   status: boolean;
-  certificationType: string
+  certificationType: "Diy" | "Certified";
 }
 
 export const PublicConfigType = gql`

@@ -207,6 +207,7 @@ export default {
     inFilter("country"),
     inFilter("farmingPolicyName"),
     inFilter("countryFullName"),
+    inFilter("certificationType"),
     rangeFilter("hru"),
     rangeFilter("mru"),
     rangeFilter("sru"),

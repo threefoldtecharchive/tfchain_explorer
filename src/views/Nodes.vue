@@ -237,6 +237,14 @@ export default class Nodes extends Vue {
       placeholder: "Filter by greater than or equal to publicIp Number.",
       prefix: ">=",
     },
+    {
+      label: "Certification Type",
+      type: "in",
+      active: false,
+      key: "certificationType",
+      placeholder: "Filter by certification type",
+      value: ["Diy", "Certified"],
+    }
   ];
 
   getNodes() {

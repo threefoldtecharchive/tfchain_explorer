@@ -14,10 +14,14 @@ then
 fi
 
 
-POLKADOT_URL="wss://tfchain.dev.grid.tf/ws"
+POLKADOT_URL="wss://tfchain.grid.tf/ws"
+PROXY_URL="https://gridproxy.grid.tf"
 
-PROXY_URL="https://gridproxy.dev.grid.tf"
 case $GQL_URL in
+  *"dev"*)
+	PROXY_URL="https://gridproxy.dev.grid.tf"
+    POLKADOT_URL="wss://tfchain.dev.grid.tf/ws"
+    ;;
   *"test"*)
     PROXY_URL="https://gridproxy.test.grid.tf"
     POLKADOT_URL="wss://tfchain.test.grid.tf/ws"

@@ -236,7 +236,8 @@ export default {
     inFilter("twinId"),
     inFilter("certificationType"),
     inFilter("name"),
-    comparisonFilter("freePublicIPs", ">=")
+    comparisonFilter("freePublicIPs", ">="),
+    inFilter("pricingPolicyId")
   ),
 
   /* visual helpers */

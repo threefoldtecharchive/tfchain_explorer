@@ -59,6 +59,7 @@ export interface IState {
       certificationType: IInFilter;
       name: IInFilter;
       freePublicIPs: IComparisonFilter;
+      pricingPolicyId: IInFilter;
     };
   };
 }
@@ -92,6 +93,7 @@ export default {
       certificationType: createInFilter(),
       name: createInFilter(),
       freePublicIPs: createComparisonFilter(),
+      pricingPolicyId: createInFilter(),
     },
   },
 } as IState;

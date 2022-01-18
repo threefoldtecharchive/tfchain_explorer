@@ -162,6 +162,13 @@ export default class Farms extends Vue {
       placeholder: "Filter by greater than or equal to publicIp Number.",
       prefix: ">=",
     },
+    {
+      label: "Pricing Policy",
+      type: "in",
+      active: false,
+      key: "pricingPolicyId",
+      placeholder: "Filter by pricing policy id",
+    },
   ];
 
   toggleActive(idx: number) {

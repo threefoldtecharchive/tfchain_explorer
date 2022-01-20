@@ -33,6 +33,7 @@ const createComparisonFilter = () => ({ enabled: false, value: 0 });
 export interface IState {
   data: GetDataQueryType | null;
   policies: { [key: string]: string };
+  pricingPolicies: Map<number, string>;
   loading: boolean;
   nodes_status: { [key: number]: boolean };
   filters: {
@@ -59,7 +60,7 @@ export interface IState {
       certificationType: IInFilter;
       name: IInFilter;
       freePublicIPs: IComparisonFilter;
-      pricingPolicyId: IInFilter;
+      pricingPolicyName: IInFilter;
     };
   };
 }
@@ -67,6 +68,7 @@ export interface IState {
 export default {
   data: null,
   policies: {},
+  pricingPolicies: new Map(),
   loading: false,
   nodes_status: {},
   filters: {
@@ -93,7 +95,7 @@ export default {
       certificationType: createInFilter(),
       name: createInFilter(),
       freePublicIPs: createComparisonFilter(),
-      pricingPolicyId: createInFilter(),
+      pricingPolicyName: createInFilter(),
     },
   },
 } as IState;

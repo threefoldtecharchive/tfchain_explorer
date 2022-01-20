@@ -81,24 +81,29 @@ function getGatewaysCount(nodes: INode[]) {
   }, 0);
 }
 
-export function getFarmPublicIPs(state: IState, farmId: number): [number,number,number] {
-  const farm = (fallbackDataExtractor("farms")(state)).find(f => f.farmId === farmId);
+export function getFarmPublicIPs(
+  state: IState,
+  farmId: number
+): [number, number, number] {
+  const farm = fallbackDataExtractor("farms")(state).find(
+    (f) => f.farmId === farmId
+  );
   if (farm) {
     const freePublicIps = getFarmFreePublicIps(farm);
     const usedPublicIps = getFarmUsedPublicIps(farm);
     const totalPublicIps = farm.publicIPs.length;
     return [totalPublicIps, freePublicIps, usedPublicIps];
   }
-  return [0,0,0];
+  return [0, 0, 0];
 }
 
 export function getFarmFreePublicIps(farm: any): number {
   const freePublicIps = farm.publicIPs.filter((x: any) => x.contractId == 0);
-    return freePublicIps.length
+  return freePublicIps.length;
 }
 export function getFarmUsedPublicIps(farm: any): number {
   const freePublicIps = farm.publicIPs.filter((x: any) => x.contractId != 0);
-    return freePublicIps.length
+  return freePublicIps.length;
 }
 export interface IStatistics {
   id: number;
@@ -151,20 +156,35 @@ export default {
     // const farms = findById("farms", "farmId")(state);
     return nodes.map((node) => {
       const country: any = node.country;
-      const [totalPublicIPs,freePublicIPs,usedPublicIps]=getFarmPublicIPs(state, node.farmId);
+      const [totalPublicIPs, freePublicIPs, usedPublicIps] = getFarmPublicIPs(
+        state,
+        node.farmId
+      );
       return {
         ...node,
         totalPublicIPs: totalPublicIPs,
-        freePublicIPs : freePublicIPs,
-        usedPublicIPs : usedPublicIps,
-        countryFullName: country && country?.length == 2 ? byInternet(country)?.country: country,
+        freePublicIPs: freePublicIPs,
+        usedPublicIPs: usedPublicIps,
+        countryFullName:
+          country && country?.length == 2
+            ? byInternet(country)?.country
+            : country,
         farmingPolicyName: state.policies[node.farmingPolicyId],
         // status: state.nodes_status[node.nodeId]? state.nodes_status[node.nodeId]: false,
-        status: node.status
+        status: node.status,
       };
     });
   },
-  farms: fallbackDataExtractor("farms"),
+  farms: (state) => {
+    const farms = fallbackDataExtractor("farms")(state);
+
+    return farms.map((f) => {
+      return {
+        ...f,
+        pricingPolicyName: state.pricingPolicies.get(f.pricingPolicyId),
+      };
+    });
+  },
   locations: fallbackDataExtractor("locations"),
   twins: fallbackDataExtractor("twins"),
 
@@ -187,17 +207,23 @@ export default {
       const nodes = fallbackDataExtractor("nodes")(state);
       return nodes.map((node) => {
         const country: any = node.country;
-        const [totalPublicIPs, freePublicIPs, usedPublicIps]=getFarmPublicIPs(state, node.farmId);
+        const [totalPublicIPs, freePublicIPs, usedPublicIps] = getFarmPublicIPs(
+          state,
+          node.farmId
+        );
 
         return {
           ...node,
           totalPublicIPs: totalPublicIPs,
-          freePublicIPs : freePublicIPs,
-          usedPublicIPs : usedPublicIps,
-          countryFullName: country && country?.length == 2 ? byInternet(country)?.country: country,
+          freePublicIPs: freePublicIPs,
+          usedPublicIPs: usedPublicIps,
+          countryFullName:
+            country && country?.length == 2
+              ? byInternet(country)?.country
+              : country,
           farmingPolicyName: state.policies[node.farmingPolicyId],
           // status: state.nodes_status[node.nodeId]? state.nodes_status[node.nodeId]: false,
-          status: node.status
+          status: node.status,
         };
       });
     },
@@ -224,9 +250,10 @@ export default {
       return farms.map((f) => {
         return {
           ...f,
-          totalPublicIPs : f.publicIPs.length,
-          freePublicIPs : getFarmFreePublicIps(f),
-          usedPublicIPs : getFarmUsedPublicIps(f),
+          totalPublicIPs: f.publicIPs.length,
+          freePublicIPs: getFarmFreePublicIps(f),
+          usedPublicIPs: getFarmUsedPublicIps(f),
+          pricingPolicyName: state.pricingPolicies.get(f.pricingPolicyId),
         };
       });
     },
@@ -237,7 +264,7 @@ export default {
     inFilter("certificationType"),
     inFilter("name"),
     comparisonFilter("freePublicIPs", ">="),
-    inFilter("pricingPolicyId")
+    inFilter("pricingPolicyName")
   ),
 
   /* visual helpers */

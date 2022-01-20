@@ -115,7 +115,7 @@ export default class Farms extends Vue {
     { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
     { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
-    { text: "PRICING POLICY ID", value: "pricingPolicyId", align: "center" },
+    { text: "PRICING POLICY", value: "pricingPolicyName", align: "center" },
   ];
 
   // activeFilters is exactly same as filters
@@ -166,8 +166,8 @@ export default class Farms extends Vue {
       label: "Pricing Policy",
       type: "in",
       active: false,
-      key: "pricingPolicyId",
-      placeholder: "Filter by pricing policy id",
+      key: "pricingPolicyName",
+      placeholder: "Filter by pricing policy name",
     },
   ];
 

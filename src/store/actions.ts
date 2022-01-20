@@ -4,9 +4,11 @@ import apollo from "@/plugins/apollo";
 import { getDataQuery, GetDataQueryType, getTotalCountQuery, GetTotalCountQueryType } from '../graphql/api';
 import { MutationTypes } from './mutations';
 import moment from 'moment';
+import getPricingPolicies from "@/utils/getPricingPolicies";
 
 export enum ActionTypes {
     INIT_POLICIES = "initPolicies",
+    INIT_PRICING_POLICIES = "initPricingPolicies",
     LOAD_DATA = "loadData"
 }
 
@@ -21,26 +23,20 @@ export default {
                 commit(MutationTypes.SET_POLICIES, data);
             });
     },
+    initPricingPolicies({ commit }: ActionContext<IState, IState>) {
+        getPricingPolicies()
+            .then(policies => {
+                commit(MutationTypes.SET_PRICING_POLICIES, policies);
+            }).catch(err => {
+                console.log("Error while loading pricing polices", err);
+            })
+    },
     loadData({ commit }: ActionContext<IState, IState>) {
         commit(MutationTypes.SET_LOAD, true);
             apollo.defaultClient.query<GetTotalCountQueryType>({
                 query: getTotalCountQuery
             })
-            .then(({ data }) => {
-                return data
-                // return fetch(`${window.configs.proxy_url}/nodes?max_result=${data.nodes.totalCount}`)
-                //     .then<{nodeId: number, status: "up" | "down"}[]>(res => res.json())
-                //     .then(nodes => {
-                //         return nodes.reduce((items, node) => {
-                //             items[node.nodeId] = node.status === "up";
-                //             return items;
-                //         }, {} as {[key: number]: boolean});
-                //     })
-                //     .then(nodes => {
-                //         commit(MutationTypes.SET_NODES_STATUS, nodes);
-                //     })
-                //     .then(() => data);
-            })
+            .then(({ data }) => data)
         .then((data) => {
             const { nodes, farms, twins, countries, nodeContracts } = data;
             return {
@@ -62,11 +58,7 @@ export default {
                 const { updatedAt } = node
                 const startTime = moment()
                 const end = moment(updatedAt)
-                console.log(`now ${startTime}`)
-                console.log(`node updated at ${end}`)
                 const minutes = startTime.diff(end, 'minutes')
-            
-                console.log(`diff: ${minutes}`)
                 // if updated difference in minutes with now is less then 10 minutes, node is up
                 if (minutes < 15) {
                     node.status = true
@@ -75,7 +67,6 @@ export default {
                 }
                 return node
             })
-            console.log(data.nodes)
             commit(MutationTypes.SET_DATA, data);
         })
         .catch((err) => {

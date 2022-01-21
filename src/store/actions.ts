@@ -58,9 +58,9 @@ export default {
                 const { updatedAt } = node
                 const startTime = moment()
                 const end = moment(updatedAt)
-                const minutes = startTime.diff(end, 'minutes')
-                // if updated difference in minutes with now is less then 10 minutes, node is up
-                if (minutes < 15) {
+                const hours = startTime.diff(end, 'hours')
+                // if updated difference in hours with now is less then 2 hours, node is up
+                if (hours <= 2) {
                     node.status = true
                 } else {
                     node.status = false

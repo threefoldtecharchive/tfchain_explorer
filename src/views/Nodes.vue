@@ -56,7 +56,16 @@
             label="Gateways"
           />
           <v-switch v-model="onlyOnline" label="Online" />
-        </div>
+        </div> 
+      </div>
+      <div class="d-flex justify-center">
+           <v-alert
+      dense
+      text
+      type="success"
+    >
+      The Node statusses are fetched every 2 hours.
+    </v-alert>
       </div>
       <v-data-table
         ref="table"

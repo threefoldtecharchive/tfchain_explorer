@@ -36,6 +36,7 @@ export interface IState {
   pricingPolicies: Map<number, string>;
   loading: boolean;
   nodes_status: { [key: number]: boolean };
+  nodeContractsNo: number;
   filters: {
     nodes: {
       nodeId: IInFilter;
@@ -71,6 +72,7 @@ export default {
   pricingPolicies: new Map(),
   loading: false,
   nodes_status: {},
+  nodeContractsNo: 0,
   filters: {
     nodes: {
       nodeId: createInFilter(),

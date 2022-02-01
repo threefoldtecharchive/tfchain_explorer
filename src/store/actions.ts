@@ -1,10 +1,11 @@
 import type { ActionContext } from "vuex";
 import type { IState } from "./state";
 import apollo from "@/plugins/apollo";
-import { getDataQuery, GetDataQueryType, getTotalCountQuery, GetTotalCountQueryType } from '../graphql/api';
+import { getTotalCountQuery, GetTotalCountQueryType } from '../graphql/api';
 import { MutationTypes } from './mutations';
 import moment from 'moment';
 import getPricingPolicies from "@/utils/getPricingPolicies";
+import createDataRequests from "@/utils/createDataRequests";
 
 export enum ActionTypes {
     INIT_POLICIES = "initPolicies",
@@ -31,7 +32,7 @@ export default {
                 console.log("Error while loading pricing polices", err);
             })
     },
-    loadData({ commit }: ActionContext<IState, IState>) {
+    loadData({ state, commit }: ActionContext<IState, IState>) {
         commit(MutationTypes.SET_LOAD, true);
             apollo.defaultClient.query<GetTotalCountQueryType>({
                 query: getTotalCountQuery
@@ -39,21 +40,17 @@ export default {
             .then(({ data }) => data)
         .then((data) => {
             const { nodes, farms, twins, countries, nodeContracts } = data;
+            state.nodeContractsNo = nodeContracts?.totalCount ?? 0
+            
             return {
                 nodes: nodes.totalCount,
                 farms: farms.totalCount,
                 twins: twins.totalCount,
                 countries: countries.totalCount,
-                nodeContracts: nodeContracts.totalCount
             };
         })
-        .then((variables) => {
-            return apollo.defaultClient.query<GetDataQueryType>({
-                query: getDataQuery,
-                variables
-            })
-        })
-        .then(({ data }) => {
+        .then(createDataRequests)
+        .then((data) => {
             data.nodes = data.nodes.map(node => {
                 const { updatedAt } = node
                 const startTime = moment()

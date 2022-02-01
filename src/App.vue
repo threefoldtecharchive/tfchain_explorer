@@ -29,7 +29,7 @@ export default class App extends Vue {
     this.$store.dispatch(ActionTypes.LOAD_DATA);
     setInterval(() => {
       this.$store.dispatch(ActionTypes.LOAD_DATA);
-    }, 60 * 1000);
+    }, 5 * 60 * 1000);
   }
 }
 </script>

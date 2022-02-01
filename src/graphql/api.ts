@@ -271,12 +271,12 @@ export interface IPublicConfig {
 }
 
 type TotalCountType = { totalCount: number };
-export interface GetTotalCountQueryType {
-  nodes: TotalCountType;
-  farms: TotalCountType;
-  twins: TotalCountType;
-  countries: TotalCountType;
-  nodeContracts: TotalCountType;
+export interface GetTotalCountQueryType<T = TotalCountType> {
+  nodes: T;
+  farms: T;
+  twins: T;
+  countries: T;
+  nodeContracts?: T;
 }
 
 export const getTotalCountQuery = gql`
@@ -305,38 +305,29 @@ export interface GetDataQueryType {
   twins: ITwin[];
   publicConfigs: IPublicConfig[];
   countries: ICountry[];
-  nodeContracts: INodeContract[];
 }
 
 export const getDataQuery = gql`
   ${NodeType}
   ${FarmType}
   ${TwinType}
-  ${PublicConfigType}
   ${CountryType}
-  ${NodeContractType}
 
   query getDataQuery(
-    $nodes: Int!
-    $farms: Int!
-    $twins: Int!
-    $countries: Int!
-    $nodeContracts: Int!
+    $limit: Int!
+    $offset: Int!
   ) {
-    nodes(limit: $nodes) {
+    nodes(limit: $limit, offset: $offset) {
       ...NodeType
     }
-    farms(limit: $farms) {
+    farms(limit: $limit, offset: $offset) {
       ...FarmType
     }
-    twins(limit: $twins) {
+    twins(limit: $limit, offset: $offset) {
       ...TwinType
     }
-    countries(limit: $countries) {
+    countries(limit: $limit, offset: $offset) {
       ...CountryType
-    }
-    nodeContracts(limit: $nodeContracts) {
-      ...NodeContractType
     }
   }
 `;

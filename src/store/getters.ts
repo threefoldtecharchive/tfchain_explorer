@@ -121,8 +121,6 @@ export function getStatistics(state: IState): IStatistics[] {
   const nodes = fallbackDataExtractor("nodes")(state);
   const farms = fallbackDataExtractor('farms')(state);
   const countries = [...new Set(nodes.map(node => node.country))]
-  const nodeContracts = fallbackDataExtractor("nodeContracts")(state);
-  const nodeContractsNo = nodeContracts.length
   const twins = fallbackDataExtractor("twins")(state);
   const twinsNo = twins.length
   const accessNodes = getAccessNodesCount(nodes)
@@ -145,7 +143,7 @@ export function getStatistics(state: IState): IStatistics[] {
     { id: 8, data: gateways, title: "Gateways", icon: "mdi-boom-gate-outline" },
     { id: 9, data: twinsNo, title: "Twins", icon: "mdi-brain" },
     { id: 10, data: publicIPsNo, title: "Public IPs", icon: "mdi-access-point" },
-    { id: 11, data: nodeContractsNo, title: "Contracts", icon: "mdi-file-document-edit-outline" },
+    { id: 11, data: state.nodeContractsNo, title: "Contracts", icon: "mdi-file-document-edit-outline" },
   ]
 }
 
@@ -153,7 +151,6 @@ export default {
   loading: (state) => state.loading,
   nodes: (state) => {
     const nodes = fallbackDataExtractor("nodes")(state);
-    // const farms = findById("farms", "farmId")(state);
     return nodes.map((node) => {
       const country: any = node.country;
       const [totalPublicIPs, freePublicIPs, usedPublicIps] = getFarmPublicIPs(
@@ -170,7 +167,6 @@ export default {
             ? byInternet(country)?.country
             : country,
         farmingPolicyName: state.policies[node.farmingPolicyId],
-        // status: state.nodes_status[node.nodeId]? state.nodes_status[node.nodeId]: false,
         status: node.status,
       };
     });
@@ -222,7 +218,6 @@ export default {
               ? byInternet(country)?.country
               : country,
           farmingPolicyName: state.policies[node.farmingPolicyId],
-          // status: state.nodes_status[node.nodeId]? state.nodes_status[node.nodeId]: false,
           status: node.status,
         };
       });

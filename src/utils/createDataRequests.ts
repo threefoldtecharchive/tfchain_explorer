@@ -27,8 +27,6 @@ export default function createDataRequests(totals: GetTotalCountQueryType<number
                 const value = data[i];
                 result.nodes.push(...value.nodes);
                 result.farms.push(...value.farms);
-                result.twins.push(...value.twins);
-                result.countries.push(...value.countries);
             }
             return result;
         });

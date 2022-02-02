@@ -39,14 +39,13 @@ export default {
             })
             .then(({ data }) => data)
         .then((data) => {
-            const { nodes, farms, twins, countries, nodeContracts } = data;
+            const { nodes, farms, twins, nodeContracts } = data;
             state.nodeContractsNo = nodeContracts?.totalCount ?? 0
+            state.twinsNo = twins?.totalCount ?? 0;
             
             return {
                 nodes: nodes.totalCount,
                 farms: farms.totalCount,
-                twins: twins.totalCount,
-                countries: countries.totalCount,
             };
         })
         .then(createDataRequests)

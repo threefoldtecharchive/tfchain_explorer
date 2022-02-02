@@ -108,10 +108,10 @@
         :country="node && node.country"
         :city="node && node.city"
         :location="node && node.location"
-        :twin="$store.getters.twin(node && node.twinId)"
         :config="node && node.publicConfig"
         v-on:close-sheet="closeSheet"
       />
+        <!-- :twin="$store.getters.twin(node && node.twinId)" -->
     </template>
 
     <template v-slot:default>

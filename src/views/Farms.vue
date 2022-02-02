@@ -80,9 +80,9 @@
       <Details
         :open="!!farm"
         :farm="farm"
-        :twin="$store.getters.twin(farm && farm.twinId)"
         v-on:close-sheet="closeSheet"
       />
+        <!-- :twin="$store.getters.twin(farm && farm.twinId)" -->
     </template>
   </Layout>
 </template>

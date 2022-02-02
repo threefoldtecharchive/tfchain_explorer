@@ -274,8 +274,7 @@ type TotalCountType = { totalCount: number };
 export interface GetTotalCountQueryType<T = TotalCountType> {
   nodes: T;
   farms: T;
-  twins: T;
-  countries: T;
+  twins?: T;
   nodeContracts?: T;
 }
 
@@ -290,9 +289,6 @@ export const getTotalCountQuery = gql`
     twins: twinsConnection {
       totalCount
     }
-    countries: countriesConnection {
-      totalCount
-    }
     nodeContracts: nodeContractsConnection {
       totalCount
     }
@@ -302,16 +298,12 @@ export interface GetDataQueryType {
   nodes: INode[];
   farms: IFarm[];
   locations: ILocation[];
-  twins: ITwin[];
   publicConfigs: IPublicConfig[];
-  countries: ICountry[];
 }
 
 export const getDataQuery = gql`
   ${NodeType}
   ${FarmType}
-  ${TwinType}
-  ${CountryType}
 
   query getDataQuery(
     $limit: Int!
@@ -322,12 +314,6 @@ export const getDataQuery = gql`
     }
     farms(limit: $limit, offset: $offset) {
       ...FarmType
-    }
-    twins(limit: $limit, offset: $offset) {
-      ...TwinType
-    }
-    countries(limit: $limit, offset: $offset) {
-      ...CountryType
     }
   }
 `;

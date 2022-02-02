@@ -66,7 +66,7 @@
             :cols="
               screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
             "
-            v-if="country && location"
+            v-if="country && location && twin"
           >
             <TwinDetails :twin="twin" />
           </v-col>

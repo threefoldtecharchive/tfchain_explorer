@@ -37,6 +37,7 @@ export interface IState {
   loading: boolean;
   nodes_status: { [key: number]: boolean };
   nodeContractsNo: number;
+  twinsNo: number;
   filters: {
     nodes: {
       nodeId: IInFilter;
@@ -73,6 +74,7 @@ export default {
   loading: false,
   nodes_status: {},
   nodeContractsNo: 0,
+  twinsNo: 0,
   filters: {
     nodes: {
       nodeId: createInFilter(),

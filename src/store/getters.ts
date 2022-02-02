@@ -121,8 +121,7 @@ export function getStatistics(state: IState): IStatistics[] {
   const nodes = fallbackDataExtractor("nodes")(state);
   const farms = fallbackDataExtractor('farms')(state);
   const countries = [...new Set(nodes.map(node => node.country))]
-  const twins = fallbackDataExtractor("twins")(state);
-  const twinsNo = twins.length
+  const twinsNo = state.twinsNo;
   const accessNodes = getAccessNodesCount(nodes)
   const gateways = getGatewaysCount(nodes)
   const cru = nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString();
@@ -182,13 +181,11 @@ export default {
     });
   },
   locations: fallbackDataExtractor("locations"),
-  twins: fallbackDataExtractor("twins"),
 
   /* Getters By Id */
   node: findById("nodes", "nodeId"),
   farm: findById("farms", "farmId"),
   location: findById("locations", "id"),
-  twin: findById("twins", "twinId"),
 
   /* filters helpers */
   getFilter: (state) => {

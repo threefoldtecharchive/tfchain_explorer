@@ -1,54 +1,31 @@
 <template>
   <Layout pageName="Farms">
     <template v-slot:filters>
+      <!-- @click="toggleActive(idx)" -->
       <v-chip
-        v-for="(filter, idx) in filters"
-        :key="filter.key"
+        v-for="{ chip } in filters"
+        :key="chip.label"
         class="ma-2"
-        v-model="filter.active"
-        @click="toggleActive(idx)"
+        v-model="chip.active"
         filter
       >
-        {{ filter.label }}
+        {{ chip.label }}
       </v-chip>
     </template>
 
     <template v-slot:apply-filters>
-          <v-btn 
-            color="primary" 
-            :disabled="loading" 
-            :loading="loading"
-            @click="onApplyFilter" 
-          >Apply Filter</v-btn>
+      <v-btn
+        color="primary"
+        :disabled="loading"
+        :loading="loading"
+        @click="onApplyFilter"
+        >Apply Filter</v-btn
+      >
     </template>
 
     <template v-slot:active-filters>
-      <div v-for="filter in activeFilters" :key="filter.key">
-        <InFilter
-          key1="farms"
-          :key2="filter.key"
-          :label="filter.placeholder"
-          v-if="filter.type === 'in'"
-        />
-        <RangeFilter
-          v-if="filter.type === 'range'"
-          key1="farms"
-          :key2="filter.key"
-          :label="filter.placeholder"
-        />
-        <ConditionFilter
-          v-if="filter.type === 'condition'"
-          key1="farms"
-          :key2="filter.key"
-          :labels="filter.placeholder"
-        />
-        <ComparisonFilter
-          key1="farms"
-          :key2="filter.key"
-          :label="filter.placeholder"
-          :prefix="filter.prefix"
-          v-if="filter.type === 'comparison'"
-        />
+      <div v-for="{ component, filter } in filters" :key="filter.label">
+        <component :is="component" :options="filter" v-model="filter.value" />
       </div>
     </template>
 
@@ -59,7 +36,6 @@
         :headers="headers"
         class="elevation-1"
         align
-        @click:row="openSheet"
         :items-per-page="10"
         :server-items-length="farms.total"
         @pagination="page = $event.page - 1"
@@ -68,10 +44,10 @@
         :page="page + 1"
         :footer-props="{
           'disable-items-per-page': true,
-          'disable-pagination': loading
+          'disable-pagination': loading,
         }"
       >
-        <!-- :items="$store.getters.filtered_farm" -->
+        <!-- @click:row="openSheet" -->
         <template v-slot:[`item.certificationType`]="{ item }">
           <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
             {{ item.certificationType }}
@@ -94,40 +70,52 @@
       </v-data-table>
     </template>
 
-    <template v-slot:details>
+    <!-- <template v-slot:details>
       <Details
         :open="!!farm"
         :farm="farm"
         v-on:close-sheet="closeSheet"
+        :twin="$store.getters.twin(farm && farm.twinId)"
       />
-        <!-- :twin="$store.getters.twin(farm && farm.twinId)" -->
-    </template>
+    </template> -->
   </Layout>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import Details from "@/components/Details.vue";
-import { getFarmsQuery, IFarm, IFetchPaginatedData } from "@/graphql/api";
+import {
+  filterQuery,
+  getFarmsQuery,
+  IFarm,
+  IFetchPaginatedData,
+  IFilterQuery,
+} from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
-import InFilter from "@/components/InFilter.vue";
-import ComparisonFilter from "@/components/ComparisonFilter.vue";
-import RangeFilter from "@/components/RangeFilter.vue";
-import ConditionFilter from "@/components/ConditionFilter.vue";
+// import InFilter from "@/components/InFilter.vue";
+// import ComparisonFilter from "@/components/ComparisonFilter.vue";
+// import RangeFilter from "@/components/RangeFilter.vue";
+// import ConditionFilter from "@/components/ConditionFilter.vue";
 import { IPaginationData } from "@/store/state";
-import { PAGE_LIMIT } from '@/json/constants';
+import { PAGE_LIMIT } from "@/json/constants";
+import InFilterV2 from "@/components/InFilterV2.vue";
+import IFilterOptions from "@/types/FilterOptions";
+import apollo from "@/plugins/apollo";
 
 @Component({
   components: {
     Layout,
     Details,
-    InFilter,
-    ComparisonFilter,
-    RangeFilter,
-    ConditionFilter,
+    InFilterV2,
+    // InFilter,
+    // ComparisonFilter,
+    // RangeFilter,
+    // ConditionFilter,
   },
 })
 export default class Farms extends Vue {
+  value = "";
+  c = InFilterV2;
   page = 0;
   loading = false;
   headers = [
@@ -140,116 +128,166 @@ export default class Farms extends Vue {
     { text: "PRICING POLICY", value: "pricingPolicyId", align: "center" },
   ];
 
-  get farms(): IPaginationData<IFarm> { return this.$store.state.farms; }
-  get items(): IFarm[] | undefined { return this.farms.items.get(this.page); }
+  get farms(): IPaginationData<IFarm> {
+    return this.$store.state.farms;
+  }
+  get items(): IFarm[] | undefined {
+    return this.farms.items.get(this.page);
+  }
 
-  @Watch('page', { immediate: true })
+  @Watch("page", { immediate: true })
   public onUpdatePage() {
     if (this.items) return;
 
     this.loading = true;
-    this.$apollo.query<IFetchPaginatedData<IFarm>>({
-      query: getFarmsQuery,
-      variables: {
-        limit: PAGE_LIMIT,
-        offset: this.page * PAGE_LIMIT
-      }
-    }).then(({ data: { total: { count }, items } }) => {
-      this.$store.state.farms = {
-        total: count,
-        items: this.farms.items.set(this.page, items)
-      };
-    })
-    .catch(err => {
-      console.log("Error", err);
-    })
-    .finally(() => {
-      this.loading = false;
-    });
+    this.$apollo
+      .query<IFetchPaginatedData<IFarm>>({
+        query: getFarmsQuery,
+        variables: {
+          limit: PAGE_LIMIT,
+          offset: this.page * PAGE_LIMIT,
+        },
+      })
+      .then(
+        ({
+          data: {
+            total: { count },
+            items,
+          },
+        }) => {
+          this.$store.state.farms = {
+            total: count,
+            items: this.farms.items.set(this.page, items),
+          };
+        }
+      )
+      .catch((err) => {
+        console.log("Error", err);
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 
   public onApplyFilter() {
     this.$store.state.farms = {
       total: 0,
-      items: new Map()
+      items: new Map(),
     };
-    if (this.page === 0) this.onUpdatePage()
+    if (this.page === 0) this.onUpdatePage();
     else this.page = 0;
   }
 
+  public filters: IFilterOptions[] = [
+    {
+      component: InFilterV2,
+      chip: {
+        label: "Name",
+        active: true,
+      },
+      filter: {
+        label: "Filter By Farm Name",
+        items(sub_string: string) {
+          return apollo.defaultClient
+            .query<IFilterQuery>({
+              query: filterQuery("name"),
+              variables: { sub_string },
+            })
+            .then(({ data }) => {
+              return data.items.map((x) => x.value);
+            });
+        },
+        value: "",
+      },
+    },
+  ];
+
+  // (value: string) => {
+  // return apollo.defaultClient.query<IFilterQuery>({
+  //   query: filterQuery("name"),
+  //   variables: {
+  //     sub_string: value
+  //   }
+  // }).then<string[]>(({ data }) => {
+  //     console.log(data);
+
+  //     return ['1', '2'];
+  // });
+  // },
+
   // activeFilters is exactly same as filters
   // the idea is to allow user to sort filter he wants
-  activeFilters: any[] = [
-    {
-      label: "Name",
-      type: "in",
-      active: true,
-      key: "name",
-      placeholder: "Filter by farm name",
-    },
-    {
-      label: "Twin ID",
-      type: "in",
-      active: true,
-      key: "twinId",
-      placeholder: "Filter by twin id.",
-    },
-    {
-      label: "Certification Type",
-      type: "in",
-      active: true,
-      key: "certificationType",
-      placeholder: "Filter by certification type",
-      value: ["Diy", "Certified"],
-    },
-  ];
+  // activeFilters: any[] = [
+  //   {
+  //     label: "Name",
+  //     type: "in",
+  //     active: true,
+  //     key: "name",
+  //     placeholder: "Filter by farm name",
+  //   },
+  //   {
+  //     label: "Twin ID",
+  //     type: "in",
+  //     active: true,
+  //     key: "twinId",
+  //     placeholder: "Filter by twin id.",
+  //   },
+  //   {
+  //     label: "Certification Type",
+  //     type: "in",
+  //     active: true,
+  //     key: "certificationType",
+  //     placeholder: "Filter by certification type",
+  //     value: ["Diy", "Certified"],
+  //   },
+  // ];
 
-  filters = [
-    {
-      label: "Farm ID",
-      type: "in",
-      active: false,
-      key: "farmId",
-      placeholder: "Filter by farm id.",
-    },
-    ...this.activeFilters,
-    {
-      label: "Free Public IP",
-      type: "comparison",
-      active: false,
-      key: "freePublicIPs",
-      placeholder: "Filter by greater than or equal to publicIp Number.",
-      prefix: ">=",
-    },
-    {
-      label: "Pricing Policy",
-      type: "in",
-      active: false,
-      key: "pricingPolicyName",
-      placeholder: "Filter by pricing policy name",
-    },
-  ];
+  // filters = [
+  //   {
+  //     label: "Farm ID",
+  //     type: "in",
+  //     active: false,
+  //     key: "farmId",
+  //     placeholder: "Filter by farm id.",
+  //   },
+  //   ...this.activeFilters,
+  //   {
+  //     label: "Free Public IP",
+  //     type: "comparison",
+  //     active: false,
+  //     key: "freePublicIPs",
+  //     placeholder: "Filter by greater than or equal to publicIp Number.",
+  //     prefix: ">=",
+  //   },
+  //   {
+  //     label: "Pricing Policy",
+  //     type: "in",
+  //     active: false,
+  //     key: "pricingPolicyName",
+  //     placeholder: "Filter by pricing policy name",
+  //   },
+  // ];
 
-  toggleActive(idx: number) {
-    const filter = this.filters[idx];
+  // toggleActive(idx: number) {
+  //   const filter = this.filters[idx];
 
-    if (filter.active) {
-      this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
-      filter.active = false;
-    } else {
-      filter.active = true;
-      this.activeFilters.push(filter);
-    }
-  }
+  //   if (filter.active) {
+  //     this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
+  //     filter.active = false;
+  //   } else {
+  //     filter.active = true;
+  //     this.activeFilters.push(filter);
+  //   }
+  // }
 
-  farm: IFarm | null = null;
+  // farm: IFarm | null = null;
 
-  openSheet(farm: IFarm): void {
-    this.farm = farm;
-  }
+  // openSheet(farm: IFarm): void {
+  //   this.farm = farm;
+  // }
 
-  closeSheet(): void {
-    this.farm = null;
-  }
+  // closeSheet(): void {
+  //   this.farm = null;
+  // }
 }
 </script>

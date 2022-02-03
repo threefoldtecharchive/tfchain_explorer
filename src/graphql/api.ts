@@ -368,3 +368,19 @@ export const getFarmsQuery = gql`
   }
 }
 `;
+
+
+export interface IFilterQuery {
+  items: Array<{ value: string }>;
+}
+
+export const filterQuery = (prop: string) => {
+  const query = `
+    query queryFilter($sub_string: String) {
+      items: farms(where: { ${prop}_contains: $sub_string}) {
+        value: ${prop}
+      }
+    }
+  `;
+  return gql(query)
+};

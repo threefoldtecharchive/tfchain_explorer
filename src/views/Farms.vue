@@ -1,15 +1,16 @@
 <template>
   <Layout pageName="Farms">
     <template v-slot:filters>
-      <!-- @click="toggleActive(idx)" -->
       <v-chip
-        v-for="{ chip } in filters"
-        :key="chip.label"
+        v-for="filter in filters"
         class="ma-2"
-        v-model="chip.active"
         filter
+        :key="filter.chip_label"
+        v-model="filter.active"
+        :color="filter.active ? 'primary' : undefined"
+        @click="filter.active = !filter.active"
       >
-        {{ chip.label }}
+        {{ filter.chip_label }}
       </v-chip>
     </template>
 
@@ -24,8 +25,13 @@
     </template>
 
     <template v-slot:active-filters>
-      <div v-for="{ component, filter } in filters" :key="filter.label">
-        <component :is="component" :options="filter" v-model="filter.value" />
+      <div v-for="filter in filters" :key="filter.label">
+        <component
+          v-if="filter.active"
+          :is="filter.component"
+          :options="filter"
+          v-model="filter.value"
+        />
       </div>
     </template>
 
@@ -92,10 +98,6 @@ import {
   IFilterQuery,
 } from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
-// import InFilter from "@/components/InFilter.vue";
-// import ComparisonFilter from "@/components/ComparisonFilter.vue";
-// import RangeFilter from "@/components/RangeFilter.vue";
-// import ConditionFilter from "@/components/ConditionFilter.vue";
 import { IPaginationData } from "@/store/state";
 import { PAGE_LIMIT } from "@/json/constants";
 import InFilterV2 from "@/components/InFilterV2.vue";
@@ -181,66 +183,50 @@ export default class Farms extends Vue {
   public filters: IFilterOptions[] = [
     {
       component: InFilterV2,
-      chip: {
-        label: "Name",
-        active: true,
+      chip_label: "Farm ID",
+      active: true,
+      label: "Filter By Farm ID",
+      items: () => Promise.all([]),
+      value: [],
+      multiple: true,
+      type: "number",
+    },
+    {
+      component: InFilterV2,
+      chip_label: "Name",
+      active: false,
+      label: "Filter By Farm Name",
+      items(sub_string: string) {
+        return apollo.defaultClient
+          .query<IFilterQuery>({
+            query: filterQuery("name"),
+            variables: { sub_string },
+          })
+          .then(({ data }) => {
+            return data.items.map((x) => x.value);
+          });
       },
-      filter: {
-        label: "Filter By Farm Name",
-        items(sub_string: string) {
-          return apollo.defaultClient
-            .query<IFilterQuery>({
-              query: filterQuery("name"),
-              variables: { sub_string },
-            })
-            .then(({ data }) => {
-              return data.items.map((x) => x.value);
-            });
-        },
-        value: "",
-      },
+      value: "",
+    },
+    {
+      component: InFilterV2,
+      chip_label: "Twin ID",
+      active: false,
+      label: "Filter By Twin ID",
+      items: (_) => Promise.resolve([]),
+      value: [],
+      type: "number",
+      multiple: true,
+    },
+    {
+      component: InFilterV2,
+      chip_label: "Certification Type",
+      active: false,
+      label: "Filter By Certification Type",
+      items: (_) => Promise.all(["Diy", "Certified"]),
+      value: "",
     },
   ];
-
-  // (value: string) => {
-  // return apollo.defaultClient.query<IFilterQuery>({
-  //   query: filterQuery("name"),
-  //   variables: {
-  //     sub_string: value
-  //   }
-  // }).then<string[]>(({ data }) => {
-  //     console.log(data);
-
-  //     return ['1', '2'];
-  // });
-  // },
-
-  // activeFilters is exactly same as filters
-  // the idea is to allow user to sort filter he wants
-  // activeFilters: any[] = [
-  //   {
-  //     label: "Name",
-  //     type: "in",
-  //     active: true,
-  //     key: "name",
-  //     placeholder: "Filter by farm name",
-  //   },
-  //   {
-  //     label: "Twin ID",
-  //     type: "in",
-  //     active: true,
-  //     key: "twinId",
-  //     placeholder: "Filter by twin id.",
-  //   },
-  //   {
-  //     label: "Certification Type",
-  //     type: "in",
-  //     active: true,
-  //     key: "certificationType",
-  //     placeholder: "Filter by certification type",
-  //     value: ["Diy", "Certified"],
-  //   },
-  // ];
 
   // filters = [
   //   {

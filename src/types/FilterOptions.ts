@@ -1,12 +1,10 @@
 export default interface IFilterOptions {
   component: unknown;
-  chip: {
-    label: string;
-    active: boolean;
-  };
-  filter: {
-    label: string;
-    items: (value: string) => Promise<string[]>;
-    value: string;
-  };
+  chip_label: string;
+  active: boolean;
+  label: string;
+  items: (value: string) => Promise<(string | number)[]>;
+  value: string | string[];
+  multiple?: boolean;
+  type?: "text" | "number";
 }

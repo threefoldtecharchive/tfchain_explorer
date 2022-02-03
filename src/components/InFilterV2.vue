@@ -7,11 +7,11 @@
       clearable
       :label="options.label"
       solo
-      type="text"
+      :type="options.type ? options.type : 'text'"
       :loading="loading"
       @keydown="search"
-      v-model="value"
-      @change="$emit('input', value)"
+      v-model="content"
+      :multiple="options.multiple"
     />
   </v-card>
 </template>
@@ -20,15 +20,27 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import IFilterOptions from "@/types/FilterOptions";
 import { throttle } from "lodash";
 
+type TContent = string | number | Array<string | number>;
+
 @Component({
   name: "InFilterV2",
 })
 export default class InFilterV2 extends Vue {
-  @Prop({ required: true }) value!: string;
-  @Prop({ required: true }) options!: IFilterOptions["filter"];
+  @Prop({ required: true }) options!: IFilterOptions;
 
   loading = false;
-  searchItems: string[] = [];
+  searchItems: (string | number)[] = [];
+
+  // Handling number case
+  private _content!: TContent;
+  get content(): TContent { return this._content; } // prettier-ignore
+  set content(value: TContent) {
+    if (this.options.type === "number") {
+      value = Array.isArray(value) ? value.map((x) => +x) : +value;
+    }
+    this._content = value;
+    this.$emit("input", this._content);
+  }
 
   public search = throttle(this._search.bind(this), 1000);
   private _search({ target }: { target: HTMLInputElement }) {

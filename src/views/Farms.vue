@@ -13,6 +13,15 @@
       </v-chip>
     </template>
 
+    <template v-slot:apply-filters>
+          <v-btn 
+            color="primary" 
+            :disabled="loading" 
+            :loading="loading"
+            @click="onApplyFilter" 
+          >Apply Filter</v-btn>
+    </template>
+
     <template v-slot:active-filters>
       <div v-for="filter in activeFilters" :key="filter.key">
         <InFilter
@@ -45,15 +54,24 @@
 
     <template v-slot:table>
       <v-data-table
-        :loading="$store.getters.loading"
+        :loading="loading"
         loading-text="Loading..."
         :headers="headers"
-        :items="$store.getters.filtered_farm"
-        :items-per-page="10"
         class="elevation-1"
         align
         @click:row="openSheet"
+        :items-per-page="10"
+        :server-items-length="farms.total"
+        @pagination="page = $event.page - 1"
+        :items="items"
+        :disable-pagination="loading"
+        :page="page + 1"
+        :footer-props="{
+          'disable-items-per-page': true,
+          'disable-pagination': loading
+        }"
       >
+        <!-- :items="$store.getters.filtered_farm" -->
         <template v-slot:[`item.certificationType`]="{ item }">
           <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
             {{ item.certificationType }}
@@ -88,14 +106,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import Details from "@/components/Details.vue";
-import { IFarm } from "@/graphql/api";
+import { getFarmsQuery, IFarm, IFetchPaginatedData } from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
 import ComparisonFilter from "@/components/ComparisonFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
 import ConditionFilter from "@/components/ConditionFilter.vue";
+import { IPaginationData } from "@/store/state";
+import { PAGE_LIMIT } from '@/json/constants';
 
 @Component({
   components: {
@@ -108,15 +128,54 @@ import ConditionFilter from "@/components/ConditionFilter.vue";
   },
 })
 export default class Farms extends Vue {
+  page = 0;
+  loading = false;
   headers = [
-    { text: "ID", value: "farmId" },
+    { text: "ID", value: "id" },
     { text: "NAME", value: "name" },
     { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
     { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
     { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
-    { text: "PRICING POLICY", value: "pricingPolicyName", align: "center" },
+    { text: "PRICING POLICY", value: "pricingPolicyId", align: "center" },
   ];
+
+  get farms(): IPaginationData<IFarm> { return this.$store.state.farms; }
+  get items(): IFarm[] | undefined { return this.farms.items.get(this.page); }
+
+  @Watch('page', { immediate: true })
+  public onUpdatePage() {
+    if (this.items) return;
+
+    this.loading = true;
+    this.$apollo.query<IFetchPaginatedData<IFarm>>({
+      query: getFarmsQuery,
+      variables: {
+        limit: PAGE_LIMIT,
+        offset: this.page * PAGE_LIMIT
+      }
+    }).then(({ data: { total: { count }, items } }) => {
+      this.$store.state.farms = {
+        total: count,
+        items: this.farms.items.set(this.page, items)
+      };
+    })
+    .catch(err => {
+      console.log("Error", err);
+    })
+    .finally(() => {
+      this.loading = false;
+    });
+  }
+
+  public onApplyFilter() {
+    this.$store.state.farms = {
+      total: 0,
+      items: new Map()
+    };
+    if (this.page === 0) this.onUpdatePage()
+    else this.page = 0;
+  }
 
   // activeFilters is exactly same as filters
   // the idea is to allow user to sort filter he wants

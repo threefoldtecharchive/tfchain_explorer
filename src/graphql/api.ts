@@ -317,3 +317,54 @@ export const getDataQuery = gql`
     }
   }
 `;
+
+
+/* Refactored Code */
+
+export interface IFetchPaginatedData<T> {
+  total: { count: number };
+  items: T[];
+}
+
+export const getFarmsQuery = gql`
+  query getFarms(
+  $limit: Int!,
+  $offset: Int!,
+  $farmId_in: [Int!],
+  $name_in: [String!],
+  $twinId_in: [Int!],
+  $certificationType_in: [CertificationType!],
+  $pricingPolicyId_in: [Int!]
+  
+) {
+  total: farmsConnection(
+    where: {
+      farmId_in: $farmId_in,
+      name_in: $name_in,
+      twinId_in: $twinId_in,
+      certificationType_in: $certificationType_in,
+      pricingPolicyId_in: $pricingPolicyId_in
+    }
+  ) {
+    count: totalCount
+  }
+  
+  items: farms(
+    limit: $limit,
+    offset: $offset,
+    where: {
+      farmId_in: $farmId_in,
+      name_in: $name_in,
+      twinId_in: $twinId_in,
+      certificationType_in: $certificationType_in,
+      pricingPolicyId_in: $pricingPolicyId_in
+    }
+  ) {
+    id: farmId,
+    name,
+    publicIPs { contractId }
+    certificationType
+    pricingPolicyId
+  }
+}
+`;

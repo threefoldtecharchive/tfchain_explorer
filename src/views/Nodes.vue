@@ -72,12 +72,15 @@
         :loading="$store.getters.loading"
         loading-text="Loading..."
         :headers="headers"
-        :items="getNodes()"
-        :items-per-page="10"
         class="elevation-1"
         align
         @click:row="openSheet"
+        disable-pagination
+        :items="getNodes().slice(0, 10)"
+        hide-default-footer
       >
+        <!-- :items="getNodes()"
+        :items-per-page="10" -->
         <template v-slot:[`item.created`]="{ item }">
           {{ item.created | date }}
         </template>
@@ -98,6 +101,7 @@
           {{ item.uptime | secondToRedable }}
         </template>
       </v-data-table>
+      <Paginator :disabled="$store.getters.loading" :length="10" @next="log"/>
     </template>
 
     <template v-slot:details>
@@ -130,6 +134,8 @@ import RangeFilter from "@/components/RangeFilter.vue";
 import NodesDistribution from "@/components/NodesDistribution.vue";
 import ConditionFilter from "@/components/ConditionFilter.vue";
 import ComparisonFilter from "@/components/ComparisonFilter.vue";
+import Paginator from '@/components/Paginator.vue';
+
 @Component({
   components: {
     Layout,
@@ -139,6 +145,7 @@ import ComparisonFilter from "@/components/ComparisonFilter.vue";
     NodesDistribution,
     ConditionFilter,
     ComparisonFilter,
+    Paginator
   },
 })
 export default class Nodes extends Vue {
@@ -288,6 +295,9 @@ export default class Nodes extends Vue {
 
   closeSheet(): void {
     this.node = null;
+  }
+  log(page: number) {
+    console.log(page);
   }
 }
 </script>

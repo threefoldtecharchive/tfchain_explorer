@@ -312,14 +312,9 @@ export interface GetDataQueryType {
 
 export const getDataQuery = gql`
   ${NodeType}
-  ${FarmType}
-
   query getDataQuery($limit: Int!, $offset: Int!) {
     nodes(limit: $limit, offset: $offset) {
       ...NodeType
-    }
-    farms(limit: $limit, offset: $offset) {
-      ...FarmType
     }
   }
 `;

@@ -73,6 +73,22 @@
             {{ item.updatedAt ? "mdi-check" : "mdi-close" }}
           </v-icon>
         </template>
+
+        <template v-slot:[`item.total`]="{ item }">
+          {{ item.publicIpStatus.total }}
+        </template>
+
+        <template v-slot:[`item.free`]="{ item }">
+          {{ item.publicIpStatus.free }}
+        </template>
+
+        <template v-slot:[`item.used`]="{ item }">
+          {{ item.publicIpStatus.used }}
+        </template>
+
+        <template v-slot:[`item.pricingPolicyId`]="{ item }">
+          {{ pricingPolicy(item.pricingPolicyId) }}
+        </template>
       </v-data-table>
     </template>
 
@@ -103,6 +119,7 @@ import { PAGE_LIMIT } from "@/json/constants";
 import InFilterV2 from "@/components/InFilterV2.vue";
 import IFilterOptions from "@/types/FilterOptions";
 import apollo from "@/plugins/apollo";
+import getFarmPublicIPs from "@/utils/getFarmPublicIps";
 
 @Component({
   components: {
@@ -123,9 +140,9 @@ export default class Farms extends Vue {
   headers = [
     { text: "ID", value: "id" },
     { text: "NAME", value: "name" },
-    { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
-    { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
-    { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
+    { text: "Total Public IPs", value: "total", align: "center" },
+    { text: "Free Public IPs", value: "free", align: "center" },
+    { text: "Used Public IPs", value: "used", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
     { text: "PRICING POLICY", value: "pricingPolicyId", align: "center" },
   ];
@@ -135,6 +152,15 @@ export default class Farms extends Vue {
   }
   get items(): IFarm[] | undefined {
     return this.farms.items.get(this.page);
+  }
+
+  private get _pricingPolicy(): Map<number, string> {
+    return this.$store.state.pricingPolicies;
+  }
+
+  public pricingPolicy(id: number) {
+    const name = this._pricingPolicy.get(id);
+    return name ? name : id;
   }
 
   @Watch("page", { immediate: true })
@@ -159,7 +185,7 @@ export default class Farms extends Vue {
         }) => {
           this.$store.state.farms = {
             total: count,
-            items: this.farms.items.set(this.page, items),
+            items: this.farms.items.set(this.page, items.map(getFarmPublicIPs)),
           };
         }
       )
@@ -186,7 +212,7 @@ export default class Farms extends Vue {
       chip_label: "Farm ID",
       active: true,
       label: "Filter By Farm ID",
-      items: () => Promise.all([]),
+      items: () => Promise.resolve([]),
       value: [],
       multiple: true,
       type: "number",
@@ -223,8 +249,9 @@ export default class Farms extends Vue {
       chip_label: "Certification Type",
       active: false,
       label: "Filter By Certification Type",
-      items: (_) => Promise.all(["Diy", "Certified"]),
+      items: (_) => Promise.resolve(["Diy", "Certified"]),
       value: "",
+      init: true,
     },
   ];
 

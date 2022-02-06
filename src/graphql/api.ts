@@ -166,6 +166,13 @@ export interface IPublicIPs {
   contractId: number;
   ip: string;
 }
+
+interface IPublicIpStatus {
+  total: number;
+  used: number;
+  free: number;
+}
+
 export interface IFarm {
   id: string;
   createdAt: string;
@@ -182,6 +189,7 @@ export interface IFarm {
   pricingPolicyId: number;
   certificationType: "Diy" | "Certified";
   publicIPs: IPublicIPs[];
+  publicIpStatus?: IPublicIpStatus;
 }
 
 export const FarmType = gql`
@@ -305,10 +313,7 @@ export const getDataQuery = gql`
   ${NodeType}
   ${FarmType}
 
-  query getDataQuery(
-    $limit: Int!
-    $offset: Int!
-  ) {
+  query getDataQuery($limit: Int!, $offset: Int!) {
     nodes(limit: $limit, offset: $offset) {
       ...NodeType
     }
@@ -317,7 +322,6 @@ export const getDataQuery = gql`
     }
   }
 `;
-
 
 /* Refactored Code */
 
@@ -328,47 +332,47 @@ export interface IFetchPaginatedData<T> {
 
 export const getFarmsQuery = gql`
   query getFarms(
-  $limit: Int!,
-  $offset: Int!,
-  $farmId_in: [Int!],
-  $name_in: [String!],
-  $twinId_in: [Int!],
-  $certificationType_in: [CertificationType!],
-  $pricingPolicyId_in: [Int!]
-  
-) {
-  total: farmsConnection(
-    where: {
-      farmId_in: $farmId_in,
-      name_in: $name_in,
-      twinId_in: $twinId_in,
-      certificationType_in: $certificationType_in,
-      pricingPolicyId_in: $pricingPolicyId_in
-    }
+    $limit: Int!
+    $offset: Int!
+    $farmId_in: [Int!]
+    $name_in: [String!]
+    $twinId_in: [Int!]
+    $certificationType_in: [CertificationType!]
+    $pricingPolicyId_in: [Int!]
   ) {
-    count: totalCount
-  }
-  
-  items: farms(
-    limit: $limit,
-    offset: $offset,
-    where: {
-      farmId_in: $farmId_in,
-      name_in: $name_in,
-      twinId_in: $twinId_in,
-      certificationType_in: $certificationType_in,
-      pricingPolicyId_in: $pricingPolicyId_in
+    total: farmsConnection(
+      where: {
+        farmId_in: $farmId_in
+        name_in: $name_in
+        twinId_in: $twinId_in
+        certificationType_in: $certificationType_in
+        pricingPolicyId_in: $pricingPolicyId_in
+      }
+    ) {
+      count: totalCount
     }
-  ) {
-    id: farmId,
-    name,
-    publicIPs { contractId }
-    certificationType
-    pricingPolicyId
-  }
-}
-`;
 
+    items: farms(
+      limit: $limit
+      offset: $offset
+      where: {
+        farmId_in: $farmId_in
+        name_in: $name_in
+        twinId_in: $twinId_in
+        certificationType_in: $certificationType_in
+        pricingPolicyId_in: $pricingPolicyId_in
+      }
+    ) {
+      id: farmId
+      name
+      publicIPs {
+        contractId
+      }
+      certificationType
+      pricingPolicyId
+    }
+  }
+`;
 
 export interface IFilterQuery {
   items: Array<{ value: string }>;
@@ -382,5 +386,5 @@ export const filterQuery = (prop: string) => {
       }
     }
   `;
-  return gql(query)
+  return gql(query);
 };

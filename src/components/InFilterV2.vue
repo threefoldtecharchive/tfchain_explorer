@@ -18,7 +18,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import IFilterOptions from "@/types/FilterOptions";
-import { throttle } from "lodash";
+import { debounce } from "lodash";
 
 type TContent = string | number | Array<string | number>;
 
@@ -42,7 +42,7 @@ export default class InFilterV2 extends Vue {
     this.$emit("input", this._content);
   }
 
-  public search = throttle(this._search.bind(this), 1000);
+  public search = debounce(this._search.bind(this), 1000);
   private _search({ target }: { target: HTMLInputElement }) {
     this.loading = true;
     this.options
@@ -54,6 +54,12 @@ export default class InFilterV2 extends Vue {
       .finally(() => {
         this.loading = false;
       });
+  }
+
+  public created() {
+    if (this.options.init) {
+      this._search({ target: { value: null } } as any);
+    }
   }
 }
 </script>

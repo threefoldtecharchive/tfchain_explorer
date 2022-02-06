@@ -7,4 +7,5 @@ export default interface IFilterOptions {
   value: string | string[];
   multiple?: boolean;
   type?: "text" | "number";
+  init?: boolean;
 }

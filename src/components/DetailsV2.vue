@@ -8,7 +8,7 @@
     <v-sheet class="text-center" height="90vh">
       <div class="content" v-if="!loading">
         <v-row>
-          <!-- <v-col v-if="node">
+          <v-col v-if="node">
             <NodeUsedResources :node="node" />
           </v-col>
         </v-row>
@@ -20,7 +20,7 @@
             v-if="node"
           >
             <NodeDetails :node="node" />
-          </v-col> -->
+          </v-col>
 
           <v-col
             :cols="
@@ -31,36 +31,40 @@
             <FarmDetails :farm="data.farm" />
           </v-col>
 
-          <!-- <v-col
+          <v-col
             :cols="
               screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
             "
-            v-if="country && location"
+            v-if="node && node.country && node.location"
           >
-            <LocationDetails :country="country" :location="location" />
-          </v-col> -->
+            <LocationDetails
+              :country="node.country"
+              :location="node.location"
+            />
+          </v-col>
 
-          <!-- <v-col
+          <v-col
             :cols="
               screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
             "
-            v-if="config"
+            v-if="node && node.publicConfig"
           >
-            <PublicConfigDetails :config="config" />
-          </v-col> -->
+            <PublicConfigDetails :config="node.publicConfig" />
+          </v-col>
 
-          <!-- <v-col
+          <v-col
             :cols="
               screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
             "
             v-if="country"
           >
             <CountryDetails
-              :country="country"
-              :city="city"
-              :location="location"
+              :country="node.country"
+              :city="node.city"
+              :location="node.location"
+              :code="country.code"
             />
-          </v-col> -->
+          </v-col>
 
           <v-col
             :cols="
@@ -71,14 +75,14 @@
             <TwinDetails :twin="data.twin" />
           </v-col>
 
-          <!-- <v-col
+          <v-col
             :cols="
               screen_max_700.matches ? 12 : screen_max_1200.matches ? 6 : 4
             "
             v-if="node && node.interfaces"
           >
             <InterfacesDetails :interfaces="node.interfaces" />
-          </v-col> -->
+          </v-col>
         </v-row>
       </div>
       <div v-if="loading" class="pt-10">
@@ -100,6 +104,7 @@ import InterfacesDetails from "./InterfacesDetails.vue";
 import NodeUsedResources from "./NodeUsedResources.vue";
 import mediaMatcher from "@/utils/mediaMatcher";
 import { DocumentNode } from "graphql";
+import { ICountry, INode } from "@/graphql/api";
 
 @Component({
   components: {
@@ -122,6 +127,14 @@ export default class Details extends Vue {
 
   data: any = {};
 
+  get node(): INode {
+    return this.data.node;
+  }
+
+  get country(): ICountry {
+    return this.data.country;
+  }
+
   screen_max_1200 = mediaMatcher("(max-width: 1200px)");
   screen_max_700 = mediaMatcher("(max-width: 700px)");
 
@@ -132,8 +145,6 @@ export default class Details extends Vue {
     this.loading = true;
 
     const { query, variables } = this;
-    console.log({ query, variables });
-
     this.$apollo
       .query({ query, variables })
       .then(({ data }) => {

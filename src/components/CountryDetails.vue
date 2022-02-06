@@ -23,9 +23,17 @@
       <!-- CODE ISO 3 Item -->
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title> Code ISO 2 </v-list-item-title>
+          <v-list-item-title> Name </v-list-item-title>
         </v-list-item-content>
         {{ country }}
+      </v-list-item>
+      <v-divider />
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title> Code ISO 2 </v-list-item-title>
+        </v-list-item-content>
+        {{ code }}
       </v-list-item>
 
       <!-- City Item -->
@@ -73,6 +81,7 @@ export default class CountryDetails extends Vue {
   @Prop({ required: false }) country?: string;
   @Prop({ required: false }) city?: string;
   @Prop({ required: false }) location?: ILocation;
+  @Prop({ required: false }) code?: string;
 
   get src(): string {
     const conuntryCode =

@@ -12,16 +12,21 @@
       >
         {{ filter.chip_label }}
       </v-chip>
+      <v-chip class="ma-2" disabled>
+        Free Public IP
+      </v-chip>
     </template>
 
     <template v-slot:apply-filters>
       <v-btn
         color="primary"
-        :disabled="loading"
+        :disabled="loading || !changed"
         :loading="loading"
         @click="onApplyFilter"
-        >Apply Filter</v-btn
+        class="mt-2"
       >
+        Apply Filter
+      </v-btn>
     </template>
 
     <template v-slot:active-filters>
@@ -31,6 +36,7 @@
           :is="filter.component"
           :options="filter"
           v-model="filter.value"
+          @input="changed = true"
         />
       </div>
     </template>
@@ -52,8 +58,8 @@
           'disable-items-per-page': true,
           'disable-pagination': loading,
         }"
+        @click:row="openSheet"
       >
-        <!-- @click:row="openSheet" -->
         <template v-slot:[`item.certificationType`]="{ item }">
           <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
             {{ item.certificationType }}
@@ -92,20 +98,20 @@
       </v-data-table>
     </template>
 
-    <!-- <template v-slot:details>
-      <Details
+    <template v-slot:details>
+      <DetailsV2
         :open="!!farm"
-        :farm="farm"
+        :query="query"
+        :variables="farm ? { farmId: farm.id, twinId: farm.twinId } : {}"
         v-on:close-sheet="closeSheet"
-        :twin="$store.getters.twin(farm && farm.twinId)"
       />
-    </template> -->
+    </template>
   </Layout>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import Details from "@/components/Details.vue";
+import DetailsV2 from "@/components/DetailsV2.vue";
 import {
   filterQuery,
   getFarmsQuery,
@@ -120,23 +126,21 @@ import InFilterV2 from "@/components/InFilterV2.vue";
 import IFilterOptions from "@/types/FilterOptions";
 import apollo from "@/plugins/apollo";
 import getFarmPublicIPs from "@/utils/getFarmPublicIps";
+import gql from "graphql-tag";
 
 @Component({
   components: {
     Layout,
-    Details,
+    DetailsV2,
     InFilterV2,
-    // InFilter,
-    // ComparisonFilter,
-    // RangeFilter,
-    // ConditionFilter,
   },
 })
 export default class Farms extends Vue {
   value = "";
-  c = InFilterV2;
   page = 0;
   loading = false;
+  changed = false;
+
   headers = [
     { text: "ID", value: "id" },
     { text: "NAME", value: "name" },
@@ -163,12 +167,12 @@ export default class Farms extends Vue {
     return name ? name : id;
   }
 
-  private _vars: any = {}
+  private _vars: any = {};
 
   @Watch("page", { immediate: true })
   public onUpdatePage() {
     if (this.items) return;
-    console.log("our filters",this._vars)
+    console.log("our filters", this._vars);
     this.loading = true;
     this.$apollo
       .query<IFetchPaginatedData<IFarm>>({
@@ -176,7 +180,7 @@ export default class Farms extends Vue {
         variables: {
           limit: PAGE_LIMIT,
           offset: this.page * PAGE_LIMIT,
-          ...this._vars
+          ...this._vars,
         },
       })
       .then(
@@ -200,28 +204,29 @@ export default class Farms extends Vue {
       });
   }
 
-  public getKeyByValue(value: string): number| null  {
+  public getKeyByValue(value: string): number | null {
     const map = this._pricingPolicy;
     const keys = [...map.keys()];
     const values = [...map.values()];
 
     for (let i = 0; i < values.length; i++) {
-        if (values[i] === value) return keys[i];
+      if (values[i] === value) return keys[i];
     }
 
     return null;
-}
+  }
 
-  
   public onApplyFilter() {
-    this._vars = this.filters.filter(f => f.active).filter(f => Array.isArray(f.value)? f.value.length>0 : true).map(f => {
-      if (f.symbol !== "pricingPolicyId_in") return f;
-      return { ...f, value: (f.value as string[]).map(this.getKeyByValue.bind(this))}
-    }).reduce((res, { symbol, value}) => {
-      res[symbol] = value;
-      return res;
-    }, {} as { [key: string]: any})
-    
+    this.changed = false;
+    this._vars = this.filters
+      .filter((f) => f.active)
+      .filter((f) => (Array.isArray(f.value) ? f.value.length > 0 : true))
+      .reduce((res, f) => {
+        const { symbol, value, getValue } = f;
+        res[symbol] = getValue?.(f) ?? value;
+        return res;
+      }, {} as { [key: string]: any });
+
     this.$store.state.farms = {
       total: 0,
       items: new Map(),
@@ -270,7 +275,7 @@ export default class Farms extends Vue {
       value: [],
       type: "number",
       multiple: true,
-      symbol:"twinId_in",
+      symbol: "twinId_in",
     },
     {
       component: InFilterV2,
@@ -281,7 +286,7 @@ export default class Farms extends Vue {
       value: [],
       init: true,
       multiple: true,
-      symbol: "certificationType_in"
+      symbol: "certificationType_in",
     },
     {
       component: InFilterV2,
@@ -292,56 +297,44 @@ export default class Farms extends Vue {
       value: [],
       init: true,
       multiple: true,
-      symbol: "pricingPolicyId_in"
+      symbol: "pricingPolicyId_in",
+      getValue: (f) => {
+        return (f.value as string[]).map(this.getKeyByValue.bind(this));
+      },
     },
   ];
 
-  // filters = [
-  //   {
-  //     label: "Farm ID",
-  //     type: "in",
-  //     active: false,
-  //     key: "farmId",
-  //     placeholder: "Filter by farm id.",
-  //   },
-  //   ...this.activeFilters,
-  //   {
-  //     label: "Free Public IP",
-  //     type: "comparison",
-  //     active: false,
-  //     key: "freePublicIPs",
-  //     placeholder: "Filter by greater than or equal to publicIp Number.",
-  //     prefix: ">=",
-  //   },
-  //   {
-  //     label: "Pricing Policy",
-  //     type: "in",
-  //     active: false,
-  //     key: "pricingPolicyName",
-  //     placeholder: "Filter by pricing policy name",
-  //   },
-  // ];
+  query = gql`
+    query getFarmDetails($farmId: Int!, $twinId: Int!) {
+      farm: farms(where: { farmId_eq: $farmId }) {
+        id
+        farmId
+        name
+        version
+        gridVersion
+        certificationType
+        stellarAddress
+      }
 
-  // toggleActive(idx: number) {
-  //   const filter = this.filters[idx];
+      twin: twins(where: { twinId_eq: $twinId }) {
+        id
+        twinId
+        accountId
+        version
+        gridVersion
+        ip
+      }
+    }
+  `;
 
-  //   if (filter.active) {
-  //     this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
-  //     filter.active = false;
-  //   } else {
-  //     filter.active = true;
-  //     this.activeFilters.push(filter);
-  //   }
-  // }
+  farm: IFarm | null = null;
 
-  // farm: IFarm | null = null;
+  openSheet(farm: IFarm): void {
+    this.farm = farm;
+  }
 
-  // openSheet(farm: IFarm): void {
-  //   this.farm = farm;
-  // }
-
-  // closeSheet(): void {
-  //   this.farm = null;
-  // }
+  closeSheet(): void {
+    this.farm = null;
+  }
 }
 </script>

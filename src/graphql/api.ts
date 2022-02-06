@@ -190,6 +190,7 @@ export interface IFarm {
   certificationType: "Diy" | "Certified";
   publicIPs: IPublicIPs[];
   publicIpStatus?: IPublicIpStatus;
+  stellarAddress?: string;
 }
 
 export const FarmType = gql`
@@ -368,6 +369,7 @@ export const getFarmsQuery = gql`
       publicIPs {
         contractId
       }
+      twinId
       certificationType
       pricingPolicyId
     }

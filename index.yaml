@@ -73,6 +73,16 @@ entries:
     version: v3.0.0-rc3
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-02-06T16:35:56.495793+02:00"
+    description: A Helm chart for Kubernetes
+    digest: 538763babc3d208a064f41e557e10b91340cb4f146f8781a99a96ec1cba0f72d
+    name: tf-explorer
+    type: application
+    urls:
+    - tf-explorer-v3.0.0-rc25.tgz
+    version: v3.0.0-rc25
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-02-02T16:05:03.953157324+02:00"
     description: A Helm chart for Kubernetes
     digest: 14ee5bcbdff90d358604067c70067bd1d7ce3c24cc84e4197f9c24c4b4a1ff78
@@ -261,4 +271,4 @@ entries:
     urls:
     - tf-explorer-0.3.0.tgz
     version: 0.3.0
-generated: "2022-02-02T16:05:03.950377623+02:00"
+generated: "2022-02-06T16:35:56.494973601+02:00"

@@ -8,4 +8,5 @@ export default interface IFilterOptions {
   multiple?: boolean;
   type?: "text" | "number";
   init?: boolean;
+  symbol: string;
 }

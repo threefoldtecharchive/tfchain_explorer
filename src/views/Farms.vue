@@ -163,10 +163,12 @@ export default class Farms extends Vue {
     return name ? name : id;
   }
 
+  private _vars: any = {}
+
   @Watch("page", { immediate: true })
   public onUpdatePage() {
     if (this.items) return;
-
+    console.log("our filters",this._vars)
     this.loading = true;
     this.$apollo
       .query<IFetchPaginatedData<IFarm>>({
@@ -174,6 +176,7 @@ export default class Farms extends Vue {
         variables: {
           limit: PAGE_LIMIT,
           offset: this.page * PAGE_LIMIT,
+          ...this._vars
         },
       })
       .then(
@@ -197,7 +200,28 @@ export default class Farms extends Vue {
       });
   }
 
+  public getKeyByValue(value: string): number| null  {
+    const map = this._pricingPolicy;
+    const keys = [...map.keys()];
+    const values = [...map.values()];
+
+    for (let i = 0; i < values.length; i++) {
+        if (values[i] === value) return keys[i];
+    }
+
+    return null;
+}
+
+  
   public onApplyFilter() {
+    this._vars = this.filters.filter(f => f.active).filter(f => Array.isArray(f.value)? f.value.length>0 : true).map(f => {
+      if (f.symbol !== "pricingPolicyId_in") return f;
+      return { ...f, value: (f.value as string[]).map(this.getKeyByValue.bind(this))}
+    }).reduce((res, { symbol, value}) => {
+      res[symbol] = value;
+      return res;
+    }, {} as { [key: string]: any})
+    
     this.$store.state.farms = {
       total: 0,
       items: new Map(),
@@ -216,6 +240,7 @@ export default class Farms extends Vue {
       value: [],
       multiple: true,
       type: "number",
+      symbol: "farmId_in",
     },
     {
       component: InFilterV2,
@@ -232,7 +257,9 @@ export default class Farms extends Vue {
             return data.items.map((x) => x.value);
           });
       },
-      value: "",
+      value: [],
+      multiple: true,
+      symbol: "name_in",
     },
     {
       component: InFilterV2,
@@ -243,6 +270,7 @@ export default class Farms extends Vue {
       value: [],
       type: "number",
       multiple: true,
+      symbol:"twinId_in",
     },
     {
       component: InFilterV2,
@@ -250,8 +278,21 @@ export default class Farms extends Vue {
       active: false,
       label: "Filter By Certification Type",
       items: (_) => Promise.resolve(["Diy", "Certified"]),
-      value: "",
+      value: [],
       init: true,
+      multiple: true,
+      symbol: "certificationType_in"
+    },
+    {
+      component: InFilterV2,
+      chip_label: "Pricing Policy",
+      active: false,
+      label: "Filter By Pricing policy",
+      items: (_) => Promise.resolve([...this._pricingPolicy.values()]),
+      value: [],
+      init: true,
+      multiple: true,
+      symbol: "pricingPolicyId_in"
     },
   ];
 

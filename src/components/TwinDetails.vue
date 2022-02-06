@@ -50,15 +50,6 @@
         {{ twin.ip }}
       </v-list-item>
       <v-divider />
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            Version
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ twin.version }}
-      </v-list-item>
     </v-list>
   </v-container>
 </template>

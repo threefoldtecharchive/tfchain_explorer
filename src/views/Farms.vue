@@ -48,7 +48,7 @@
         :headers="headers"
         class="elevation-1"
         align
-        :items-per-page="10"
+        :items-per-page="15"
         :server-items-length="farms.total"
         @pagination="page = $event.page - 1"
         :items="items"

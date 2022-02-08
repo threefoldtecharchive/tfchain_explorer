@@ -32,4 +32,4 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/explorer-test:${{ steps.get-latest-tag.outputs.tag }}
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tf-explorer:${{ steps.get-latest-tag.outputs.tag }}

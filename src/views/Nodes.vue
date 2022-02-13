@@ -56,16 +56,12 @@
             label="Gateways"
           />
           <v-switch v-model="onlyOnline" label="Online" />
-        </div> 
+        </div>
       </div>
       <div class="d-flex justify-center">
-           <v-alert
-      dense
-      text
-      type="success"
-    >
-      The Node statusses are fetched every 2 hours.
-    </v-alert>
+        <v-alert dense text type="success">
+          Nodes status are updated every 2 hours.
+        </v-alert>
       </div>
       <v-data-table
         ref="table"
@@ -100,7 +96,7 @@
       </v-data-table>
     </template>
 
-    <template v-slot:details>
+    <!-- <template v-slot:details>
       <Details
         :open="!!node"
         :node="node"
@@ -111,18 +107,39 @@
         :config="node && node.publicConfig"
         v-on:close-sheet="closeSheet"
       />
-        <!-- :twin="$store.getters.twin(node && node.twinId)" -->
+        :twin="$store.getters.twin(node && node.twinId)"
+    </template> -->
+
+    <template v-slot:details>
+      <DetailsV2
+        :open="!!node"
+        :query="query"
+        :variables="
+          node
+            ? {
+                nodeId: node.nodeId,
+                farmId: node.farmId,
+                twinId: node.twinId,
+                country: node.country,
+              }
+            : {}
+        "
+        v-on:close-sheet="closeSheet"
+      />
     </template>
 
     <template v-slot:default>
-      <NodesDistribution :nodes="getNodes()" v-if="$store.getters.nodes.length > 0" />
+      <NodesDistribution
+        :nodes="getNodes()"
+        v-if="$store.getters.nodes.length > 0"
+      />
     </template>
   </Layout>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Details from "@/components/Details.vue";
+import DetailsV2 from "@/components/DetailsV2.vue";
 import { INode } from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
@@ -130,10 +147,11 @@ import RangeFilter from "@/components/RangeFilter.vue";
 import NodesDistribution from "@/components/NodesDistribution.vue";
 import ConditionFilter from "@/components/ConditionFilter.vue";
 import ComparisonFilter from "@/components/ComparisonFilter.vue";
+import gql from "graphql-tag";
 @Component({
   components: {
     Layout,
-    Details,
+    DetailsV2,
     InFilter,
     RangeFilter,
     NodesDistribution,
@@ -168,8 +186,7 @@ export default class Nodes extends Vue {
       key: "hru",
       placeholder: "hru",
       max: 1e12 * 1000, // 1e12 is Terra and we want here 1000 Terrabytes
-      unit: "TB"
-
+      unit: "TB",
     },
     {
       label: "MRU",
@@ -178,7 +195,7 @@ export default class Nodes extends Vue {
       key: "mru",
       placeholder: "mru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
-      unit: "TB"
+      unit: "TB",
     },
     {
       label: "CRU",
@@ -187,7 +204,7 @@ export default class Nodes extends Vue {
       key: "cru",
       placeholder: "cru",
       max: 64,
-      unit: "core"
+      unit: "core",
     },
   ];
 
@@ -234,8 +251,7 @@ export default class Nodes extends Vue {
       key: "sru",
       placeholder: "sru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
-      unit: "TB"
-
+      unit: "TB",
     },
     ...this.activeFilters,
     {
@@ -253,7 +269,7 @@ export default class Nodes extends Vue {
       key: "certificationType",
       placeholder: "Filter by certification type",
       value: ["Diy", "Certified"],
-    }
+    },
   ];
 
   getNodes() {
@@ -263,7 +279,6 @@ export default class Nodes extends Vue {
     }
 
     nodes = nodes.filter(({ status }) => status === this.onlyOnline);
-    
 
     return nodes;
   }
@@ -281,6 +296,71 @@ export default class Nodes extends Vue {
   }
 
   node: INode | null = null;
+  query = gql`
+    query getNodeDetails(
+      $nodeId: Int!
+      $farmId: Int!
+      $twinId: Int!
+      $country: String!
+    ) {
+      node: nodes(where: { nodeId_eq: $nodeId }) {
+        country
+        city
+        location {
+          latitude
+          longitude
+        }
+        nodeId
+        farmId
+        farmingPolicyId
+        gridVersion
+        uptime
+        cru
+        hru
+        sru
+        mru
+        created
+        certificationType
+        interfaces {
+          id
+          name
+          mac
+          ips
+        }
+        publicConfig {
+          ipv4
+          gw4
+          ipv6
+          gw6
+          domain
+        }
+        farmingPolicyId
+      }
+
+      farm: farms(where: { farmId_eq: $farmId }) {
+        id
+        farmId
+        name
+        version
+        gridVersion
+        certificationType
+        stellarAddress
+      }
+
+      twin: twins(where: { twinId_eq: $twinId }) {
+        id
+        twinId
+        accountId
+        version
+        gridVersion
+        ip
+      }
+
+      country: countries(where: { name_eq: $country }) {
+        code
+      }
+    }
+  `;
 
   openSheet(node: INode): void {
     this.node = node;

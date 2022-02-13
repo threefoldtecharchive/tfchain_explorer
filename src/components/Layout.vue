@@ -16,6 +16,9 @@
         <v-row>
           <slot name="filters"></slot>
         </v-row>
+        <v-row class="mt-2 mb-2 mr-2" justify="end">
+          <slot name="apply-filters"></slot>
+        </v-row>
         <br />
         <v-divider />
         <section class="filter-container" ref="container">

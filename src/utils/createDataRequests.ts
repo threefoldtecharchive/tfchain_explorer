@@ -26,7 +26,6 @@ export default function createDataRequests(totals: GetTotalCountQueryType<number
             for (let i = 1; i < data.length; i++) {
                 const value = data[i];
                 result.nodes.push(...value.nodes);
-                result.farms.push(...value.farms);
             }
             return result;
         });

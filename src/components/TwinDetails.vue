@@ -50,20 +50,15 @@
         {{ twin.ip }}
       </v-list-item>
       <v-divider />
-
-      <DatesDetails :item="twin" />
     </v-list>
   </v-container>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { ITwin } from "@/graphql/api";
-import DatesDetails from "./DatesDetails.vue";
 
 @Component({
-  components: {
-    DatesDetails,
-  },
+  components: {},
 })
 export default class TwinDetails extends Vue {
   @Prop({ required: true }) twin!: ITwin;

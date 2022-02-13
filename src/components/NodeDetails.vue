@@ -231,6 +231,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { INode } from "@/graphql/api";
 import DatesDetails from "./DatesDetails.vue";
 import mediaMatcher from "@/utils/mediaMatcher";
+import isNodeOnline from "@/utils/isNodeOnline";
 
 function createItem(value: string, key?: keyof INode) {
   key = key ? key : (value.toLocaleLowerCase() as any);
@@ -247,7 +248,7 @@ export default class NodeDetails_ extends Vue {
   size = 210;
   width = 10;
   fontSize = 25;
-  zosVersion = ""
+  zosVersion = "";
 
   // used for animation
   initLoading = true;
@@ -275,22 +276,22 @@ export default class NodeDetails_ extends Vue {
     return Math.round(value * 10000) / 100;
   }
 
-    getZOSVersion(nodeId: number){
-      return fetch(`${window.configs.proxy_url}/nodes/${nodeId}`)
-      .then((res)=>res.json())
-      .then<string>((res)=>{
-        return res.zosVersion
+  getZOSVersion(nodeId: number) {
+    return fetch(`${window.configs.proxy_url}/nodes/${nodeId}`)
+      .then((res) => res.json())
+      .then<string>((res) => {
+        if ("Error" in res) return;
+        return res.zosVersion;
       })
-      .catch((err) => console.log("something went wrong", err))
+      .catch((err) => console.log("something went wrong", err));
+  }
+  created() {
+    if (isNodeOnline(this.node)) {
+      this.getZOSVersion(this.node.nodeId).then((zosVersion) => {
+        if (zosVersion) this.zosVersion = zosVersion!;
+      });
     }
-   created() {
-     if (this.node.status) {
-       this.getZOSVersion(this.node.nodeId).then((zosVersion) =>{
-         if(zosVersion)
-         this.zosVersion = zosVersion!;
-       })
-     }
-   }
+  }
 
   screen_max_1000 = mediaMatcher("(max-width: 1000px)");
   screen_max_800 = mediaMatcher("(max-width: 800px)");

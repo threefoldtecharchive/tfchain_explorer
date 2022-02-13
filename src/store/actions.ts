@@ -3,9 +3,9 @@ import type { IState } from "./state";
 import apollo from "@/plugins/apollo";
 import { getTotalCountQuery, GetTotalCountQueryType } from '../graphql/api';
 import { MutationTypes } from './mutations';
-import moment from 'moment';
 import getPricingPolicies from "@/utils/getPricingPolicies";
 import createDataRequests from "@/utils/createDataRequests";
+import isNodeOnline from "@/utils/isNodeOnline";
 
 export enum ActionTypes {
     INIT_POLICIES = "initPolicies",
@@ -51,16 +51,7 @@ export default {
         .then(createDataRequests)
         .then((data) => {
             data.nodes = data.nodes.map(node => {
-                const { updatedAt } = node
-                const startTime = moment()
-                const end = moment(updatedAt)
-                const hours = startTime.diff(end, 'hours')
-                // if updated difference in hours with now is less then 2 hours, node is up
-                if (hours <= 2) {
-                    node.status = true
-                } else {
-                    node.status = false
-                }
+                node.status = isNodeOnline(node);
                 return node
             })
             commit(MutationTypes.SET_DATA, data);

@@ -1,4 +1,4 @@
-import { GetDataQueryType } from "@/graphql/api";
+import { GetDataQueryType, IFarm } from "@/graphql/api";
 
 interface IInFilter {
   enabled: boolean;
@@ -29,6 +29,18 @@ interface IComparisonFilter {
 }
 
 const createComparisonFilter = () => ({ enabled: false, value: 0 });
+
+export interface IPaginationData<T> {
+  total: number,
+  items: Map<number, T[]>;
+}
+
+function createPaginationData<T>(): IPaginationData<T> {
+  return {
+    total: 0,
+    items: new Map<number, T[]>()
+  }
+}
 
 export interface IState {
   data: GetDataQueryType | null;
@@ -65,6 +77,9 @@ export interface IState {
       pricingPolicyName: IInFilter;
     };
   };
+
+  /* Refactored Data */
+  farms: IPaginationData<IFarm>
 }
 
 export default {
@@ -102,4 +117,8 @@ export default {
       pricingPolicyName: createInFilter(),
     },
   },
+
+
+  /* Refactored data */
+  farms: createPaginationData()
 } as IState;

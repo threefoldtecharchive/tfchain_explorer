@@ -2,56 +2,62 @@
   <Layout pageName="Farms">
     <template v-slot:filters>
       <v-chip
-        v-for="(filter, idx) in filters"
-        :key="filter.key"
+        v-for="filter in filters"
         class="ma-2"
-        v-model="filter.active"
-        @click="toggleActive(idx)"
         filter
+        :key="filter.chip_label"
+        v-model="filter.active"
+        :color="filter.active ? 'primary' : undefined"
+        @click="filter.active = !filter.active"
       >
-        {{ filter.label }}
+        {{ filter.chip_label }}
+      </v-chip>
+      <v-chip class="ma-2" disabled>
+        Free Public IP
       </v-chip>
     </template>
 
+    <template v-slot:apply-filters>
+      <v-btn
+        color="primary"
+        :disabled="loading || !changed"
+        :loading="loading"
+        @click="onApplyFilter"
+        class="mt-2"
+      >
+        Apply Filter
+      </v-btn>
+    </template>
+
     <template v-slot:active-filters>
-      <div v-for="filter in activeFilters" :key="filter.key">
-        <InFilter
-          key1="farms"
-          :key2="filter.key"
-          :label="filter.placeholder"
-          v-if="filter.type === 'in'"
-        />
-        <RangeFilter
-          v-if="filter.type === 'range'"
-          key1="farms"
-          :key2="filter.key"
-          :label="filter.placeholder"
-        />
-        <ConditionFilter
-          v-if="filter.type === 'condition'"
-          key1="farms"
-          :key2="filter.key"
-          :labels="filter.placeholder"
-        />
-        <ComparisonFilter
-          key1="farms"
-          :key2="filter.key"
-          :label="filter.placeholder"
-          :prefix="filter.prefix"
-          v-if="filter.type === 'comparison'"
+      <div v-for="filter in filters" :key="filter.label">
+        <component
+          v-if="filter.active"
+          :is="filter.component"
+          :options="filter"
+          v-model="filter.value"
+          @input="changed = true"
         />
       </div>
     </template>
 
     <template v-slot:table>
       <v-data-table
-        :loading="$store.getters.loading"
+        :loading="loading"
         loading-text="Loading..."
         :headers="headers"
-        :items="$store.getters.filtered_farm"
-        :items-per-page="10"
         class="elevation-1"
         align
+        :items-per-page="15"
+        :server-items-length="farms.total"
+        @pagination="page = $event.page - 1"
+        :items="items"
+        :disable-pagination="loading"
+        :page="page + 1"
+        :footer-props="{
+          'disable-items-per-page': true,
+          'disable-pagination': loading,
+        }"
         @click:row="openSheet"
       >
         <template v-slot:[`item.certificationType`]="{ item }">
@@ -73,115 +79,253 @@
             {{ item.updatedAt ? "mdi-check" : "mdi-close" }}
           </v-icon>
         </template>
+
+        <template v-slot:[`item.total`]="{ item }">
+          {{ item.publicIpStatus.total }}
+        </template>
+
+        <template v-slot:[`item.free`]="{ item }">
+          {{ item.publicIpStatus.free }}
+        </template>
+
+        <template v-slot:[`item.used`]="{ item }">
+          {{ item.publicIpStatus.used }}
+        </template>
+
+        <template v-slot:[`item.pricingPolicyId`]="{ item }">
+          {{ pricingPolicy(item.pricingPolicyId) }}
+        </template>
       </v-data-table>
     </template>
 
     <template v-slot:details>
-      <Details
+      <DetailsV2
         :open="!!farm"
-        :farm="farm"
+        :query="query"
+        :variables="farm ? { farmId: farm.id, twinId: farm.twinId } : {}"
         v-on:close-sheet="closeSheet"
       />
-        <!-- :twin="$store.getters.twin(farm && farm.twinId)" -->
     </template>
   </Layout>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import Details from "@/components/Details.vue";
-import { IFarm } from "@/graphql/api";
+import { Component, Vue, Watch } from "vue-property-decorator";
+import DetailsV2 from "@/components/DetailsV2.vue";
+import {
+  filterQuery,
+  getFarmsQuery,
+  IFarm,
+  IFetchPaginatedData,
+  IFilterQuery,
+} from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
-import InFilter from "@/components/InFilter.vue";
-import ComparisonFilter from "@/components/ComparisonFilter.vue";
-import RangeFilter from "@/components/RangeFilter.vue";
-import ConditionFilter from "@/components/ConditionFilter.vue";
+import { IPaginationData } from "@/store/state";
+import { PAGE_LIMIT } from "@/json/constants";
+import InFilterV2 from "@/components/InFilterV2.vue";
+import IFilterOptions from "@/types/FilterOptions";
+import apollo from "@/plugins/apollo";
+import getFarmPublicIPs from "@/utils/getFarmPublicIps";
+import gql from "graphql-tag";
 
 @Component({
   components: {
     Layout,
-    Details,
-    InFilter,
-    ComparisonFilter,
-    RangeFilter,
-    ConditionFilter,
+    DetailsV2,
+    InFilterV2,
   },
 })
 export default class Farms extends Vue {
+  value = "";
+  page = 0;
+  loading = false;
+  changed = false;
+
   headers = [
-    { text: "ID", value: "farmId" },
+    { text: "ID", value: "id" },
     { text: "NAME", value: "name" },
-    { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
-    { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
-    { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
+    { text: "Total Public IPs", value: "total", align: "center" },
+    { text: "Free Public IPs", value: "free", align: "center" },
+    { text: "Used Public IPs", value: "used", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
-    { text: "PRICING POLICY", value: "pricingPolicyName", align: "center" },
+    { text: "PRICING POLICY", value: "pricingPolicyId", align: "center" },
   ];
 
-  // activeFilters is exactly same as filters
-  // the idea is to allow user to sort filter he wants
-  activeFilters: any[] = [
-    {
-      label: "Name",
-      type: "in",
-      active: true,
-      key: "name",
-      placeholder: "Filter by farm name",
-    },
-    {
-      label: "Twin ID",
-      type: "in",
-      active: true,
-      key: "twinId",
-      placeholder: "Filter by twin id.",
-    },
-    {
-      label: "Certification Type",
-      type: "in",
-      active: true,
-      key: "certificationType",
-      placeholder: "Filter by certification type",
-      value: ["Diy", "Certified"],
-    },
-  ];
-
-  filters = [
-    {
-      label: "Farm ID",
-      type: "in",
-      active: false,
-      key: "farmId",
-      placeholder: "Filter by farm id.",
-    },
-    ...this.activeFilters,
-    {
-      label: "Free Public IP",
-      type: "comparison",
-      active: false,
-      key: "freePublicIPs",
-      placeholder: "Filter by greater than or equal to publicIp Number.",
-      prefix: ">=",
-    },
-    {
-      label: "Pricing Policy",
-      type: "in",
-      active: false,
-      key: "pricingPolicyName",
-      placeholder: "Filter by pricing policy name",
-    },
-  ];
-
-  toggleActive(idx: number) {
-    const filter = this.filters[idx];
-
-    if (filter.active) {
-      this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
-      filter.active = false;
-    } else {
-      filter.active = true;
-      this.activeFilters.push(filter);
-    }
+  get farms(): IPaginationData<IFarm> {
+    return this.$store.state.farms;
   }
+  get items(): IFarm[] | undefined {
+    return this.farms.items.get(this.page);
+  }
+
+  private get _pricingPolicy(): Map<number, string> {
+    return this.$store.state.pricingPolicies;
+  }
+
+  public pricingPolicy(id: number) {
+    const name = this._pricingPolicy.get(id);
+    return name ? name : id;
+  }
+
+  private _vars: any = {};
+
+  @Watch("page", { immediate: true })
+  public onUpdatePage() {
+    if (this.items) return;
+    console.log("our filters", this._vars);
+    this.loading = true;
+    this.$apollo
+      .query<IFetchPaginatedData<IFarm>>({
+        query: getFarmsQuery,
+        variables: {
+          limit: PAGE_LIMIT,
+          offset: this.page * PAGE_LIMIT,
+          ...this._vars,
+        },
+      })
+      .then(
+        ({
+          data: {
+            total: { count },
+            items,
+          },
+        }) => {
+          this.$store.state.farms = {
+            total: count,
+            items: this.farms.items.set(this.page, items.map(getFarmPublicIPs)),
+          };
+        }
+      )
+      .catch((err) => {
+        console.log("Error", err);
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+  }
+
+  public getKeyByValue(value: string): number | null {
+    const map = this._pricingPolicy;
+    const keys = [...map.keys()];
+    const values = [...map.values()];
+
+    for (let i = 0; i < values.length; i++) {
+      if (values[i] === value) return keys[i];
+    }
+
+    return null;
+  }
+
+  public onApplyFilter() {
+    this.changed = false;
+    this._vars = this.filters
+      .filter((f) => f.active)
+      .filter((f) => (Array.isArray(f.value) ? f.value.length > 0 : true))
+      .reduce((res, f) => {
+        const { symbol, value, getValue } = f;
+        res[symbol] = getValue?.(f) ?? value;
+        return res;
+      }, {} as { [key: string]: any });
+
+    this.$store.state.farms = {
+      total: 0,
+      items: new Map(),
+    };
+    if (this.page === 0) this.onUpdatePage();
+    else this.page = 0;
+  }
+
+  public filters: IFilterOptions[] = [
+    {
+      component: InFilterV2,
+      chip_label: "Farm ID",
+      active: true,
+      label: "Filter By Farm ID",
+      items: () => Promise.resolve([]),
+      value: [],
+      multiple: true,
+      type: "number",
+      symbol: "farmId_in",
+    },
+    {
+      component: InFilterV2,
+      chip_label: "Name",
+      active: false,
+      label: "Filter By Farm Name",
+      items(sub_string: string) {
+        return apollo.defaultClient
+          .query<IFilterQuery>({
+            query: filterQuery("name"),
+            variables: { sub_string },
+          })
+          .then(({ data }) => {
+            return data.items.map((x) => x.value);
+          });
+      },
+      value: [],
+      multiple: true,
+      symbol: "name_in",
+    },
+    {
+      component: InFilterV2,
+      chip_label: "Twin ID",
+      active: false,
+      label: "Filter By Twin ID",
+      items: (_) => Promise.resolve([]),
+      value: [],
+      type: "number",
+      multiple: true,
+      symbol: "twinId_in",
+    },
+    {
+      component: InFilterV2,
+      chip_label: "Certification Type",
+      active: false,
+      label: "Filter By Certification Type",
+      items: (_) => Promise.resolve(["Diy", "Certified"]),
+      value: [],
+      init: true,
+      multiple: true,
+      symbol: "certificationType_in",
+    },
+    {
+      component: InFilterV2,
+      chip_label: "Pricing Policy",
+      active: false,
+      label: "Filter By Pricing policy",
+      items: (_) => Promise.resolve([...this._pricingPolicy.values()]),
+      value: [],
+      init: true,
+      multiple: true,
+      symbol: "pricingPolicyId_in",
+      getValue: (f) => {
+        return (f.value as string[]).map(this.getKeyByValue.bind(this));
+      },
+    },
+  ];
+
+  query = gql`
+    query getFarmDetails($farmId: Int!, $twinId: Int!) {
+      farm: farms(where: { farmId_eq: $farmId }) {
+        id
+        farmId
+        name
+        version
+        gridVersion
+        certificationType
+        stellarAddress
+      }
+
+      twin: twins(where: { twinId_eq: $twinId }) {
+        id
+        twinId
+        accountId
+        version
+        gridVersion
+        ip
+      }
+    }
+  `;
 
   farm: IFarm | null = null;
 

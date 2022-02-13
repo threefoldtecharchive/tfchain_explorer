@@ -166,6 +166,13 @@ export interface IPublicIPs {
   contractId: number;
   ip: string;
 }
+
+interface IPublicIpStatus {
+  total: number;
+  used: number;
+  free: number;
+}
+
 export interface IFarm {
   id: string;
   createdAt: string;
@@ -182,6 +189,8 @@ export interface IFarm {
   pricingPolicyId: number;
   certificationType: "Diy" | "Certified";
   publicIPs: IPublicIPs[];
+  publicIpStatus?: IPublicIpStatus;
+  stellarAddress?: string;
 }
 
 export const FarmType = gql`
@@ -303,17 +312,76 @@ export interface GetDataQueryType {
 
 export const getDataQuery = gql`
   ${NodeType}
-  ${FarmType}
-
-  query getDataQuery(
-    $limit: Int!
-    $offset: Int!
-  ) {
+  query getDataQuery($limit: Int!, $offset: Int!) {
     nodes(limit: $limit, offset: $offset) {
       ...NodeType
     }
-    farms(limit: $limit, offset: $offset) {
-      ...FarmType
+  }
+`;
+
+/* Refactored Code */
+
+export interface IFetchPaginatedData<T> {
+  total: { count: number };
+  items: T[];
+}
+
+export const getFarmsQuery = gql`
+  query getFarms(
+    $limit: Int!
+    $offset: Int!
+    $farmId_in: [Int!]
+    $name_in: [String!]
+    $twinId_in: [Int!]
+    $certificationType_in: [CertificationType!]
+    $pricingPolicyId_in: [Int!]
+  ) {
+    total: farmsConnection(
+      where: {
+        farmId_in: $farmId_in
+        name_in: $name_in
+        twinId_in: $twinId_in
+        certificationType_in: $certificationType_in
+        pricingPolicyId_in: $pricingPolicyId_in
+      }
+    ) {
+      count: totalCount
+    }
+
+    items: farms(
+      limit: $limit
+      offset: $offset
+      where: {
+        farmId_in: $farmId_in
+        name_in: $name_in
+        twinId_in: $twinId_in
+        certificationType_in: $certificationType_in
+        pricingPolicyId_in: $pricingPolicyId_in
+      }
+    ) {
+      id: farmId
+      name
+      publicIPs {
+        contractId
+      }
+      twinId
+      certificationType
+      pricingPolicyId
     }
   }
 `;
+
+export interface IFilterQuery {
+  items: Array<{ value: string }>;
+}
+
+export const filterQuery = (prop: string) => {
+  const query = `
+    query queryFilter($sub_string: String) {
+      items: farms(where: { ${prop}_contains: $sub_string}) {
+        value: ${prop}
+      }
+    }
+  `;
+  return gql(query);
+};

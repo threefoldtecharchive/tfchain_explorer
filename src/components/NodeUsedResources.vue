@@ -6,13 +6,13 @@
       </div>
       <div style="font-size: 30px">
         Node Resources [<span
-          :style="'color:' + (node.status ? '#4caf50' : '#f44336')"
-          >{{ node.status ? "Online" : "Offline" }}</span
+          :style="'color:' + (nodeStatus ? '#4caf50' : '#f44336')"
+          >{{ nodeStatus ? "Online" : "Offline" }}</span
         >]
       </div>
     </div>
     <!-- Details -->
-    <v-row>
+    <v-row v-if="!loader && resources.length">
       <v-col cols="12">
         <div v-if="loader == false" class="d-flex justify-center">
           <div
@@ -34,18 +34,26 @@
         </div>
       </v-col>
     </v-row>
-    <v-progress-linear
-      v-if="loader == true"
-      color="teal"
-      buffer-value="0"
-      value="20"
-      stream
-    ></v-progress-linear>
+    <v-row justify="center">
+      <v-progress-circular
+        v-if="loader"
+        indeterminate
+        color="teal"
+        :size="50"
+        class="mt-10 mb-10"
+      />
+    </v-row>
+    <div class="d-flex justify-center mt-6" v-if="!loader && !resources.length">
+      <v-alert dense type="error">
+        Failed to fetch node resources info.
+      </v-alert>
+    </div>
   </v-container>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { INode } from "@/graphql/api";
+import isNodeOnline from "@/utils/isNodeOnline";
 
 @Component({})
 export default class NodeUsedResources extends Vue {
@@ -53,16 +61,24 @@ export default class NodeUsedResources extends Vue {
   resources: any[] = [];
   loader = false;
 
+  get nodeStatus(): boolean {
+    return isNodeOnline(this.node);
+  }
+
   getNodeUsedResources(nodeId: number) {
     this.loader = true;
 
     return fetch(`${window.configs.proxy_url}/nodes/${nodeId}`)
       .then((res) => res.json())
       .then<any[]>((res) => {
+        if ("Error" in res) return [];
+
         return ["cru", "sru", "hru", "mru"].map((i, idx) => {
           const value =
             res.capacity.total_resources[i] != 0
-              ? (res.capacity.used_resources[i] / res.capacity.total_resources[i]) * 100
+              ? (res.capacity.used_resources[i] /
+                  res.capacity.total_resources[i]) *
+                100
               : 100; // prettier-ignore, validate if the total is zero so the usage is 100 else do the division
           return {
             id: idx + 1,
@@ -75,7 +91,7 @@ export default class NodeUsedResources extends Vue {
       .finally(() => (this.loader = false));
   }
   created() {
-    if (this.node.status) {
+    if (this.nodeStatus) {
       this.getNodeUsedResources(this.node.nodeId).then((resources) => {
         if (resources) {
           this.resources = resources;

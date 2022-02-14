@@ -1,7 +1,7 @@
 name: Github Build/Push Action
 on:
   release:
-      types: [created]
+      types: [published]
       
 jobs:
   build-explorer:

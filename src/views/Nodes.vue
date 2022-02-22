@@ -320,6 +320,7 @@ export default class Nodes extends Vue {
         sru
         mru
         created
+        updatedAt
         certificationType
         interfaces {
           id

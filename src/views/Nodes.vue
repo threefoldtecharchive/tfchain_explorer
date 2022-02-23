@@ -203,7 +203,7 @@ export default class Nodes extends Vue {
       active: true,
       key: "cru",
       placeholder: "cru",
-      max: 64,
+      max: 64 * 3,
       unit: "core",
     },
   ];

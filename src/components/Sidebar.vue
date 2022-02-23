@@ -24,7 +24,7 @@
     <v-divider class="mt-10 mb-10" />
     <v-list v-if="!mini">
       <v-list-item
-        v-for="version in versions"
+        v-for="version in $store.state.versions"
         :key="version.name"
         style="min-height: 30px;"
       >
@@ -53,38 +53,6 @@ export default class Sidebar extends Vue {
     { title: "Nodes", icon: "mdi-resistor-nodes", route: "/nodes" },
     { title: "Farms", icon: "mdi-webpack", route: "/farms" },
   ];
-
-  versions: IVersion[] = [
-    {
-      name: "Explorer",
-      value: window.configs.version,
-    },
-  ];
-
-  created() {
-    // Construct
-    const URL = window.configs.polkadot_url;
-    
-    const wsProvider = new WsProvider(URL);
-    ApiPromise.create({ provider: wsProvider }).then((api) =>{
-      api.query.system.lastRuntimeUpgrade().then(((result: any)=>{
-       const {specName, specVersion} = (result?.toJSON() as {specName: string, specVersion: number})
-       this.versions.push({name:"Chain", value:`${specName} v${specVersion}`})
-      })).catch((err)=>
-        console.log("something went wrong", err)
-      );
-    }
-  );
-
-    fetch(window.configs.proxy_url + "/version")
-      .then<{ version: string }>((res) => res.json())
-      .then(({ version: value }) => {
-        this.versions.push({ name: "Grid Proxy", value });
-      })
-      .catch((err) => {
-        console.log("Error", err);
-      });
-  }
 }
 </script>
 

@@ -6,7 +6,7 @@ import { MutationTypes } from './mutations';
 import getPricingPolicies from "@/utils/getPricingPolicies";
 import createDataRequests from "@/utils/createDataRequests";
 import isNodeOnline from "@/utils/isNodeOnline";
-
+import getChainData from "@/utils/getChainData";
 export enum ActionTypes {
     INIT_POLICIES = "initPolicies",
     INIT_PRICING_POLICIES = "initPricingPolicies",
@@ -23,14 +23,6 @@ export default {
             .then(data => {
                 commit(MutationTypes.SET_POLICIES, data);
             });
-    },
-    initPricingPolicies({ commit }: ActionContext<IState, IState>) {
-        getPricingPolicies()
-            .then(policies => {
-                commit(MutationTypes.SET_PRICING_POLICIES, policies);
-            }).catch(err => {
-                console.log("Error while loading pricing polices", err);
-            })
     },
     loadData({ state, commit }: ActionContext<IState, IState>) {
         commit(MutationTypes.SET_LOAD, true);
@@ -65,5 +57,8 @@ export default {
         .finally(() => {
             commit(MutationTypes.SET_LOAD, false);
         })
+    },
+    loadChainData(store: ActionContext<IState, IState>): void{
+        getChainData(store);
     }
 }

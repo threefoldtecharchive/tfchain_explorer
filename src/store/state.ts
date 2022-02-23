@@ -50,6 +50,7 @@ export interface IState {
   nodes_status: { [key: number]: boolean };
   nodeContractsNo: number;
   twinsNo: number;
+  versions: Array<{ name: string, value: any }>;
   filters: {
     nodes: {
       nodeId: IInFilter;
@@ -89,6 +90,7 @@ export default {
   loading: false,
   nodes_status: {},
   nodeContractsNo: 0,
+  versions: [],
   twinsNo: 0,
   filters: {
     nodes: {

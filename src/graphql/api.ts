@@ -331,6 +331,7 @@ export const getFarmsQuery = gql`
     $twinId_in: [Int!]
     $certificationType_in: [CertificationType!]
     $pricingPolicyId_in: [Int!]
+    $orderBy: [FarmOrderByInput!]
   ) {
     total: farmsConnection(
       where: {
@@ -345,6 +346,7 @@ export const getFarmsQuery = gql`
     }
 
     items: farms(
+      orderBy: $orderBy
       limit: $limit
       offset: $offset
       where: {

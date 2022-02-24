@@ -167,12 +167,6 @@ export interface IPublicIPs {
   ip: string;
 }
 
-interface IPublicIpStatus {
-  total: number;
-  used: number;
-  free: number;
-}
-
 export interface IFarm {
   id: string;
   createdAt: string;
@@ -189,8 +183,10 @@ export interface IFarm {
   pricingPolicyId: number;
   certificationType: "Diy" | "Certified";
   publicIPs: IPublicIPs[];
-  publicIpStatus?: IPublicIpStatus;
   stellarAddress?: string;
+  totalPublicIp: number;
+  usedPublicIp: number;
+  freePublicIp: number;
 }
 
 export const FarmType = gql`

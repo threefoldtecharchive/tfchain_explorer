@@ -6,10 +6,8 @@ export default function getFarmPublicIPs(farm: IFarm): IFarm {
   const used = ips.filter((x) => x.contractId === 0).length;
   return {
     ...farm,
-    publicIpStatus: {
-      total,
-      used,
-      free: total - used,
-    },
+    totalPublicIp: total,
+    usedPublicIp: used,
+    freePublicIp: total - used,
   };
 }

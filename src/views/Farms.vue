@@ -59,6 +59,10 @@
           'disable-pagination': loading,
         }"
         @click:row="openSheet"
+        :disable-sort="false"
+        @update:options="
+          sort = { sortBy: $event.sortBy[0], desc: $event.sortDesc[0] }
+        "
       >
         <template v-slot:[`item.certificationType`]="{ item }">
           <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
@@ -80,16 +84,16 @@
           </v-icon>
         </template>
 
-        <template v-slot:[`item.total`]="{ item }">
-          {{ item.publicIpStatus.total }}
+        <template v-slot:[`item.totalPublicIp`]="{ item }">
+          {{ item.totalPublicIp }}
         </template>
 
-        <template v-slot:[`item.free`]="{ item }">
-          {{ item.publicIpStatus.free }}
+        <template v-slot:[`item.freePublicIp`]="{ item }">
+          {{ item.freePublicIp }}
         </template>
 
-        <template v-slot:[`item.used`]="{ item }">
-          {{ item.publicIpStatus.used }}
+        <template v-slot:[`item.usedPublicIp`]="{ item }">
+          {{ item.usedPublicIp }}
         </template>
 
         <template v-slot:[`item.pricingPolicyId`]="{ item }">
@@ -127,6 +131,7 @@ import IFilterOptions from "@/types/FilterOptions";
 import apollo from "@/plugins/apollo";
 import getFarmPublicIPs from "@/utils/getFarmPublicIps";
 import gql from "graphql-tag";
+import customSort from "@/utils/customSort";
 
 @Component({
   components: {
@@ -136,6 +141,8 @@ import gql from "graphql-tag";
   },
 })
 export default class Farms extends Vue {
+  sort = { sortBy: undefined, desc: undefined };
+
   value = "";
   page = 0;
   loading = false;
@@ -144,9 +151,9 @@ export default class Farms extends Vue {
   headers = [
     { text: "ID", value: "id" },
     { text: "NAME", value: "name" },
-    { text: "Total Public IPs", value: "total", align: "center" },
-    { text: "Free Public IPs", value: "free", align: "center" },
-    { text: "Used Public IPs", value: "used", align: "center" },
+    { text: "Total Public IPs", value: "totalPublicIp", align: "center" },
+    { text: "Free Public IPs", value: "freePublicIp", align: "center" },
+    { text: "Used Public IPs", value: "usedPublicIp", align: "center" },
     { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
     { text: "PRICING POLICY", value: "pricingPolicyId", align: "center" },
   ];
@@ -154,8 +161,13 @@ export default class Farms extends Vue {
   get farms(): IPaginationData<IFarm> {
     return this.$store.state.farms;
   }
+
   get items(): IFarm[] | undefined {
-    return this.farms.items.get(this.page);
+    const items = this.farms.items.get(this.page);
+    const { sortBy, desc } = this.sort;
+    if (!items || !sortBy || desc === undefined) return items;
+
+    return customSort(items, sortBy, desc);
   }
 
   private get _pricingPolicy(): Map<number, string> {
@@ -172,7 +184,6 @@ export default class Farms extends Vue {
   @Watch("page", { immediate: true })
   public onUpdatePage() {
     if (this.items) return;
-    console.log("our filters", this._vars);
     this.loading = true;
     this.$apollo
       .query<IFetchPaginatedData<IFarm>>({

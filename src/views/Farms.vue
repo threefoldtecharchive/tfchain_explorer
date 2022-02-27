@@ -50,7 +50,6 @@
         align
         :items-per-page="15"
         :server-items-length="farms.total"
-        @pagination="page = $event.page - 1"
         :items="items"
         :disable-pagination="loading"
         :page="page + 1"
@@ -60,10 +59,15 @@
         }"
         @click:row="openSheet"
         :disable-sort="false"
+        multi-sort
         @update:options="
-          sort = { sortBy: $event.sortBy[0], desc: $event.sortDesc[0] }
+          onUpdateOptions($event.page, $event.sortBy, $event.sortDesc)
         "
       >
+        <!-- @update:options="
+          sort = { sortBy: $event.sortBy[0], desc: $event.sortDesc[0] }
+        "
+        @pagination="page = $event.page - 1" -->
         <template v-slot:[`item.certificationType`]="{ item }">
           <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
             {{ item.certificationType }}
@@ -131,7 +135,7 @@ import IFilterOptions from "@/types/FilterOptions";
 import apollo from "@/plugins/apollo";
 import getFarmPublicIPs from "@/utils/getFarmPublicIps";
 import gql from "graphql-tag";
-import customSort from "@/utils/customSort";
+import equalArrays from "@/utils/equalArrays";
 
 @Component({
   components: {
@@ -141,21 +145,22 @@ import customSort from "@/utils/customSort";
   },
 })
 export default class Farms extends Vue {
-  sort = { sortBy: undefined, desc: undefined };
+  sort: { by: string[]; desc: boolean[] } = { by: [], desc: [] };
 
   value = "";
   page = 0;
   loading = false;
   changed = false;
 
+  // prettier-ignore
   headers = [
     { text: "ID", value: "id" },
     { text: "NAME", value: "name" },
-    { text: "Total Public IPs", value: "totalPublicIp", align: "center" },
-    { text: "Free Public IPs", value: "freePublicIp", align: "center" },
-    { text: "Used Public IPs", value: "usedPublicIp", align: "center" },
-    { text: "CERTIFICATION TYPE", value: "certificationType", align: "center" },
-    { text: "PRICING POLICY", value: "pricingPolicyId", align: "center" },
+    { text: "Total Public IPs", value: "totalPublicIp", align: "center", sortable: false },
+    { text: "Free Public IPs", value: "freePublicIp", align: "center", sortable: false },
+    { text: "Used Public IPs", value: "usedPublicIp", align: "center", sortable: false },
+    { text: "CERTIFICATION TYPE", value: "certificationType", align: "center", sortable: false },
+    { text: "PRICING POLICY", value: "pricingPolicyId", align: "center", sortable: false },
   ];
 
   get farms(): IPaginationData<IFarm> {
@@ -163,15 +168,26 @@ export default class Farms extends Vue {
   }
 
   get items(): IFarm[] | undefined {
-    const items = this.farms.items.get(this.page);
-    const { sortBy, desc } = this.sort;
-    if (!items || !sortBy || desc === undefined) return items;
-
-    return customSort(items, sortBy, desc);
+    return this.farms.items.get(this.page);
   }
 
   private get _pricingPolicy(): Map<number, string> {
     return this.$store.state.pricingPolicies;
+  }
+
+  onUpdateOptions(page: number, sortBy: string[], sortDesc: boolean[]) {
+    const _by = this.sort.by;
+    const _desc = this.sort.desc;
+
+    this.page = page - 1;
+    this.sort = {
+      by: sortBy,
+      desc: sortDesc,
+    };
+
+    if (!equalArrays(_by, sortBy) || !equalArrays(_desc, sortDesc)) {
+      this.onApplyFilter();
+    }
   }
 
   public pricingPolicy(id: number) {
@@ -229,7 +245,7 @@ export default class Farms extends Vue {
 
   public onApplyFilter() {
     this.changed = false;
-    this._vars = this.filters
+    const _vars: any = this.filters
       .filter((f) => f.active)
       .filter((f) => (Array.isArray(f.value) ? f.value.length > 0 : true))
       .reduce((res, f) => {
@@ -237,6 +253,25 @@ export default class Farms extends Vue {
         res[symbol] = getValue?.(f) ?? value;
         return res;
       }, {} as { [key: string]: any });
+
+    const orderBy: string[] = [];
+    for (let i = 0; i < this.sort.by.length; i++) {
+      const by = this.sort.by[i];
+      const desc = this.sort.desc[i];
+
+      switch (by) {
+        case "id":
+          orderBy.push(desc ? "farmId_DESC" : "farmId_ASC");
+          break;
+
+        case "name":
+          orderBy.push(desc ? "name_DESC" : "name_ASC");
+          break;
+      }
+    }
+
+    _vars.orderBy = orderBy.length === 0 ? undefined : orderBy;
+    this._vars = _vars;
 
     this.$store.state.farms = {
       total: 0,

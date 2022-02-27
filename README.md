@@ -1,6 +1,6 @@
 # Grid Explorer UI
 
-![Version: 3.0.0](https://img.shields.io/badge/Version-3.0.0-informational?style=flat-square)
+![Version: 3.0.0](https://img.shields.io/github/v/release/threefoldtech/tfchain_explorer?style=flat-square)
 
 Explorer UI for grid 3 using the new [graphql api](https://graphql.dev.grid.tf/graphql).
 

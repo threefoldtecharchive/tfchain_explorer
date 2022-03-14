@@ -1,13 +1,9 @@
 import type { ActionContext } from "vuex";
 import type { IState } from "./state";
-import apollo from "@/plugins/apollo";
-import { getTotalCountQuery, GetTotalCountQueryType } from '../graphql/api';
 import { MutationTypes } from './mutations';
-import getPricingPolicies from "@/utils/getPricingPolicies";
 import createDataRequests from "@/utils/createDataRequests";
 import isNodeOnline from "@/utils/isNodeOnline";
 import getChainData from "@/utils/getChainData";
-import { toArray } from "lodash";
 export enum ActionTypes {
     INIT_POLICIES = "initPolicies",
     INIT_PRICING_POLICIES = "initPricingPolicies",

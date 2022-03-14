@@ -309,7 +309,7 @@ export interface GetDataQueryType {
 export const getDataQuery = gql`
   ${NodeType}
   query getDataQuery($limit: Int!, $offset: Int!) {
-    nodes(limit: $limit, offset: $offset) {
+    nodes (orderBy: uptime_DESC, limit: $limit, offset: $offset) {
       ...NodeType
     }
   }

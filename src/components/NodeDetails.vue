@@ -50,7 +50,7 @@
           </v-list-item>
           <v-divider />
 
-          <v-list-item>
+          <v-list-item v-if='nodeStatus'>
             <v-list-item-content>
               <v-list-item-title> Uptime </v-list-item-title>
             </v-list-item-content>
@@ -274,6 +274,10 @@ export default class NodeDetails_ extends Vue {
     const value = v ? +v / this.$store.getters.maxValueOf("nodes", key) : 0;
 
     return Math.round(value * 10000) / 100;
+  }
+  
+  get nodeStatus(): boolean {
+    return isNodeOnline(this.node);
   }
 
   getZOSVersion(nodeId: number) {

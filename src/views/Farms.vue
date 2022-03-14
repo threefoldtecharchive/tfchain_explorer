@@ -69,9 +69,7 @@
         "
         @pagination="page = $event.page - 1" -->
         <template v-slot:[`item.certificationType`]="{ item }">
-          <v-chip :color="item.certificationType === 'Diy' ? 'red' : 'green'">
             {{ item.certificationType }}
-          </v-chip>
         </template>
 
         <template v-slot:[`item.publicIPs`]="{ item }">

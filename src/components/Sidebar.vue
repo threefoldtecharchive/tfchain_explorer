@@ -13,12 +13,19 @@
         :key="item.title"
         :to="item.route"
       >
-        <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item-content>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+
+            <v-list-item-icon>
+              <v-icon v-bind="attrs" v-on="on">{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </template>
+          <span>{{ item.title }}</span>
+        </v-tooltip>
+
       </v-list-item>
     </v-list>
     <v-divider class="mt-10 mb-10" />

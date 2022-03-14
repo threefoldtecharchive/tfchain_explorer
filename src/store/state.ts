@@ -49,7 +49,17 @@ export interface IState {
   loading: boolean;
   nodes_status: { [key: number]: boolean };
   nodeContractsNo: number;
+  accessNodesNo: number;
+  countriesNo: number;
+  gatewaysNo: number;
+  totalCru: number;
+  totalSru: number;
+  totalHru: number;
+  totalMru: number;
+  farmsNo: number;
+  nodesNo: number;
   twinsNo: number;
+  publicIpsNo: number;
   versions: Array<{ name: string, value: any }>;
   filters: {
     nodes: {
@@ -90,6 +100,16 @@ export default {
   loading: false,
   nodes_status: {},
   nodeContractsNo: 0,
+  accessNodesNo: 0,
+  countriesNo: 0,
+  gatewaysNo: 0,
+  totalCru: 0,
+  totalSru: 0,
+  totalMru: 0,
+  totalHru: 0,
+  farmsNo: 0,
+  nodesNo: 0,
+  publicIpsNo: 0,
   versions: [],
   twinsNo: 0,
   filters: {

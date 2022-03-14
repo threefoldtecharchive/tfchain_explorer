@@ -117,31 +117,18 @@ export function getStatistics(state: IState): IStatistics[] {
   if (!state.data) {
     return [];
   }
-  
-  const nodes = fallbackDataExtractor("nodes")(state);
-  const farms = fallbackDataExtractor('farms')(state);
-  const countries = [...new Set(nodes.map(node => node.country))]
-  const twinsNo = state.twinsNo;
-  const accessNodes = getAccessNodesCount(nodes)
-  const gateways = getGatewaysCount(nodes)
-  const cru = nodes.reduce((total, next) => total + BigInt(next.cru ?? 0), BigInt(0)).toString();
-  const hru = nodes.reduce((total, next) => total + BigInt(next.hru ?? 0), BigInt(0)).toString();
-  const sru = nodes.reduce((total, next) => total + BigInt(next.sru ?? 0), BigInt(0)).toString();
-  const mru = nodes.reduce((total, next) => total + BigInt(next.mru ?? 0), BigInt(0)).toString();
-  const publicIPsNo = farms.reduce((total, next) => total + BigInt(next.publicIPs.length ?? 0), BigInt(0)).toString();
-  
   return [
-    { id: 0, data: nodes.length, title: "Nodes", icon: "mdi-laptop" },
-    { id: 1, data: farms.length, title: "Farms", icon: "mdi-tractor" },
-    { id: 2, data: countries.length, title: "Countries", icon: "mdi-earth" },
-    { id: 3, data: cru, title: "Total CPUs", icon: "mdi-cpu-64-bit" },
-    { id: 4, data: toTeraOrGigaOrPeta(sru), title: "Total SSD", icon: "mdi-nas" },
-    { id: 5, data: toTeraOrGigaOrPeta(hru), title: "Total HDD", icon: "mdi-harddisk" },
-    { id: 6, data: toTeraOrGigaOrPeta(mru), title: "Total RAM", icon: "mdi-memory" },
-    { id: 7, data: accessNodes, title: "Access Nodes", icon: "mdi-gate" },
-    { id: 8, data: gateways, title: "Gateways", icon: "mdi-boom-gate-outline" },
-    { id: 9, data: twinsNo, title: "Twins", icon: "mdi-brain" },
-    { id: 10, data: publicIPsNo, title: "Public IPs", icon: "mdi-access-point" },
+    { id: 0, data: state.nodesNo, title: "Nodes", icon: "mdi-laptop" },
+    { id: 1, data: state.farmsNo, title: "Farms", icon: "mdi-tractor" },
+    { id: 2, data: state.countriesNo, title: "Countries", icon: "mdi-earth" },
+    { id: 3, data: state.totalCru, title: "Total CPUs", icon: "mdi-cpu-64-bit" },
+    { id: 4, data: toTeraOrGigaOrPeta(state.totalSru.toString()), title: "Total SSD", icon: "mdi-nas" },
+    { id: 5, data: toTeraOrGigaOrPeta(state.totalHru.toString()), title: "Total HDD", icon: "mdi-harddisk" },
+    { id: 6, data: toTeraOrGigaOrPeta(state.totalMru.toString()), title: "Total RAM", icon: "mdi-memory" },
+    { id: 7, data: state.accessNodesNo, title: "Access Nodes", icon: "mdi-gate" },
+    { id: 8, data: state.gatewaysNo, title: "Gateways", icon: "mdi-boom-gate-outline" },
+    { id: 9, data: state.twinsNo, title: "Twins", icon: "mdi-brain" },
+    { id: 10, data: state.publicIpsNo, title: "Public IPs", icon: "mdi-access-point" },
     { id: 11, data: state.nodeContractsNo, title: "Contracts", icon: "mdi-file-document-edit-outline" },
   ]
 }

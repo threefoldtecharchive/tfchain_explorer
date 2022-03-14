@@ -60,7 +60,7 @@
       </div>
       <div class="d-flex justify-center">
         <v-alert dense text type="success">
-          Nodes status are updated every 2 hours.
+          Node statuses are updated every 2 hours.
         </v-alert>
       </div>
       <v-data-table

@@ -11,6 +11,10 @@
         <v-progress-circular size="150" indeterminate />
       </section>
     </v-container>
+
+    <v-container>
+      <NodesDistribution :nodes="getNodes()" />
+    </v-container>
   </Layout>
 </template>
 
@@ -19,17 +23,34 @@ import { Component, Vue } from "vue-property-decorator";
 import { IStatistics } from "@/store/getters";
 import Layout from "@/components/Layout.vue";
 import StatisticsCard from "@/components/StatisticsCard.vue";
+import NodesDistribution from "@/components/NodesDistribution.vue";
+import { INode } from "@/graphql/api";
 
 @Component({
   name: "Statistics",
   components: {
     Layout,
     StatisticsCard,
+    NodesDistribution,
   },
 })
 export default class Statistics extends Vue {
+  withGateway = false;
+  onlyOnline = true;
+
   get statistics(): IStatistics[] {
     return this.$store.getters.statistics;
+  }
+
+  getNodes() {
+    let nodes: INode[] = this.$store.getters.filtered_nodes;
+    if (this.withGateway) {
+      nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
+    }
+
+    nodes = nodes.filter(({ status }) => status === this.onlyOnline);
+
+    return nodes;
   }
 }
 </script>

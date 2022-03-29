@@ -38,10 +38,10 @@ export default class Statistics extends Vue {
 .items {
   display: flex;
   flex-wrap: wrap;
-
+  justify-content: center;
   > div {
     padding: 15px;
-    width: 25%;
+    width: 16.5%;
 
     @media (max-width: 1910px) {
       width: calc(100% / 3);

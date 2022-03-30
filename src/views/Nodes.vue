@@ -1,26 +1,10 @@
 <template>
   <Layout pageName="Nodes">
     <template v-slot:filters>
-      <v-combobox
-        v-model="activeFiltersKeys"
+      <LayoutFilters
         :items="filters.map((f) => f.label)"
-        chips
-        solo
-        multiple
-      >
-        <template v-slot:selection="{ attrs, item, select, selected }">
-          <v-chip
-            v-bind="attrs"
-            :input-value="selected"
-            close
-            @click="select"
-            @click:close="toggleActive(item)"
-            color="primary"
-          >
-            {{ item }}
-          </v-chip>
-        </template>
-      </v-combobox>
+        v-model="activeFiltersKeys"
+      />
     </template>
 
     <template v-slot:active-filters>
@@ -143,7 +127,9 @@ import RangeFilter from "@/components/RangeFilter.vue";
 import NodesDistribution from "@/components/NodesDistribution.vue";
 import ConditionFilter from "@/components/ConditionFilter.vue";
 import ComparisonFilter from "@/components/ComparisonFilter.vue";
+import LayoutFilters from "@/components/LayoutFilters.vue";
 import gql from "graphql-tag";
+
 @Component({
   components: {
     Layout,
@@ -153,6 +139,7 @@ import gql from "graphql-tag";
     NodesDistribution,
     ConditionFilter,
     ComparisonFilter,
+    LayoutFilters,
   },
 })
 export default class Nodes extends Vue {

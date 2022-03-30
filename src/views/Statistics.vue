@@ -13,6 +13,28 @@
     </v-container>
 
     <v-container>
+      <v-divider />
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+        "
+      >
+        <div>
+          <v-switch
+            v-model="withGateway"
+            style="margin-bottom: -30px"
+            label="Gateways"
+          />
+          <v-switch
+            v-model="onlyOnline"
+            label="Online"
+            style="margin-bottom: -30px"
+          />
+        </div>
+      </div>
       <NodesDistribution :nodes="getNodes()" />
     </v-container>
   </Layout>

@@ -47,12 +47,17 @@
 
     <template v-slot:table>
       <div
-        style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+        "
       >
         <div>
           <v-switch
             v-model="withGateway"
-            style="margin-bottom: -30px;"
+            style="margin-bottom: -30px"
             label="Gateways"
           />
           <v-switch v-model="onlyOnline" label="Online" />
@@ -129,6 +134,7 @@
     </template>
 
     <template v-slot:default>
+      <v-divider style="margin-top: 50px; margin-bottom: -50px" />
       <NodesDistribution
         :nodes="getNodes()"
         v-if="$store.getters.nodes.length > 0"

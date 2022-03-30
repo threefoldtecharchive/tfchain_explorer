@@ -47,12 +47,17 @@
 
     <template v-slot:table>
       <div
-        style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+        "
       >
         <div>
           <v-switch
             v-model="withGateway"
-            style="margin-bottom: -30px;"
+            style="margin-bottom: -30px"
             label="Gateways"
           />
           <v-switch v-model="onlyOnline" label="Online" />
@@ -65,7 +70,7 @@
       </div>
       <v-data-table
         ref="table"
-        :loading="$store.getters.loading"
+        :loading="$store.getters.nodes.length === 0"
         loading-text="Loading..."
         :headers="headers"
         :items="getNodes()"

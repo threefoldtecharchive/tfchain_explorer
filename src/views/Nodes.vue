@@ -70,7 +70,7 @@
       </div>
       <v-data-table
         ref="table"
-        :loading="$store.getters.nodes.length === 0"
+        :loading="$store.getters.loading"
         loading-text="Loading..."
         :headers="headers"
         :items="getNodes()"

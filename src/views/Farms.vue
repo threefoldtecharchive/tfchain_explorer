@@ -1,20 +1,10 @@
 <template>
   <Layout pageName="Farms">
     <template v-slot:filters>
-      <v-chip
-        v-for="filter in filters"
-        class="ma-2"
-        filter
-        :key="filter.chip_label"
-        v-model="filter.active"
-        :color="filter.active ? 'primary' : undefined"
-        @click="filter.active = !filter.active"
-      >
-        {{ filter.chip_label }}
-      </v-chip>
-      <v-chip class="ma-2" disabled>
-        Free Public IP
-      </v-chip>
+      <LayoutFilters
+        :items="filters.map((f) => f.chip_label)"
+        v-model="activeFiltersKeys"
+      />
     </template>
 
     <template v-slot:apply-filters>
@@ -30,9 +20,8 @@
     </template>
 
     <template v-slot:active-filters>
-      <div v-for="filter in filters" :key="filter.label">
+      <div v-for="filter in activeFilters" :key="filter.label">
         <component
-          v-if="filter.active"
           :is="filter.component"
           :options="filter"
           v-model="filter.value"
@@ -64,12 +53,8 @@
           onUpdateOptions($event.page, $event.sortBy, $event.sortDesc)
         "
       >
-        <!-- @update:options="
-          sort = { sortBy: $event.sortBy[0], desc: $event.sortDesc[0] }
-        "
-        @pagination="page = $event.page - 1" -->
         <template v-slot:[`item.certificationType`]="{ item }">
-            {{ item.certificationType }}
+          {{ item.certificationType }}
         </template>
 
         <template v-slot:[`item.publicIPs`]="{ item }">
@@ -134,12 +119,14 @@ import apollo from "@/plugins/apollo";
 import getFarmPublicIPs from "@/utils/getFarmPublicIps";
 import gql from "graphql-tag";
 import equalArrays from "@/utils/equalArrays";
+import LayoutFilters from "@/components/LayoutFilters.vue";
 
 @Component({
   components: {
     Layout,
     DetailsV2,
     InFilterV2,
+    LayoutFilters,
   },
 })
 export default class Farms extends Vue {
@@ -243,8 +230,7 @@ export default class Farms extends Vue {
 
   public onApplyFilter() {
     this.changed = false;
-    const _vars: any = this.filters
-      .filter((f) => f.active)
+    const _vars: any = this.activeFilters
       .filter((f) => (Array.isArray(f.value) ? f.value.length > 0 : true))
       .reduce((res, f) => {
         const { symbol, value, getValue } = f;
@@ -279,11 +265,17 @@ export default class Farms extends Vue {
     else this.page = 0;
   }
 
+  activeFiltersKeys: string[] = ["Farm ID", "Name"];
+
+  get activeFilters(): IFilterOptions[] {
+    const keySet = new Set(this.activeFiltersKeys);
+    return this.filters.filter((f) => keySet.has(f.chip_label));
+  }
+
   public filters: IFilterOptions[] = [
     {
       component: InFilterV2,
       chip_label: "Farm ID",
-      active: true,
       label: "Filter By Farm ID",
       items: () => Promise.resolve([]),
       value: [],
@@ -294,7 +286,6 @@ export default class Farms extends Vue {
     {
       component: InFilterV2,
       chip_label: "Name",
-      active: false,
       label: "Filter By Farm Name",
       items(sub_string: string) {
         return apollo.defaultClient
@@ -313,7 +304,6 @@ export default class Farms extends Vue {
     {
       component: InFilterV2,
       chip_label: "Twin ID",
-      active: false,
       label: "Filter By Twin ID",
       items: (_) => Promise.resolve([]),
       value: [],
@@ -324,7 +314,6 @@ export default class Farms extends Vue {
     {
       component: InFilterV2,
       chip_label: "Certification Type",
-      active: false,
       label: "Filter By Certification Type",
       items: (_) => Promise.resolve(["Diy", "Certified"]),
       value: [],
@@ -335,7 +324,6 @@ export default class Farms extends Vue {
     {
       component: InFilterV2,
       chip_label: "Pricing Policy",
-      active: false,
       label: "Filter By Pricing policy",
       items: (_) => Promise.resolve([...this._pricingPolicy.values()]),
       value: [],

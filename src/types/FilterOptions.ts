@@ -1,7 +1,6 @@
 export default interface IFilterOptions {
   component: unknown;
   chip_label: string;
-  active: boolean;
   label: string;
   items: (value: string) => Promise<(string | number)[]>;
   value: string | string[];

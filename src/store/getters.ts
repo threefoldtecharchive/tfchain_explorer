@@ -255,5 +255,11 @@ export default {
     };
   },
 
+  listNodes: (state) => {
+    /**
+     * @todo filter the nodes
+     */
+    return state.nodes;
+  },
   statistics: getStatistics,
 } as GetterTree<IState, IState>;

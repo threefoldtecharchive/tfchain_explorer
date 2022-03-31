@@ -21,6 +21,18 @@ export default {
                 commit(MutationTypes.SET_POLICIES, data);
             });
     },
+
+    loadNodesData({ commit }: ActionContext<IState, IState>) {
+        /**
+        @todo loop over pages on grid proxy
+                ?page=${pageNumber}&size=${pageSize}
+        */
+        fetch(`${window.configs.proxy_url}/nodes`)
+        .then((data)=> {
+            commit('loadNodesData', data);
+        })
+    },
+
     loadData({ state, commit }: ActionContext<IState, IState>) {
         fetch(`${window.configs.proxy_url}/stats`)
         .then((data) => data.json())

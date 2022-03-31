@@ -47,12 +47,17 @@
 
     <template v-slot:table>
       <div
-        style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+        "
       >
         <div>
           <v-switch
             v-model="withGateway"
-            style="margin-bottom: -30px;"
+            style="margin-bottom: -30px"
             label="Gateways"
           />
           <v-switch v-model="onlyOnline" label="Online" />
@@ -69,6 +74,40 @@
         loading-text="Loading..."
         :headers="headers"
         :items="getNodes()"
+        :items-per-page="10"
+        class="elevation-1"
+        align
+        @click:row="openSheet"
+      >
+        <template v-slot:[`item.created`]="{ item }">
+          {{ item.created | date }}
+        </template>
+
+        <template v-slot:[`item.hru`]="{ item }">
+          {{ item.hru | toTeraOrGigaOrPeta }}
+        </template>
+
+        <template v-slot:[`item.sru`]="{ item }">
+          {{ item.sru | toTeraOrGigaOrPeta }}
+        </template>
+
+        <template v-slot:[`item.mru`]="{ item }">
+          {{ item.mru | toTeraOrGigaOrPeta }}
+        </template>
+
+        <template v-slot:[`item.uptime`]="{ item }">
+          {{ item.uptime | secondToRedable }}
+        </template>
+      </v-data-table>
+    </template>
+
+    <template v-slot:newtable>
+      <v-data-table
+        ref="table"
+        :loading="$store.getters.loading"
+        loading-text="Loading..."
+        :headers="headers"
+        :items="$store.getters.listNodes"
         :items-per-page="10"
         class="elevation-1"
         align

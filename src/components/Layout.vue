@@ -27,6 +27,8 @@
       </v-col>
       <v-col :cols="screen_max_1400 ? 12 : 9" class="table-container">
         <slot name="table"></slot>
+        <br />
+        <slot name="newtable"></slot>
       </v-col>
     </v-row>
     <slot name="details"></slot>

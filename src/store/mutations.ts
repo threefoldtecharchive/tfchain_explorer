@@ -1,3 +1,4 @@
+import { INode } from "./../graphql/api";
 import { GetDataQueryType } from "@/graphql/api";
 import { IState } from "./state";
 
@@ -38,5 +39,44 @@ export default {
   },
   setNodesStatus(state: IState, payload: { [key: number]: boolean }) {
     state.nodes_status = payload;
+  },
+  loadNodesData(state: IState, payload: any): void {
+    payload.json().then((data: any) => {
+      for (let i = 0; i < data.length; i++) {
+        const node: INode = {
+          id: data[i].id,
+          created: data[i].created,
+          createdAt: data[i].createdAt,
+          createdById: "",
+          version: data[i].version,
+          gridVersion: data[i].gridVersion,
+          nodeId: data[i].nodeId,
+          farmId: data[i].farmId,
+          twinId: data[i].twinId,
+          hru: data[i].total_resources.hru,
+          sru: data[i].total_resources.sru,
+          cru: data[i].total_resources.cru,
+          mru: data[i].total_resources.mru,
+          farmingPolicyId: data[i].farmingPolicyId,
+          location: data[i].location,
+          publicConfig: data[i].publicConfig,
+          status: data[i].status,
+          certificationType: data[i].certificationType,
+          interfaces: [
+            {
+              name: "",
+              mac: "",
+              ips: "",
+              id: "",
+            },
+          ],
+        };
+        console.log({ node });
+        /**
+         * @todo fix the rest of table data
+         */
+        state.nodes.push(node);
+      }
+    });
   },
 };

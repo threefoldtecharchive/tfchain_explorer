@@ -45,7 +45,7 @@
       </div>
     </template>
 
-    <template v-slot:table>
+    <!-- <template v-slot:table>
       <div
         style="
           display: flex;
@@ -99,9 +99,31 @@
           {{ item.uptime | secondToRedable }}
         </template>
       </v-data-table>
-    </template>
+    </template> -->
 
     <template v-slot:newtable>
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+        "
+      >
+        <div>
+          <v-switch
+            v-model="withGateway"
+            style="margin-bottom: -30px"
+            label="Gateways"
+          />
+          <v-switch v-model="onlyOnline" label="Online" />
+        </div>
+      </div>
+      <div class="d-flex justify-center">
+        <v-alert dense text type="success">
+          Node statuses are updated every 2 hours.
+        </v-alert>
+      </div>
       <v-data-table
         ref="table"
         :loading="$store.getters.loading"
@@ -169,10 +191,8 @@
     </template>
 
     <template v-slot:default>
-      <NodesDistribution
-        :nodes="getNodes()"
-        v-if="$store.getters.nodes.length > 0"
-      />
+      <NodesDistribution :nodes="listNodes()" />
+      <!-- v-if="$store.getters.nodes.length > 0" -->
     </template>
   </Layout>
 </template>
@@ -312,16 +332,16 @@ export default class Nodes extends Vue {
     },
   ];
 
-  getNodes() {
-    let nodes: INode[] = this.$store.getters.filtered_nodes;
-    if (this.withGateway) {
-      nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
-    }
+  // getNodes() {
+  //   let nodes: INode[] = this.$store.getters.filtered_nodes;
+  //   if (this.withGateway) {
+  //     nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
+  //   }
 
-    nodes = nodes.filter(({ status }) => status === this.onlyOnline);
+  //   nodes = nodes.filter(({ status }) => status === this.onlyOnline);
 
-    return nodes;
-  }
+  //   return nodes;
+  // }
   listNodes() {
     let nodes: INode[] = this.$store.getters.listFilteredNodes;
     if (this.withGateway) {

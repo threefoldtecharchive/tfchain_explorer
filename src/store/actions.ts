@@ -58,12 +58,12 @@ export default {
                 farms: farms,
             };
         })
-        .then(createDataRequests)
+        // .then(createDataRequests)
         .then((data) => {
-            data.nodes = data.nodes.map(node => {
-                node.status = isNodeOnline(node);
-                return node
-            })
+            // data.nodes = data.nodes.map((node: any) => {
+            //     node.status = isNodeOnline(node);
+            //     return node
+            // })
             commit(MutationTypes.SET_DATA, data);
         })
         .catch((err) => {

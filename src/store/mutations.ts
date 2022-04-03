@@ -40,43 +40,51 @@ export default {
   setNodesStatus(state: IState, payload: { [key: number]: boolean }) {
     state.nodes_status = payload;
   },
-  loadNodesData(state: IState, payload: any): void {
-    payload.json().then((data: any) => {
-      for (let i = 0; i < data.length; i++) {
-        const node: INode = {
-          id: data[i].id,
-          created: data[i].created,
-          createdAt: data[i].createdAt,
-          createdById: "",
-          version: data[i].version,
-          gridVersion: data[i].gridVersion,
-          nodeId: data[i].nodeId,
-          farmId: data[i].farmId,
-          twinId: data[i].twinId,
-          hru: data[i].total_resources.hru,
-          sru: data[i].total_resources.sru,
-          cru: data[i].total_resources.cru,
-          mru: data[i].total_resources.mru,
-          farmingPolicyId: data[i].farmingPolicyId,
-          location: data[i].location,
-          publicConfig: data[i].publicConfig,
-          status: data[i].status,
-          certificationType: data[i].certificationType,
-          interfaces: [
-            {
-              name: "",
-              mac: "",
-              ips: "",
-              id: "",
-            },
-          ],
-        };
-        console.log({ node });
-        /**
-         * @todo fix the rest of table data
-         */
-        state.nodes.push(node);
-      }
-    });
+  async loadNodesData(state: IState, payload: any): Promise<void> {
+    const farms = await payload.farms.json();
+    const nodes = await payload.nodes.json();
+    for (let i = 0; i < nodes.length; i++) {
+      const node: INode = {
+        id: nodes[i].id,
+        created: nodes[i].created,
+        createdAt: nodes[i].createdAt,
+        createdById: "",
+        uptime: nodes[i].uptime,
+        version: nodes[i].version,
+        gridVersion: nodes[i].gridVersion,
+        nodeId: nodes[i].nodeId,
+        farmId: nodes[i].farmId,
+        twinId: nodes[i].twinId,
+        totalPublicIPs: farms[nodes[i].farmId - 1].publicIps.length,
+        usedPublicIPs: nodes[i].used_resources.ipv4u,
+        freePublicIPs: farms[nodes[i].farmId - 1].publicIps.filter(
+          (ip: any) => ip.contractId === 0
+        ).length,
+        hru: nodes[i].total_resources.hru,
+        sru: nodes[i].total_resources.sru,
+        cru: nodes[i].total_resources.cru,
+        mru: nodes[i].total_resources.mru,
+        farmingPolicyId: nodes[i].farmingPolicyId,
+        location: nodes[i].location,
+        publicConfig: nodes[i].publicConfig,
+        status: nodes[i].status,
+        certificationType: nodes[i].certificationType,
+        interfaces: [
+          {
+            name: "",
+            mac: "",
+            ips: "",
+            id: "",
+          },
+        ],
+      };
+
+      console.log(node.nodeId);
+      console.log({ node });
+      /**
+       * @todo fix the rest of table data
+       */
+      state.nodes.push(node);
+    }
   },
 };

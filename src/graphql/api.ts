@@ -91,6 +91,9 @@ export interface INode {
   farmId: number;
   twinId: number;
   cityId?: number;
+  totalPublicIPs?: number;
+  usedPublicIPs?: number;
+  freePublicIPs?: number;
   hru?: string;
   sru?: string;
   cru?: string;
@@ -103,7 +106,7 @@ export interface INode {
   country?: string;
   city?: string;
   interfaces: Interfaces[];
-  status: boolean;
+  status: any;
   certificationType: "Diy" | "Certified";
 }
 
@@ -309,7 +312,7 @@ export interface GetDataQueryType {
 export const getDataQuery = gql`
   ${NodeType}
   query getDataQuery($limit: Int!, $offset: Int!) {
-    nodes (orderBy: uptime_DESC, limit: $limit, offset: $offset) {
+    nodes(orderBy: uptime_DESC, limit: $limit, offset: $offset) {
       ...NodeType
     }
   }

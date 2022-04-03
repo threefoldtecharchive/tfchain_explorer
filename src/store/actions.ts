@@ -22,15 +22,15 @@ export default {
             });
     },
 
-    loadNodesData({ commit }: ActionContext<IState, IState>) {
+    async loadNodesData({ commit }: ActionContext<IState, IState>) {
         /**
         @todo loop over pages on grid proxy
                 ?page=${pageNumber}&size=${pageSize}
         */
-        fetch(`${window.configs.proxy_url}/nodes`)
-        .then((data)=> {
-            commit('loadNodesData', data);
-        })
+        const nodes = await fetch(`${window.configs.proxy_url}/nodes`)
+        const farms = await fetch(`${window.configs.proxy_url}/farms`)
+        
+        commit('loadNodesData', {nodes, farms} );
     },
 
     loadData({ state, commit }: ActionContext<IState, IState>) {

@@ -107,7 +107,7 @@
         :loading="$store.getters.loading"
         loading-text="Loading..."
         :headers="headers"
-        :items="$store.getters.listNodes"
+        :items="listNodes()"
         :items-per-page="10"
         class="elevation-1"
         align
@@ -318,6 +318,18 @@ export default class Nodes extends Vue {
     }
 
     nodes = nodes.filter(({ status }) => status === this.onlyOnline);
+
+    return nodes;
+  }
+  listNodes() {
+    let nodes: INode[] = this.$store.getters.listNodes;
+    if (this.withGateway) {
+      nodes = nodes.filter(({ publicConfig }) => publicConfig?.domain !== "");
+    }
+
+    if (this.onlyOnline) {
+      nodes = nodes.filter(({ status }) => status === "up");
+    }
 
     return nodes;
   }

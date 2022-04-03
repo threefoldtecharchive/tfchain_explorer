@@ -163,6 +163,7 @@
               }
             : {}
         "
+        :nodeId="node && node.nodeId"
         v-on:close-sheet="closeSheet"
       />
     </template>

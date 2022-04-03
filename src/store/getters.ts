@@ -274,6 +274,10 @@ export default {
     comparisonFilter("freePublicIPs", ">=")
   ),
 
+  getSingleNode: (state) => (nodeId: any) => {
+    return state.nodes.find((node) => node.nodeId == nodeId);
+  },
+
   // listNodes: (state) => {
   //   /**
   //    * @todo filter the nodes

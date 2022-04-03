@@ -46,15 +46,19 @@ export default {
     for (let i = 0; i < nodes.length; i++) {
       const node: INode = {
         id: nodes[i].id,
-        created: nodes[i].created,
         createdAt: nodes[i].createdAt,
         createdById: "",
-        uptime: nodes[i].uptime,
+        updatedAt: nodes[i].updatedAt,
+        updatedById: "",
+        deletedAt: nodes[i].deletedAt,
+        deletedById: "",
         version: nodes[i].version,
         gridVersion: nodes[i].gridVersion,
         nodeId: nodes[i].nodeId,
         farmId: nodes[i].farmId,
         twinId: nodes[i].twinId,
+        cityId: 0,
+
         totalPublicIPs: farms[nodes[i].farmId - 1].publicIps.length,
         usedPublicIPs: nodes[i].used_resources.ipv4u,
         freePublicIPs: farms[nodes[i].farmId - 1].publicIps.filter(
@@ -64,11 +68,13 @@ export default {
         sru: nodes[i].total_resources.sru,
         cru: nodes[i].total_resources.cru,
         mru: nodes[i].total_resources.mru,
+        publicConfig: nodes[i].publicConfig,
+        uptime: nodes[i].uptime,
+        created: nodes[i].created,
         farmingPolicyId: nodes[i].farmingPolicyId,
         location: nodes[i].location,
-        publicConfig: nodes[i].publicConfig,
-        status: nodes[i].status,
-        certificationType: nodes[i].certificationType,
+        country: nodes[i].country,
+        city: nodes[i].city,
         interfaces: [
           {
             name: "",
@@ -77,13 +83,10 @@ export default {
             id: "",
           },
         ],
+        status: nodes[i].status,
+        certificationType: nodes[i].certificationType,
       };
 
-      console.log(node.nodeId);
-      console.log({ node });
-      /**
-       * @todo fix the rest of table data
-       */
       state.nodes.push(node);
     }
   },

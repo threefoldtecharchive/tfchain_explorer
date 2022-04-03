@@ -122,12 +122,14 @@ export default class Details extends Vue {
   @Prop({ required: true }) open!: boolean;
   @Prop({ required: true }) query!: DocumentNode;
   @Prop({ required: true }) variables!: { [key: string]: any };
+  @Prop({ required: true }) nodeId!: any;
 
   loading = false;
 
   data: any = {};
 
   get node(): INode {
+    // return this.$store.getters.getSingleNode(this.nodeId);
     return this.data.node;
   }
 
@@ -143,7 +145,6 @@ export default class Details extends Vue {
     if (!this.open) return;
 
     this.loading = true;
-
     const { query, variables } = this;
     this.$apollo
       .query({ query, variables })

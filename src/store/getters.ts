@@ -255,11 +255,31 @@ export default {
     };
   },
 
-  listNodes: (state) => {
-    /**
-     * @todo filter the nodes
-     */
-    return state.nodes;
-  },
+  listFilteredNodes: applyFilters(
+    (state) => state.nodes,
+    (state) => state.filters.nodes,
+    inFilter("nodeId"),
+    inFilter("createdById"),
+    inFilter("farmId"),
+    inFilter("twinId"),
+    inFilter("country"),
+    inFilter("farmingPolicyName"),
+    inFilter("countryFullName"),
+    inFilter("certificationType"),
+    rangeFilter("hru"),
+    rangeFilter("mru"),
+    rangeFilter("sru"),
+    rangeFilter("cru"),
+    conditionFilter("status"),
+    comparisonFilter("freePublicIPs", ">=")
+  ),
+
+  // listNodes: (state) => {
+  //   /**
+  //    * @todo filter the nodes
+  //    */
+  //   return state.nodes;
+  // },
+
   statistics: getStatistics,
 } as GetterTree<IState, IState>;

@@ -322,7 +322,7 @@ export default class Nodes extends Vue {
     return nodes;
   }
   listNodes() {
-    let nodes: INode[] = this.$store.getters.listNodes;
+    let nodes: INode[] = this.$store.getters.listFilteredNodes;
     if (this.withGateway) {
       nodes = nodes.filter(({ publicConfig }) => publicConfig?.domain !== "");
     }

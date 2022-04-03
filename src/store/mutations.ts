@@ -41,8 +41,8 @@ export default {
     state.nodes_status = payload;
   },
   async loadNodesData(state: IState, payload: any): Promise<void> {
-    const farms = await payload.farms.json();
-    const nodes = await payload.nodes.json();
+    const farms = await payload.farms;
+    const nodes = await payload.nodes;
     for (let i = 0; i < nodes.length; i++) {
       const node: INode = {
         id: nodes[i].id,

@@ -4,6 +4,7 @@ import { MutationTypes } from './mutations';
 import createDataRequests from "@/utils/createDataRequests";
 import isNodeOnline from "@/utils/isNodeOnline";
 import getChainData from "@/utils/getChainData";
+import paginated_fetcher from "@/utils/paginatedFetch";
 export enum ActionTypes {
     INIT_POLICIES = "initPolicies",
     INIT_PRICING_POLICIES = "initPricingPolicies",
@@ -27,8 +28,8 @@ export default {
         @todo loop over pages on grid proxy
                 ?page=${pageNumber}&size=${pageSize}
         */
-        const nodes = await fetch(`${window.configs.proxy_url}/nodes`)
-        const farms = await fetch(`${window.configs.proxy_url}/farms`)
+        const nodes = await paginated_fetcher(`${window.configs.proxy_url}/nodes`, 1, 50)
+        const farms = await paginated_fetcher(`${window.configs.proxy_url}/farms`, 1, 50)
         
         commit('loadNodesData', {nodes, farms} );
     },

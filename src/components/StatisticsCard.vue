@@ -1,13 +1,13 @@
 <template>
   <v-card class="item">
-    <h4 class="display-1">{{ item.title }}</h4>
+    <h4 class="item__title">{{ item.title }}</h4>
     <div class="item__img">
-      <v-icon size="100">
+      <v-icon size="50">
         {{ item.icon }}
       </v-icon>
     </div>
     <v-divider />
-    <p class="display-2 item__data">
+    <p class="item__data">
       {{ item.data }}
     </p>
   </v-card>
@@ -35,8 +35,12 @@ export default class StatisticsCard extends Vue {
   }
 
   &__data {
-    font-weight: bold;
+    // font-weight: bold;
+    font-size: 30px;
     margin-top: 15px;
+  }
+  &__title {
+    font-size: 25px;
   }
 }
 </style>

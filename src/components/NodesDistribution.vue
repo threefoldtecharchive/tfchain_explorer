@@ -1,6 +1,5 @@
 <template>
   <v-card flat color="transparent" class="container">
-    <v-divider />
     <h2>Nodes Distribution</h2>
     <div @mousemove="controllTooltip($event)">
       <Map v-on:map-ref="onGetMapRef" />
@@ -17,7 +16,7 @@
 <script lang="ts">
 import { INode } from "@/graphql/api";
 import { IState } from "@/store/state";
-import { Component, Vue, Watch,Prop } from "vue-property-decorator";
+import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 import Map from "./Map.vue";
 import { createPopper, Instance } from "@popperjs/core/lib/popper-lite";
 import { byCountry } from "country-code-lookup";
@@ -44,23 +43,19 @@ export default class NodesDistribution extends Vue {
   country = "";
   value = "";
 
-  @Watch("nodes",{immediate:true})
-  onNodeChange(nodes :INode[],){
-    if (!this.map)
-      return
-    for (const path of this.map.querySelectorAll("path")){
-        path.removeAttribute("fill");
-
+  @Watch("nodes", { immediate: true })
+  onNodeChange(nodes: INode[]) {
+    if (!this.map) return;
+    for (const path of this.map.querySelectorAll("path")) {
+      path.removeAttribute("fill");
     }
-    if (nodes)
-      this._colorizeMap(nodes);
+    if (nodes) this._colorizeMap(nodes);
   }
 
   map?: SVGElement;
   onGetMapRef(map: SVGElement) {
     this.map = map;
   }
-
 
   controllTooltip(e: MouseEvent) {
     // hide/show tooltip
@@ -86,8 +81,7 @@ export default class NodesDistribution extends Vue {
     this._instance.update();
   }
 
-
-  private _getNodesPerCountry(nodes: INode[]){
+  private _getNodesPerCountry(nodes: INode[]) {
     const ids = nodes
       .map((n) => {
         return n.country && n.country?.length > 2
@@ -103,13 +97,13 @@ export default class NodesDistribution extends Vue {
 
       counter[id]++;
     }
-  return counter;
+    return counter;
   }
-  
+
   private _colorizeMap(nodes: INode[]) {
     if (!this.map) return;
 
-    const counter = this._getNodesPerCountry(nodes)
+    const counter = this._getNodesPerCountry(nodes);
 
     const max = Math.max(...Object.values(counter));
 

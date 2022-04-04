@@ -135,28 +135,10 @@ export function getStatistics(state: IState): IStatistics[] {
 
 export default {
   loading: (state) => state.loading,
-  // nodes: (state) => {
-  //   const nodes = fallbackDataExtractor("nodes")(state);
-  // return nodes.map((node) => {
-  //   const country: any = node.country;
-  //   const [totalPublicIPs, freePublicIPs, usedPublicIps] = getFarmPublicIPs(
-  //     state,
-  //     node.farmId
-  //   );
-  //   return {
-  //     ...node,
-  //     totalPublicIPs: totalPublicIPs,
-  //     freePublicIPs: freePublicIPs,
-  //     usedPublicIPs: usedPublicIps,
-  //     countryFullName:
-  //       country && country?.length == 2
-  //         ? byInternet(country)?.country
-  //         : country,
-  //     farmingPolicyName: state.policies[node.farmingPolicyId],
-  //     status: node.status,
-  //   };
-  // });
-  // },
+
+  nodes: (state) => {
+    return state.nodes;
+  },
   farms: (state) => {
     const farms = fallbackDataExtractor("farms")(state);
 
@@ -180,48 +162,6 @@ export default {
       return (state.filters as any)[key1][key2];
     };
   },
-
-  /* filtered values */
-  // filtered_nodes: applyFilters(
-  //   (state) => {
-  //     const nodes = fallbackDataExtractor("nodes")(state);
-  //     return nodes.map((node) => {
-  //       const country: any = node.country;
-  //       const [totalPublicIPs, freePublicIPs, usedPublicIps] = getFarmPublicIPs(
-  //         state,
-  //         node.farmId
-  //       );
-
-  //       return {
-  //         ...node,
-  //         totalPublicIPs: totalPublicIPs,
-  //         freePublicIPs: freePublicIPs,
-  //         usedPublicIPs: usedPublicIps,
-  //         countryFullName:
-  //           country && country?.length == 2
-  //             ? byInternet(country)?.country
-  //             : country,
-  //         farmingPolicyName: state.policies[node.farmingPolicyId],
-  //         status: node.status,
-  //       };
-  //     });
-  //   },
-  //   (state) => state.filters.nodes,
-  //   inFilter("nodeId"),
-  //   inFilter("createdById"),
-  //   inFilter("farmId"),
-  //   inFilter("twinId"),
-  //   inFilter("country"),
-  //   inFilter("farmingPolicyName"),
-  //   inFilter("countryFullName"),
-  //   inFilter("certificationType"),
-  //   rangeFilter("hru"),
-  //   rangeFilter("mru"),
-  //   rangeFilter("sru"),
-  //   rangeFilter("cru"),
-  //   conditionFilter("status"),
-  //   comparisonFilter("freePublicIPs", ">=")
-  // ),
 
   filtered_farm: applyFilters(
     (state) => {
@@ -277,13 +217,6 @@ export default {
   getSingleNode: (state) => (nodeId: any) => {
     return state.nodes.find((node) => node.nodeId == nodeId);
   },
-
-  // listNodes: (state) => {
-  //   /**
-  //    * @todo filter the nodes
-  //    */
-  //   return state.nodes;
-  // },
 
   statistics: getStatistics,
 } as GetterTree<IState, IState>;

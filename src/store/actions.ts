@@ -24,10 +24,6 @@ export default {
     },
 
     async loadNodesData({ commit }: ActionContext<IState, IState>) {
-        /**
-        @todo loop over pages on grid proxy
-                ?page=${pageNumber}&size=${pageSize}
-        */
         const nodes = await paginated_fetcher(`${window.configs.proxy_url}/nodes`, 1, 50)
         const farms = await paginated_fetcher(`${window.configs.proxy_url}/farms`, 1, 50)
         
@@ -60,10 +56,6 @@ export default {
         })
         // .then(createDataRequests)
         .then((data) => {
-            // data.nodes = data.nodes.map((node: any) => {
-            //     node.status = isNodeOnline(node);
-            //     return node
-            // })
             commit(MutationTypes.SET_DATA, data);
         })
         .catch((err) => {

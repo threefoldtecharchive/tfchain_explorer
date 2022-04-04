@@ -31,6 +31,7 @@ export default {
     },
 
     loadData({ state, commit }: ActionContext<IState, IState>) {
+        commit(MutationTypes.SET_LOAD, true);
         fetch(`${window.configs.proxy_url}/stats`)
         .then((data) => data.json())
         .then((data) => {

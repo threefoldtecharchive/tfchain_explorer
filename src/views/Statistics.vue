@@ -11,6 +11,32 @@
         <v-progress-circular size="150" indeterminate />
       </section>
     </v-container>
+
+    <v-container>
+      <v-divider />
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+        "
+      >
+        <div>
+          <v-switch
+            v-model="withGateway"
+            style="margin-bottom: -30px"
+            label="Gateways"
+          />
+          <v-switch
+            v-model="onlyOnline"
+            label="Online"
+            style="margin-bottom: -30px"
+          />
+        </div>
+      </div>
+      <NodesDistribution :nodes="getNodes()" />
+    </v-container>
   </Layout>
 </template>
 
@@ -19,17 +45,34 @@ import { Component, Vue } from "vue-property-decorator";
 import { IStatistics } from "@/store/getters";
 import Layout from "@/components/Layout.vue";
 import StatisticsCard from "@/components/StatisticsCard.vue";
+import NodesDistribution from "@/components/NodesDistribution.vue";
+import { INode } from "@/graphql/api";
 
 @Component({
   name: "Statistics",
   components: {
     Layout,
     StatisticsCard,
+    NodesDistribution,
   },
 })
 export default class Statistics extends Vue {
+  withGateway = false;
+  onlyOnline = true;
+
   get statistics(): IStatistics[] {
     return this.$store.getters.statistics;
+  }
+
+  getNodes() {
+    let nodes: INode[] = this.$store.getters.filtered_nodes;
+    if (this.withGateway) {
+      nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
+    }
+
+    nodes = nodes.filter(({ status }) => status === this.onlyOnline);
+
+    return nodes;
   }
 }
 </script>
@@ -38,10 +81,10 @@ export default class Statistics extends Vue {
 .items {
   display: flex;
   flex-wrap: wrap;
-
+  justify-content: center;
   > div {
     padding: 15px;
-    width: 25%;
+    width: 16.5%;
 
     @media (max-width: 1910px) {
       width: calc(100% / 3);

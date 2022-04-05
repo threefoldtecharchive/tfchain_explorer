@@ -6,6 +6,7 @@
     chips
     solo
     multiple
+    placeholder="Please choose some filters."
   >
     <template v-slot:selection="{ attrs, item, select, selected }">
       <!-- prettier-ignore -->

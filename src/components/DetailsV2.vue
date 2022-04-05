@@ -122,7 +122,7 @@ export default class Details extends Vue {
   @Prop({ required: true }) open!: boolean;
   @Prop({ required: true }) query!: DocumentNode;
   @Prop({ required: true }) variables!: { [key: string]: any };
-  @Prop({ required: true }) nodeId!: any;
+  @Prop() nodeId: any;
 
   loading = false;
 

@@ -45,7 +45,7 @@
       </div>
     </template>
 
-    <template v-slot:newtable>
+    <template v-slot:table>
       <div
         style="
           display: flex;

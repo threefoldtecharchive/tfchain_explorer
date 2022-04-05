@@ -12,9 +12,7 @@
       >
         {{ filter.chip_label }}
       </v-chip>
-      <v-chip class="ma-2" disabled>
-        Free Public IP
-      </v-chip>
+      <v-chip class="ma-2" disabled> Free Public IP </v-chip>
     </template>
 
     <template v-slot:apply-filters>
@@ -69,7 +67,7 @@
         "
         @pagination="page = $event.page - 1" -->
         <template v-slot:[`item.certificationType`]="{ item }">
-            {{ item.certificationType }}
+          {{ item.certificationType }}
         </template>
 
         <template v-slot:[`item.publicIPs`]="{ item }">

@@ -117,7 +117,7 @@ export default class NodesDistribution extends Vue {
       if (!path) continue;
       path.setAttribute(
         "fill",
-        `rgba(255, 82, 82, ${0.5 + counter[key] / (max * 2)})`
+        `rgba(82, 255, 82, ${0.5 + counter[key] / (max * 2)})`
       );
       path.setAttribute("data-value", `${counter[key]}`);
     }

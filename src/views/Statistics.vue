@@ -35,7 +35,7 @@
           />
         </div>
       </div>
-      <NodesDistribution :nodes="getNodes()" />
+      <NodesDistribution :nodes="listNodes()" />
     </v-container>
   </Layout>
 </template>
@@ -64,13 +64,15 @@ export default class Statistics extends Vue {
     return this.$store.getters.statistics;
   }
 
-  getNodes() {
-    let nodes: INode[] = this.$store.getters.filtered_nodes;
+  listNodes() {
+    let nodes: INode[] = this.$store.getters.listFilteredNodes;
     if (this.withGateway) {
-      nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
+      nodes = nodes.filter(({ publicConfig }) => publicConfig?.domain !== "");
     }
 
-    nodes = nodes.filter(({ status }) => status === this.onlyOnline);
+    if (this.onlyOnline) {
+      nodes = nodes.filter(({ status }) => status === "up");
+    }
 
     return nodes;
   }

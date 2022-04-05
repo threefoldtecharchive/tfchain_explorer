@@ -28,6 +28,9 @@
           @input="changed = true"
         />
       </div>
+      <p v-if="!activeFilters.length">
+        Please select some filters.
+      </p>
     </template>
 
     <template v-slot:table>

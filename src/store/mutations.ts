@@ -59,11 +59,13 @@ export default {
         twinId: nodes[i].twinId,
         cityId: 0,
 
-        totalPublicIPs: farms[nodes[i].farmId - 1].publicIps.length,
+        totalPublicIPs: farms.find(
+          (farm: any) => farm.farmId === nodes[i].farmId
+        ).publicIps.length,
         usedPublicIPs: nodes[i].used_resources.ipv4u,
-        freePublicIPs: farms[nodes[i].farmId - 1].publicIps.filter(
-          (ip: any) => ip.contractId === 0
-        ).length,
+        freePublicIPs: farms
+          .find((farm: any) => farm.farmId === nodes[i].farmId)
+          .publicIps.filter((ip: any) => ip.contractId === 0).length,
         hru: nodes[i].total_resources.hru,
         sru: nodes[i].total_resources.sru,
         cru: nodes[i].total_resources.cru,

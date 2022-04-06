@@ -135,6 +135,7 @@ export function getStatistics(state: IState): IStatistics[] {
 
 export default {
   loading: (state) => state.loading,
+  tableLoading: (state) => state.tableLoading,
 
   nodes: (state) => {
     return state.nodes;

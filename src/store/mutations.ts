@@ -23,6 +23,9 @@ export default {
   setLoad(state: IState, payload: boolean) {
     state.loading = payload;
   },
+  setTableLoad(state: IState, payload: boolean) {
+    state.tableLoading = payload;
+  },
   setData(state: IState, payload: GetDataQueryType) {
     state.data = payload;
   },

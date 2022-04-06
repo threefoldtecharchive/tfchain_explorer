@@ -48,6 +48,7 @@ export interface IState {
   policies: { [key: string]: string };
   pricingPolicies: Map<number, string>;
   loading: boolean;
+  tableLoading: boolean;
   nodes_status: { [key: number]: boolean };
   nodeContractsNo: number;
   accessNodesNo: number;
@@ -100,6 +101,7 @@ export default {
   policies: {},
   pricingPolicies: new Map(),
   loading: false,
+  tableLoading: false,
   nodes_status: {},
   nodeContractsNo: 0,
   accessNodesNo: 0,

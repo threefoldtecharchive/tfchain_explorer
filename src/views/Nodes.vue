@@ -65,7 +65,7 @@
       </div>
       <v-data-table
         ref="table"
-        :loading="$store.getters.loading"
+        :loading="$store.getters.tableLoading"
         loading-text="Loading..."
         :headers="headers"
         :items="listNodes()"

@@ -23,11 +23,14 @@ export default {
             });
     },
 
-    async loadNodesData({ commit }: ActionContext<IState, IState>) {
+    async loadNodesData({ state, commit }: ActionContext<IState, IState>) {
+        commit("setTableLoad", true);
         const nodes = await paginated_fetcher(`${window.configs.proxy_url}/nodes`, 1, 50)
         const farms = await paginated_fetcher(`${window.configs.proxy_url}/farms`, 1, 50)
         
         commit('loadNodesData', {nodes, farms} );
+        commit("setTableLoad", false);
+
     },
 
     loadData({ state, commit }: ActionContext<IState, IState>) {

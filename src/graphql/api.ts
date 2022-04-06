@@ -108,6 +108,8 @@ export interface INode {
   interfaces: Interfaces[];
   status: any;
   certificationType: "Diy" | "Certified";
+  farmingPolicyName: string;
+  countryFullName: string;
 }
 
 export const PublicConfigType = gql`

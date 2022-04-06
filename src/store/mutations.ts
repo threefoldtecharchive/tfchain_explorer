@@ -1,3 +1,4 @@
+import { byInternet } from "country-code-lookup";
 import { INode } from "./../graphql/api";
 import { GetDataQueryType } from "@/graphql/api";
 import { IState } from "./state";
@@ -87,6 +88,11 @@ export default {
         ],
         status: nodes[i].status,
         certificationType: nodes[i].certificationType,
+        farmingPolicyName: state.policies[nodes[i].farmingPolicyId],
+        countryFullName:
+          nodes[i].country && nodes[i].country?.length == 2
+            ? byInternet(nodes[i].country)?.country
+            : nodes[i].country,
       };
 
       state.nodes.push(node);

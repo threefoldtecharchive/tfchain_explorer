@@ -63,6 +63,11 @@
           <v-switch v-model="onlyOnline" label="Online" />
         </div>
       </div>
+      <div class="d-flex justify-center">
+        <v-alert dense text type="success">
+          Node statuses are updated every 2 hours.
+        </v-alert>
+      </div>
       <v-data-table
         ref="table"
         :loading="$store.getters.tableLoading"

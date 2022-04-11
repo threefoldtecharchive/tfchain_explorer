@@ -63,17 +63,12 @@
           <v-switch v-model="onlyOnline" label="Online" />
         </div>
       </div>
-      <div class="d-flex justify-center">
-        <v-alert dense text type="success">
-          Node statuses are updated every 2 hours.
-        </v-alert>
-      </div>
       <v-data-table
         ref="table"
-        :loading="$store.getters.loading"
+        :loading="$store.getters.tableLoading"
         loading-text="Loading..."
         :headers="headers"
-        :items="getNodes()"
+        :items="listNodes()"
         :items-per-page="10"
         class="elevation-1"
         align
@@ -129,16 +124,14 @@
               }
             : {}
         "
+        :nodeId="node && node.nodeId"
         v-on:close-sheet="closeSheet"
       />
     </template>
 
     <template v-slot:default>
-      <v-divider style="margin-top: 50px; margin-bottom: -50px" />
-      <NodesDistribution
-        :nodes="getNodes()"
-        v-if="$store.getters.nodes.length > 0"
-      />
+      <NodesDistribution :nodes="listNodes()" />
+      <!-- v-if="$store.getters.nodes.length > 0" -->
     </template>
   </Layout>
 </template>
@@ -278,13 +271,15 @@ export default class Nodes extends Vue {
     },
   ];
 
-  getNodes() {
-    let nodes: INode[] = this.$store.getters.filtered_nodes;
+  listNodes() {
+    let nodes: INode[] = this.$store.getters.listFilteredNodes;
     if (this.withGateway) {
-      nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
+      nodes = nodes.filter(({ publicConfig }) => publicConfig?.domain !== "");
     }
 
-    nodes = nodes.filter(({ status }) => status === this.onlyOnline);
+    if (this.onlyOnline) {
+      nodes = nodes.filter(({ status }) => status === "up");
+    }
 
     return nodes;
   }

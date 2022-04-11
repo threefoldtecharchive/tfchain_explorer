@@ -17,7 +17,7 @@
             ID
           </v-list-item-title>
         </v-list-item-content>
-        {{ farm.farmId }}
+        {{ farm.farmID }}
       </v-list-item>
       <v-divider />
 

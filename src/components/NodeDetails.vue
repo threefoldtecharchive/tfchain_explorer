@@ -22,7 +22,7 @@
             <v-list-item-content>
               <v-list-item-title> ID </v-list-item-title>
             </v-list-item-content>
-            {{ node.nodeId }}
+            {{ node.nodeID }}
           </v-list-item>
           <v-divider />
 
@@ -30,7 +30,7 @@
             <v-list-item-content>
               <v-list-item-title> Farm ID </v-list-item-title>
             </v-list-item-content>
-            {{ node.farmId }}
+            {{ node.farmID }}
           </v-list-item>
           <v-divider />
 

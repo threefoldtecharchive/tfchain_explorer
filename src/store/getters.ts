@@ -118,15 +118,15 @@ export function getStatistics(state: IState): IStatistics[] {
     return [];
   }
   return [
-    { id: 0, data: state.nodesNo, title: "Nodes", icon: "mdi-laptop" },
+    { id: 0, data: state.nodesNo, title: "Nodes Online", icon: "mdi-laptop" },
     { id: 1, data: state.farmsNo, title: "Farms", icon: "mdi-tractor" },
     { id: 2, data: state.countriesNo, title: "Countries", icon: "mdi-earth" },
-    { id: 3, data: state.totalCru, title: "Total CPUs", icon: "mdi-cpu-64-bit" },
-    { id: 4, data: toTeraOrGigaOrPeta(state.totalSru.toString()), title: "Total SSD", icon: "mdi-nas" },
-    { id: 5, data: toTeraOrGigaOrPeta(state.totalHru.toString()), title: "Total HDD", icon: "mdi-harddisk" },
-    { id: 6, data: toTeraOrGigaOrPeta(state.totalMru.toString()), title: "Total RAM", icon: "mdi-memory" },
+    { id: 3, data: state.totalCru, title: "CPUs Online", icon: "mdi-cpu-64-bit" },
+    { id: 4, data: toTeraOrGigaOrPeta(state.totalSru.toString()), title: "SSD Storage", icon: "mdi-nas" },
+    { id: 5, data: toTeraOrGigaOrPeta(state.totalHru.toString()), title: "HDD Storage", icon: "mdi-harddisk" },
+    { id: 6, data: toTeraOrGigaOrPeta(state.totalMru.toString()), title: "RAM Online", icon: "mdi-memory" },
     { id: 7, data: state.accessNodesNo, title: "Access Nodes", icon: "mdi-gate" },
-    { id: 8, data: state.gatewaysNo, title: "Gateways", icon: "mdi-boom-gate-outline" },
+    { id: 8, data: state.gatewaysNo, title: "Gateways Online", icon: "mdi-boom-gate-outline" },
     { id: 9, data: state.twinsNo, title: "Twins", icon: "mdi-brain" },
     { id: 10, data: state.publicIpsNo, title: "Public IPs", icon: "mdi-access-point" },
     { id: 11, data: state.nodeContractsNo, title: "Contracts", icon: "mdi-file-document-edit-outline" },

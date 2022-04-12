@@ -315,8 +315,8 @@ export default class Nodes extends Vue {
           latitude
           longitude
         }
-        nodeID
-        farmID
+        nodeId: nodeID
+        farmId: farmID
         farmingPolicyId
         gridVersion
         uptime
@@ -341,7 +341,7 @@ export default class Nodes extends Vue {
 
       farm: farms(where: { farmID_eq: $farmId }) {
         id
-        farmID
+        farmId: farmID
         name
         gridVersion
         certificationType
@@ -350,8 +350,8 @@ export default class Nodes extends Vue {
 
       twin: twins(where: { twinID_eq: $twinId }) {
         id
-        twinID
-        accountID
+        twinId: twinID
+        accountId: accountID
         gridVersion
         ip
       }

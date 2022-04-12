@@ -350,7 +350,7 @@ export default class Farms extends Vue {
     query getFarmDetails($farmId: Int!, $twinId: Int!) {
       farm: farms(where: { farmID_eq: $farmId }) {
         id
-        farmId
+        farmId: farmID
         name
         gridVersion
         certificationType
@@ -359,8 +359,8 @@ export default class Farms extends Vue {
 
       twin: twins(where: { twinID_eq: $twinId }) {
         id
-        twinId
-        accountId
+        twinId: twinID
+        accountId: accountID
         gridVersion
         ip
       }

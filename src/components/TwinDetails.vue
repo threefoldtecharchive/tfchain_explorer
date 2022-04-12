@@ -17,7 +17,7 @@
             ID
           </v-list-item-title>
         </v-list-item-content>
-        {{ twin.twinID }}
+        {{ twin.twinId }}
       </v-list-item>
       <v-divider />
 
@@ -37,7 +37,7 @@
             Account ID
           </v-list-item-title>
         </v-list-item-content>
-        {{ twin.accountID }}
+        {{ twin.accountId }}
       </v-list-item>
       <v-divider />
 

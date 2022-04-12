@@ -367,9 +367,9 @@ export const getFarmsQuery = gql`
       publicIPs {
         contractId
       }
-      twinId: twinID
+      twinID
       certificationType
-      pricingPolicyId: pricingPolicyID
+      pricingPolicyID
     }
   }
 `;

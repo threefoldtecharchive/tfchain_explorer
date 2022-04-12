@@ -172,6 +172,7 @@ export default class Nodes extends Vue {
     { text: "Farm ID", value: "farmId", align: "center" },
     { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
     { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
+    { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
@@ -308,18 +309,22 @@ export default class Nodes extends Vue {
       $twinId: Int!
       $country: String!
     ) {
-      node: nodes(where: { nodeID_eq: $nodeId }) {
+      node: nodes(where: { nodeId_eq: $nodeId }) {
         country
         city
         location {
           latitude
           longitude
         }
-        nodeID
-        farmID
+        nodeId
+        farmId
         farmingPolicyId
         gridVersion
         uptime
+        cru
+        hru
+        sru
+        mru
         created
         updatedAt
         certificationType
@@ -339,19 +344,21 @@ export default class Nodes extends Vue {
         farmingPolicyId
       }
 
-      farm: farms(where: { farmID_eq: $farmId }) {
+      farm: farms(where: { farmId_eq: $farmId }) {
         id
-        farmID
+        farmId
         name
+        version
         gridVersion
         certificationType
         stellarAddress
       }
 
-      twin: twins(where: { twinID_eq: $twinId }) {
+      twin: twins(where: { twinId_eq: $twinId }) {
         id
-        twinID
-        accountID
+        twinId
+        accountId
+        version
         gridVersion
         ip
       }

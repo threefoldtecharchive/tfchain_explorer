@@ -92,6 +92,7 @@ export interface INode {
   twinId: number;
   cityId?: number;
   totalPublicIPs?: number;
+  usedPublicIPs?: number;
   freePublicIPs?: number;
   hru?: string;
   sru?: string;
@@ -289,16 +290,16 @@ export interface GetTotalCountQueryType<T = TotalCountType> {
 
 export const getTotalCountQuery = gql`
   query getTotalCountQuery {
-    nodes: nodesConnection(orderBy: nodeID_ASC) {
+    nodes: nodesConnection {
       totalCount
     }
-    farms: farmsConnection(orderBy: farmID_ASC) {
+    farms: farmsConnection {
       totalCount
     }
-    twins: twinsConnection(orderBy: twinID_ASC) {
+    twins: twinsConnection {
       totalCount
     }
-    nodeContracts: nodeContractsConnection(orderBy: contractID_ASC) {
+    nodeContracts: nodeContractsConnection {
       totalCount
     }
   }
@@ -339,13 +340,12 @@ export const getFarmsQuery = gql`
   ) {
     total: farmsConnection(
       where: {
-        farmID_in: $farmId_in
+        farmId_in: $farmId_in
         name_in: $name_in
-        twinID_in: $twinId_in
+        twinId_in: $twinId_in
         certificationType_in: $certificationType_in
-        pricingPolicyID_in: $pricingPolicyId_in
-      },
-      orderBy: farmID_ASC
+        pricingPolicyId_in: $pricingPolicyId_in
+      }
     ) {
       count: totalCount
     }
@@ -355,21 +355,21 @@ export const getFarmsQuery = gql`
       limit: $limit
       offset: $offset
       where: {
-        farmID_in: $farmId_in
+        farmId_in: $farmId_in
         name_in: $name_in
-        twinID_in: $twinId_in
+        twinId_in: $twinId_in
         certificationType_in: $certificationType_in
-        pricingPolicyID_in: $pricingPolicyId_in
+        pricingPolicyId_in: $pricingPolicyId_in
       }
     ) {
-      id: farmID
+      id: farmId
       name
       publicIPs {
         contractId
       }
-      twinID
+      twinId
       certificationType
-      pricingPolicyID
+      pricingPolicyId
     }
   }
 `;

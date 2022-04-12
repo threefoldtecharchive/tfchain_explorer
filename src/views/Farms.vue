@@ -348,19 +348,21 @@ export default class Farms extends Vue {
 
   query = gql`
     query getFarmDetails($farmId: Int!, $twinId: Int!) {
-      farm: farms(where: { farmID_eq: $farmId }) {
+      farm: farms(where: { farmId_eq: $farmId }) {
         id
         farmId
         name
+        version
         gridVersion
         certificationType
         stellarAddress
       }
 
-      twin: twins(where: { twinID_eq: $twinId }) {
+      twin: twins(where: { twinId_eq: $twinId }) {
         id
         twinId
         accountId
+        version
         gridVersion
         ip
       }

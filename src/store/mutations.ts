@@ -66,6 +66,7 @@ export default {
         totalPublicIPs: farms.find(
           (farm: any) => farm.farmId === nodes[i].farmId
         ).publicIps.length,
+        usedPublicIPs: nodes[i].used_resources.ipv4u,
         freePublicIPs: farms
           .find((farm: any) => farm.farmId === nodes[i].farmId)
           .publicIps.filter((ip: any) => ip.contractId === 0).length,

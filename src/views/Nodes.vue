@@ -1,16 +1,10 @@
 <template>
   <Layout pageName="Nodes">
     <template v-slot:filters>
-      <v-chip
-        v-for="(filter, idx) in filters"
-        :key="filter.key"
-        class="ma-2"
-        v-model="filter.active"
-        @click="toggleActive(idx)"
-        filter
-      >
-        {{ filter.label }}
-      </v-chip>
+      <LayoutFilters
+        :items="filters.map((f) => f.label)"
+        v-model="activeFiltersKeys"
+      />
     </template>
 
     <template v-slot:active-filters>
@@ -101,20 +95,6 @@
       </v-data-table>
     </template>
 
-    <!-- <template v-slot:details>
-      <Details
-        :open="!!node"
-        :node="node"
-        :farm="$store.getters.farm(node && node.farmId)"
-        :country="node && node.country"
-        :city="node && node.city"
-        :location="node && node.location"
-        :config="node && node.publicConfig"
-        v-on:close-sheet="closeSheet"
-      />
-        :twin="$store.getters.twin(node && node.twinId)"
-    </template> -->
-
     <template v-slot:details>
       <DetailsV2
         :open="!!node"
@@ -151,7 +131,9 @@ import RangeFilter from "@/components/RangeFilter.vue";
 import NodesDistribution from "@/components/NodesDistribution.vue";
 import ConditionFilter from "@/components/ConditionFilter.vue";
 import ComparisonFilter from "@/components/ComparisonFilter.vue";
+import LayoutFilters from "@/components/LayoutFilters.vue";
 import gql from "graphql-tag";
+
 @Component({
   components: {
     Layout,
@@ -161,6 +143,7 @@ import gql from "graphql-tag";
     NodesDistribution,
     ConditionFilter,
     ComparisonFilter,
+    LayoutFilters,
   },
 })
 export default class Nodes extends Vue {
@@ -179,13 +162,55 @@ export default class Nodes extends Vue {
     { text: "Up Time", value: "uptime", align: "center" },
   ];
 
-  // activeFilters is exactly same as filters
-  // the idea is to allow user to sort filter he wants
-  activeFilters: any[] = [
+  activeFiltersKeys: string[] = ["MRU", "HRU", "CRU"];
+
+  get activeFilters() {
+    const keySet = new Set(this.activeFiltersKeys);
+    return this.filters.filter((filter) => keySet.has(filter.label));
+  }
+
+  filters = [
+    {
+      label: "Node ID",
+      type: "in",
+      key: "nodeId",
+      placeholder: "Filter by node id.",
+    },
+    {
+      label: "Farm ID",
+      type: "in",
+      key: "farmId",
+      placeholder: "Filter by farm id.",
+    },
+    {
+      label: "Twin ID",
+      type: "in",
+      key: "twinId",
+      placeholder: "Filter by twin id.",
+    },
+    {
+      label: "Country Full Name",
+      type: "in",
+      key: "countryFullName",
+      placeholder: "Filter by country.",
+    },
+    {
+      label: "Farming Policy",
+      type: "in",
+      key: "farmingPolicyName",
+      placeholder: "Filter by farming policy name.",
+    },
+    {
+      label: "SRU",
+      type: "range",
+      key: "sru",
+      placeholder: "sru",
+      max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
+      unit: "TB",
+    },
     {
       label: "HRU",
       type: "range",
-      active: true,
       key: "hru",
       placeholder: "hru",
       max: 1e12 * 1000, // 1e12 is Terra and we want here 1000 Terrabytes
@@ -194,7 +219,6 @@ export default class Nodes extends Vue {
     {
       label: "MRU",
       type: "range",
-      active: true,
       key: "mru",
       placeholder: "mru",
       max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
@@ -203,64 +227,14 @@ export default class Nodes extends Vue {
     {
       label: "CRU",
       type: "range",
-      active: true,
       key: "cru",
       placeholder: "cru",
       max: 64 * 3,
       unit: "core",
     },
-  ];
-
-  filters = [
-    {
-      label: "Node ID",
-      type: "in",
-      active: false,
-      key: "nodeId",
-      placeholder: "Filter by node id.",
-    },
-    {
-      label: "Farm ID",
-      type: "in",
-      active: false,
-      key: "farmId",
-      placeholder: "Filter by farm id.",
-    },
-    {
-      label: "Twin ID",
-      type: "in",
-      active: false,
-      key: "twinId",
-      placeholder: "Filter by twin id.",
-    },
-    {
-      label: "Country Full Name",
-      type: "in",
-      active: false,
-      key: "countryFullName",
-      placeholder: "Filter by country.",
-    },
-    {
-      label: "Farming Policy",
-      type: "in",
-      active: false,
-      key: "farmingPolicyName",
-      placeholder: "Filter by farming policy name.",
-    },
-    {
-      label: "SRU",
-      type: "range",
-      active: false,
-      key: "sru",
-      placeholder: "sru",
-      max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
-      unit: "TB",
-    },
-    ...this.activeFilters,
     {
       label: "Free Public IP",
       type: "comparison",
-      active: false,
       key: "freePublicIPs",
       placeholder: "Filter by greater than or equal to publicIp Number.",
       prefix: ">=",
@@ -268,7 +242,6 @@ export default class Nodes extends Vue {
     {
       label: "Certification Type",
       type: "in",
-      active: false,
       key: "certificationType",
       placeholder: "Filter by certification type",
       value: ["Diy", "Certified"],
@@ -288,16 +261,8 @@ export default class Nodes extends Vue {
     return nodes;
   }
 
-  toggleActive(idx: number) {
-    const filter: any = this.filters[idx];
-
-    if (filter.active) {
-      this.activeFilters.splice(this.activeFilters.indexOf(filter), 1);
-      filter.active = false;
-    } else {
-      filter.active = true;
-      this.activeFilters.push(filter);
-    }
+  toggleActive(label: string): void {
+    this.activeFiltersKeys = this.activeFiltersKeys.filter((x) => x !== label);
   }
 
   node: INode | null = null;

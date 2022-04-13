@@ -245,7 +245,7 @@ export default class Farms extends Vue {
 
       switch (by) {
         case "id":
-          orderBy.push(desc ? "farmId_DESC" : "farmId_ASC");
+          orderBy.push(desc ? "farmID_DESC" : "farmID_ASC");
           break;
 
         case "name":

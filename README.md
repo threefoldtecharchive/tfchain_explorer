@@ -105,8 +105,8 @@ $ helm install --set ingress.host=dashboard.com --set GQL_URL=https://graphql.de
 ## GraphQL
 Info on TFChain is indexed over GraphQL and is available for queries. 
 - [Devnet GraphQL](https://graphql.dev.grid.tf/graphql)
-- [Testnet GraphQL](https://tfchain.test.threefold.io/graphql/graphql)
-- Mainnet GraphQL - not yet live
+- [Testnet GraphQL](https://graphql.test.grid.tf/graphql)
+- [Mainnet GraphQL](https://graphql.grid.tf/graphql)
 
 
 Manual link: https://library.threefold.me/info/threefold#/manual_tfgrid3/threefold__grid3_explorer

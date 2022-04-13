@@ -62,7 +62,7 @@ export default class NodeUsedResources extends Vue {
   loader = false;
 
   get nodeStatus(): boolean {
-    return isNodeOnline(this.node);
+    return this.node.status;
   }
 
   getNodeUsedResources(nodeId: number) {

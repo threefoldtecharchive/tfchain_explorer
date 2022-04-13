@@ -41,12 +41,17 @@
 
     <template v-slot:table>
       <div
-        style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+        "
       >
         <div>
           <v-switch
             v-model="withGateway"
-            style="margin-bottom: -30px;"
+            style="margin-bottom: -30px"
             label="Gateways"
           />
           <v-switch v-model="onlyOnline" label="Online" />
@@ -59,10 +64,10 @@
       </div>
       <v-data-table
         ref="table"
-        :loading="$store.getters.loading"
+        :loading="$store.getters.tableLoading"
         loading-text="Loading..."
         :headers="headers"
-        :items="getNodes()"
+        :items="listNodes()"
         :items-per-page="10"
         class="elevation-1"
         align
@@ -104,15 +109,14 @@
               }
             : {}
         "
+        :nodeId="node && node.nodeId"
         v-on:close-sheet="closeSheet"
       />
     </template>
 
     <template v-slot:default>
-      <NodesDistribution
-        :nodes="getNodes()"
-        v-if="$store.getters.nodes.length > 0"
-      />
+      <NodesDistribution :nodes="listNodes()" />
+      <!-- v-if="$store.getters.nodes.length > 0" -->
     </template>
   </Layout>
 </template>
@@ -151,7 +155,6 @@ export default class Nodes extends Vue {
     { text: "Farm ID", value: "farmId", align: "center" },
     { text: "Total Public IPs", value: "totalPublicIPs", align: "center" },
     { text: "Free Public IPs", value: "freePublicIPs", align: "center" },
-    { text: "Used Public IPs", value: "usedPublicIPs", align: "center" },
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
@@ -245,13 +248,15 @@ export default class Nodes extends Vue {
     },
   ];
 
-  getNodes() {
-    let nodes: INode[] = this.$store.getters.filtered_nodes;
+  listNodes() {
+    let nodes: INode[] = this.$store.getters.listFilteredNodes;
     if (this.withGateway) {
-      nodes = nodes.filter(({ publicConfig }) => publicConfig !== null);
+      nodes = nodes.filter(({ publicConfig }) => publicConfig?.domain !== "");
     }
 
-    nodes = nodes.filter(({ status }) => status === this.onlyOnline);
+    if (this.onlyOnline) {
+      nodes = nodes.filter(({ status }) => status === "up");
+    }
 
     return nodes;
   }
@@ -268,22 +273,18 @@ export default class Nodes extends Vue {
       $twinId: Int!
       $country: String!
     ) {
-      node: nodes(where: { nodeId_eq: $nodeId }) {
+      node: nodes(where: { nodeID_eq: $nodeId }) {
         country
         city
         location {
           latitude
           longitude
         }
-        nodeId
-        farmId
+        nodeId: nodeID
+        farmId: farmID
         farmingPolicyId
         gridVersion
         uptime
-        cru
-        hru
-        sru
-        mru
         created
         updatedAt
         certificationType
@@ -303,21 +304,19 @@ export default class Nodes extends Vue {
         farmingPolicyId
       }
 
-      farm: farms(where: { farmId_eq: $farmId }) {
+      farm: farms(where: { farmID_eq: $farmId }) {
         id
-        farmId
+        farmId: farmID
         name
-        version
         gridVersion
         certificationType
         stellarAddress
       }
 
-      twin: twins(where: { twinId_eq: $twinId }) {
+      twin: twins(where: { twinID_eq: $twinId }) {
         id
-        twinId
-        accountId
-        version
+        twinId: twinID
+        accountId: accountID
         gridVersion
         ip
       }

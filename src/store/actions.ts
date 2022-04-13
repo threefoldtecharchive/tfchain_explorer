@@ -4,6 +4,7 @@ import { MutationTypes } from './mutations';
 import createDataRequests from "@/utils/createDataRequests";
 import isNodeOnline from "@/utils/isNodeOnline";
 import getChainData from "@/utils/getChainData";
+import paginated_fetcher from "@/utils/paginatedFetch";
 export enum ActionTypes {
     INIT_POLICIES = "initPolicies",
     INIT_PRICING_POLICIES = "initPricingPolicies",
@@ -21,8 +22,20 @@ export default {
                 commit(MutationTypes.SET_POLICIES, data);
             });
     },
+
+    async loadNodesData({ state, commit }: ActionContext<IState, IState>) {
+        commit("setTableLoad", true);
+        const nodes = await paginated_fetcher(`${window.configs.proxy_url}/nodes`, 1, 50)
+        const farms = await paginated_fetcher(`${window.configs.proxy_url}/farms`, 1, 50)
+        
+        commit('loadNodesData', {nodes, farms} );
+        commit("setTableLoad", false);
+
+    },
+
     loadData({ state, commit }: ActionContext<IState, IState>) {
-        fetch(`${window.configs.proxy_url}/stats`)
+        commit(MutationTypes.SET_LOAD, true);
+        fetch(`${window.configs.proxy_url}/stats?status=up`)
         .then((data) => data.json())
         .then((data) => {
             const { nodes, farms, twins, contracts, publicIps,accessNodes,
@@ -45,12 +58,8 @@ export default {
                 farms: farms,
             };
         })
-        .then(createDataRequests)
+        // .then(createDataRequests)
         .then((data) => {
-            data.nodes = data.nodes.map(node => {
-                node.status = isNodeOnline(node);
-                return node
-            })
             commit(MutationTypes.SET_DATA, data);
         })
         .catch((err) => {

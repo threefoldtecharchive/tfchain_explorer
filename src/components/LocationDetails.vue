@@ -36,7 +36,7 @@ export default class LocationDetails extends Vue {
     const country = map.querySelector(`[id=${conuntryCode}]`);
 
     if (country) {
-      country.setAttribute("fill", "#ff5252");
+      country.setAttribute("fill", "#52ff52");
     }
   }
 }

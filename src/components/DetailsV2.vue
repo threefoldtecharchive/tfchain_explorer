@@ -122,6 +122,7 @@ export default class Details extends Vue {
   @Prop({ required: true }) open!: boolean;
   @Prop({ required: true }) query!: DocumentNode;
   @Prop({ required: true }) variables!: { [key: string]: any };
+  @Prop() nodeId: any;
 
   loading = false;
 
@@ -143,15 +144,24 @@ export default class Details extends Vue {
     if (!this.open) return;
 
     this.loading = true;
-
     const { query, variables } = this;
     this.$apollo
       .query({ query, variables })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         this.data = Object.keys(data).reduce((res, key) => {
           res[key] = res[key][0];
           return res;
         }, data);
+
+        // update with the data from grid proxy
+        const gproxyData = await fetch(
+          `${window.configs.proxy_url}/nodes/${this.nodeId}`
+        ).then((res) => res.json());
+        this.data.node.status = gproxyData.status === "up";
+        this.data.node.cru = gproxyData.capacity.total_resources.cru;
+        this.data.node.mru = gproxyData.capacity.total_resources.mru;
+        this.data.node.hru = gproxyData.capacity.total_resources.hru;
+        this.data.node.sru = gproxyData.capacity.total_resources.sru;
       })
       .catch((err) => {
         console.log("Error", err);

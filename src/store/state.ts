@@ -1,4 +1,5 @@
 import { GetDataQueryType, IFarm } from "@/graphql/api";
+import { INode } from "@/graphql/api";
 
 interface IInFilter {
   enabled: boolean;
@@ -31,15 +32,15 @@ interface IComparisonFilter {
 const createComparisonFilter = () => ({ enabled: false, value: 0 });
 
 export interface IPaginationData<T> {
-  total: number,
+  total: number;
   items: Map<number, T[]>;
 }
 
 function createPaginationData<T>(): IPaginationData<T> {
   return {
     total: 0,
-    items: new Map<number, T[]>()
-  }
+    items: new Map<number, T[]>(),
+  };
 }
 
 export interface IState {
@@ -47,6 +48,7 @@ export interface IState {
   policies: { [key: string]: string };
   pricingPolicies: Map<number, string>;
   loading: boolean;
+  tableLoading: boolean;
   nodes_status: { [key: number]: boolean };
   nodeContractsNo: number;
   accessNodesNo: number;
@@ -60,7 +62,7 @@ export interface IState {
   nodesNo: number;
   twinsNo: number;
   publicIpsNo: number;
-  versions: Array<{ name: string, value: any }>;
+  versions: Array<{ name: string; value: any }>;
   filters: {
     nodes: {
       nodeId: IInFilter;
@@ -88,9 +90,10 @@ export interface IState {
       pricingPolicyName: IInFilter;
     };
   };
+  nodes: INode[];
 
   /* Refactored Data */
-  farms: IPaginationData<IFarm>
+  farms: IPaginationData<IFarm>;
 }
 
 export default {
@@ -98,6 +101,7 @@ export default {
   policies: {},
   pricingPolicies: new Map(),
   loading: false,
+  tableLoading: false,
   nodes_status: {},
   nodeContractsNo: 0,
   accessNodesNo: 0,
@@ -139,8 +143,8 @@ export default {
       pricingPolicyName: createInFilter(),
     },
   },
-
+  nodes: [],
 
   /* Refactored data */
-  farms: createPaginationData()
+  farms: createPaginationData(),
 } as IState;

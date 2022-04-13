@@ -25,8 +25,9 @@ export default class App extends Vue {
 
   created() {
     this.$store.dispatch(ActionTypes.INIT_POLICIES);
-    this.$store.dispatch('loadChainData')
+    this.$store.dispatch("loadChainData");
     this.$store.dispatch(ActionTypes.LOAD_DATA);
+    this.$store.dispatch("loadNodesData");
     setInterval(() => {
       this.$store.dispatch(ActionTypes.LOAD_DATA);
     }, 5 * 60 * 1000);

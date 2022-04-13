@@ -118,15 +118,15 @@ export function getStatistics(state: IState): IStatistics[] {
     return [];
   }
   return [
-    { id: 0, data: state.nodesNo, title: "Nodes", icon: "mdi-laptop" },
+    { id: 0, data: state.nodesNo, title: "Nodes Online", icon: "mdi-laptop" },
     { id: 1, data: state.farmsNo, title: "Farms", icon: "mdi-tractor" },
     { id: 2, data: state.countriesNo, title: "Countries", icon: "mdi-earth" },
-    { id: 3, data: state.totalCru, title: "Total CPUs", icon: "mdi-cpu-64-bit" },
-    { id: 4, data: toTeraOrGigaOrPeta(state.totalSru.toString()), title: "Total SSD", icon: "mdi-nas" },
-    { id: 5, data: toTeraOrGigaOrPeta(state.totalHru.toString()), title: "Total HDD", icon: "mdi-harddisk" },
-    { id: 6, data: toTeraOrGigaOrPeta(state.totalMru.toString()), title: "Total RAM", icon: "mdi-memory" },
+    { id: 3, data: state.totalCru, title: "CPUs Online", icon: "mdi-cpu-64-bit" },
+    { id: 4, data: toTeraOrGigaOrPeta(state.totalSru.toString()), title: "SSD Storage", icon: "mdi-nas" },
+    { id: 5, data: toTeraOrGigaOrPeta(state.totalHru.toString()), title: "HDD Storage", icon: "mdi-harddisk" },
+    { id: 6, data: toTeraOrGigaOrPeta(state.totalMru.toString()), title: "RAM Online", icon: "mdi-memory" },
     { id: 7, data: state.accessNodesNo, title: "Access Nodes", icon: "mdi-gate" },
-    { id: 8, data: state.gatewaysNo, title: "Gateways", icon: "mdi-boom-gate-outline" },
+    { id: 8, data: state.gatewaysNo, title: "Gateways Online", icon: "mdi-boom-gate-outline" },
     { id: 9, data: state.twinsNo, title: "Twins", icon: "mdi-brain" },
     { id: 10, data: state.publicIpsNo, title: "Public IPs", icon: "mdi-access-point" },
     { id: 11, data: state.nodeContractsNo, title: "Contracts", icon: "mdi-file-document-edit-outline" },
@@ -135,27 +135,10 @@ export function getStatistics(state: IState): IStatistics[] {
 
 export default {
   loading: (state) => state.loading,
+  tableLoading: (state) => state.tableLoading,
+
   nodes: (state) => {
-    const nodes = fallbackDataExtractor("nodes")(state);
-    return nodes.map((node) => {
-      const country: any = node.country;
-      const [totalPublicIPs, freePublicIPs, usedPublicIps] = getFarmPublicIPs(
-        state,
-        node.farmId
-      );
-      return {
-        ...node,
-        totalPublicIPs: totalPublicIPs,
-        freePublicIPs: freePublicIPs,
-        usedPublicIPs: usedPublicIps,
-        countryFullName:
-          country && country?.length == 2
-            ? byInternet(country)?.country
-            : country,
-        farmingPolicyName: state.policies[node.farmingPolicyId],
-        status: node.status,
-      };
-    });
+    return state.nodes;
   },
   farms: (state) => {
     const farms = fallbackDataExtractor("farms")(state);
@@ -180,48 +163,6 @@ export default {
       return (state.filters as any)[key1][key2];
     };
   },
-
-  /* filtered values */
-  filtered_nodes: applyFilters(
-    (state) => {
-      const nodes = fallbackDataExtractor("nodes")(state);
-      return nodes.map((node) => {
-        const country: any = node.country;
-        const [totalPublicIPs, freePublicIPs, usedPublicIps] = getFarmPublicIPs(
-          state,
-          node.farmId
-        );
-
-        return {
-          ...node,
-          totalPublicIPs: totalPublicIPs,
-          freePublicIPs: freePublicIPs,
-          usedPublicIPs: usedPublicIps,
-          countryFullName:
-            country && country?.length == 2
-              ? byInternet(country)?.country
-              : country,
-          farmingPolicyName: state.policies[node.farmingPolicyId],
-          status: node.status,
-        };
-      });
-    },
-    (state) => state.filters.nodes,
-    inFilter("nodeId"),
-    inFilter("createdById"),
-    inFilter("farmId"),
-    inFilter("twinId"),
-    inFilter("country"),
-    inFilter("farmingPolicyName"),
-    inFilter("countryFullName"),
-    inFilter("certificationType"),
-    rangeFilter("hru"),
-    rangeFilter("mru"),
-    rangeFilter("sru"),
-    rangeFilter("cru"),
-    conditionFilter("status"),
-    comparisonFilter("freePublicIPs", ">=")
-  ),
 
   filtered_farm: applyFilters(
     (state) => {
@@ -253,6 +194,29 @@ export default {
       const values = items.map((i: any) => +(i as any)[valueOf]) as any[];
       return Math.max(...values);
     };
+  },
+
+  listFilteredNodes: applyFilters(
+    (state) => state.nodes,
+    (state) => state.filters.nodes,
+    inFilter("nodeId"),
+    inFilter("createdById"),
+    inFilter("farmId"),
+    inFilter("twinId"),
+    inFilter("country"),
+    inFilter("farmingPolicyName"),
+    inFilter("countryFullName"),
+    inFilter("certificationType"),
+    rangeFilter("hru"),
+    rangeFilter("mru"),
+    rangeFilter("sru"),
+    rangeFilter("cru"),
+    conditionFilter("status"),
+    comparisonFilter("freePublicIPs", ">=")
+  ),
+
+  getSingleNode: (state) => (nodeId: any) => {
+    return state.nodes.find((node) => node.nodeId == nodeId);
   },
 
   statistics: getStatistics,

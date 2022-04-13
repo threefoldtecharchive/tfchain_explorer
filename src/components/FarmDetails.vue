@@ -44,16 +44,6 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            Certification Type
-          </v-list-item-title>
-        </v-list-item-content>
-        {{ farm.certificationType }}
-      </v-list-item>
-      <v-divider />
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
             Stellar Address
           </v-list-item-title>
         </v-list-item-content>

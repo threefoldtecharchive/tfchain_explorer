@@ -1,8 +1,6 @@
 import type { ActionContext } from "vuex";
 import type { IState } from "./state";
 import { MutationTypes } from './mutations';
-import createDataRequests from "@/utils/createDataRequests";
-import isNodeOnline from "@/utils/isNodeOnline";
 import getChainData from "@/utils/getChainData";
 import paginated_fetcher from "@/utils/paginatedFetch";
 export enum ActionTypes {

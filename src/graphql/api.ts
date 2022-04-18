@@ -19,20 +19,6 @@ export interface ILocation {
   latitude: string;
 }
 
-export const LocationType = gql`
-  fragment LocationType on Location {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    longitude
-    latitude
-  }
-`;
 export interface ICountry {
   id: string;
   name: string;
@@ -50,26 +36,6 @@ export interface ICountry {
   updatedAt: string;
   version: number;
 }
-
-export const CountryType = gql`
-  fragment CountryType on Country {
-    id
-    name
-    code
-    lat
-    long
-    region
-    countryId
-    createdAt
-    createdById
-    deletedAt
-    deletedById
-    subregion
-    updatedById
-    updatedAt
-    version
-  }
-`;
 
 export interface Interfaces {
   name: string;
@@ -121,48 +87,6 @@ export const PublicConfigType = gql`
   }
 `;
 
-export const NodeType = gql`
-  ${LocationType}
-  ${PublicConfigType}
-
-  fragment NodeType on Node {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    gridVersion
-    nodeId
-    farmId
-    twinId
-    locationId
-    hru
-    sru
-    cru
-    mru
-    publicConfig {
-      ...PublicConfigType
-    }
-    uptime
-    created
-    farmingPolicyId
-    location {
-      ...LocationType
-    }
-    country
-    city
-    interfaces {
-      ips
-      mac
-      name
-      id
-    }
-    certificationType
-  }
-`;
 export interface IPublicIPs {
   id: string;
   gateway: string;
@@ -193,32 +117,6 @@ export interface IFarm {
   freePublicIp: number;
 }
 
-export const FarmType = gql`
-  fragment FarmType on Farm {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    gridVersion
-    farmId
-    name
-    twinId
-    pricingPolicyId
-    certificationType
-    publicIPs {
-      id
-      gateway
-      farmId
-      contractId
-      ip
-    }
-  }
-`;
-
 export interface INodeContract {
   id: string;
   nodeId: number;
@@ -227,17 +125,6 @@ export interface INodeContract {
   state: string;
   twinId: number;
 }
-
-export const NodeContractType = gql`
-  fragment NodeContractType on NodeContract {
-    id
-    nodeId
-    contractId
-    deploymentHash
-    state
-    twinId
-  }
-`;
 
 export interface ITwin {
   id: string;
@@ -253,23 +140,6 @@ export interface ITwin {
   accountId: string;
   ip: string;
 }
-
-export const TwinType = gql`
-  fragment TwinType on Twin {
-    id
-    createdAt
-    createdById
-    updatedAt
-    updatedById
-    deletedAt
-    deletedById
-    version
-    gridVersion
-    twinId
-    accountId
-    ip
-  }
-`;
 
 export interface IPublicConfig {
   ipv4: string;
@@ -310,15 +180,6 @@ export interface GetDataQueryType {
   publicConfigs: IPublicConfig[];
 }
 
-export const getDataQuery = gql`
-  ${NodeType}
-  query getDataQuery($limit: Int!, $offset: Int!) {
-    nodes(orderBy: uptime_DESC, limit: $limit, offset: $offset) {
-      ...NodeType
-    }
-  }
-`;
-
 /* Refactored Code */
 
 export interface IFetchPaginatedData<T> {
@@ -344,7 +205,7 @@ export const getFarmsQuery = gql`
         twinID_in: $twinId_in
         certificationType_in: $certificationType_in
         pricingPolicyID_in: $pricingPolicyId_in
-      },
+      }
       orderBy: farmID_ASC
     ) {
       count: totalCount

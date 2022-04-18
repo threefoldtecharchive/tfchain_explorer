@@ -1,5 +1,10 @@
 import { NodeQuries } from "../types/gridProxy";
 
+interface Resp<T> {
+  data: T;
+  headers: Response["headers"];
+}
+
 export class GridProxyRequest {
   private _url = "http://192.241.158.21:8080";
   private _quries: { [key: string]: any } = {};
@@ -13,19 +18,25 @@ export class GridProxyRequest {
     return this;
   }
 
-  create<T>(): Promise<T> {
+  create<T>(): Promise<Resp<T>> {
     const quries = Object.entries(this._quries)
       .map((q) => q.join("="))
       .join("&");
 
-    return fetch(`${this._url}?${quries}`).then<T>((res) => {
-      return res.json();
-    });
+    let headers: Response["headers"];
+    return fetch(`${this._url}?${quries}`)
+      .then((res) => {
+        headers = res.headers;
+        return res.json();
+      })
+      .then((data) => {
+        return { data, headers };
+      });
   }
 }
 
 export class GridProxy {
-  private static request<T>(url: string, quries: any): Promise<T> {
+  private static request<T>(url: string, quries: any): Promise<Resp<T>> {
     const req = new GridProxyRequest(url);
     for (const query in quries) {
       req.set(query, quries[query]);
@@ -33,7 +44,7 @@ export class GridProxy {
     return req.create();
   }
 
-  static nodes<T>(queries: NodeQuries = {}): Promise<T> {
-    return GridProxy.request("/nodes", queries);
+  static nodes<T>(queries: NodeQuries = {}) {
+    return GridProxy.request<T>("/nodes", queries);
   }
 }

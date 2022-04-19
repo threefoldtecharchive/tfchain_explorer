@@ -1,47 +1,46 @@
+import { AxiosInstance } from "axios";
+import { setup } from "axios-cache-adapter";
 import { NodeQuries } from "../types/gridProxy";
 
-interface Resp<T> {
-  data: T;
-  headers: Response["headers"];
-}
+const axiosReq: AxiosInstance = setup({
+  baseURL: "http://192.241.158.21:8080",
+  cache: {
+    debug: process.env.NODE_ENV === "development",
+    maxAge: 15 * 60 * 1000,
+    exclude: {
+      query: false,
+    },
+  },
+});
 
 export class GridProxyRequest {
-  private _url = "http://192.241.158.21:8080";
-  private _quries: { [key: string]: any } = {};
+  private quries: { [key: string]: any } = {};
 
-  constructor(url: string) {
-    if (url) this._url += url;
-  }
+  constructor(private url: string) {}
 
   set(query: string, value: any) {
-    this._quries[query] = value;
+    this.quries[query] = value;
     return this;
   }
 
-  create<T>(): Promise<Resp<T>> {
-    const quries = Object.entries(this._quries)
+  create<T>() {
+    const quries = Object.entries(this.quries)
       .map((q) => q.join("="))
       .join("&");
 
-    let headers: Response["headers"];
-    return fetch(`${this._url}?${quries}`)
-      .then((res) => {
-        headers = res.headers;
-        return res.json();
-      })
-      .then((data) => {
-        return { data, headers };
-      });
+    return axiosReq.get<T>(`${this.url}?${quries}`);
   }
 }
 
 export class GridProxy {
-  private static request<T>(url: string, quries: any): Promise<Resp<T>> {
+  static readonly instance = axiosReq;
+
+  private static request<T>(url: string, quries: any) {
     const req = new GridProxyRequest(url);
     for (const query in quries) {
       req.set(query, quries[query]);
     }
-    return req.create();
+    return req.create<T>();
   }
 
   static nodes<T>(queries: NodeQuries = {}) {

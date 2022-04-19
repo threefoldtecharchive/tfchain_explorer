@@ -1,5 +1,23 @@
 <template>
   <Layout pageName="Nodes">
+    <template v-slot:filters>
+      <LayoutFilters
+        :items="filters.map((f) => f.label)"
+        v-model="activeFiltersKeys"
+      />
+    </template>
+
+    <template v-slot:active-filters>
+      <!-- <div v-for="filter in activeFilters" :key="filter.label">
+        <component
+          :is="filter.component"
+          :options="filter"
+          v-model="filter.value"
+          @input="changed = true"
+        />
+      </div> -->
+    </template>
+
     <template v-slot:table>
       <div
         style="
@@ -37,6 +55,7 @@
           'disable-pagination': loading,
         }"
         :disable-pagination="loading"
+        disable-sort
         @update:options="onLoadNodes($event.page)"
       >
         <template v-slot:[`item.created`]="{ item }">
@@ -112,14 +131,94 @@ export default class Nodes extends Vue {
     { text: "Up Time", value: "uptime", align: "center" },
   ];
 
-  filters: NodeQuries = {
+  activeFiltersKeys: string[] = ["Node ID", "HRU", "CRU"];
+  filters = [
+    {
+      label: "Node ID",
+      type: "in",
+      key: "nodeId",
+      placeholder: "Filter by node id.",
+    },
+    {
+      label: "Farm ID",
+      type: "in",
+      key: "farmId",
+      placeholder: "Filter by farm id.",
+    },
+    {
+      label: "Twin ID",
+      type: "in",
+      key: "twinId",
+      placeholder: "Filter by twin id.",
+    },
+    {
+      label: "Country Full Name",
+      type: "in",
+      key: "countryFullName",
+      placeholder: "Filter by country.",
+    },
+    {
+      label: "Farming Policy",
+      type: "in",
+      key: "farmingPolicyName",
+      placeholder: "Filter by farming policy name.",
+    },
+    {
+      label: "SRU",
+      type: "range",
+      key: "sru",
+      placeholder: "sru",
+      max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
+      unit: "TB",
+    },
+    {
+      label: "HRU",
+      type: "range",
+      key: "hru",
+      placeholder: "hru",
+      max: 1e12 * 1000, // 1e12 is Terra and we want here 1000 Terrabytes
+      unit: "TB",
+    },
+    {
+      label: "MRU",
+      type: "range",
+      key: "mru",
+      placeholder: "mru",
+      max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
+      unit: "TB",
+    },
+    {
+      label: "CRU",
+      type: "range",
+      key: "cru",
+      placeholder: "cru",
+      max: 64 * 3,
+      unit: "core",
+    },
+    {
+      label: "Free Public IP",
+      type: "comparison",
+      key: "freePublicIPs",
+      placeholder: "Filter by greater than or equal to publicIp Number.",
+      prefix: ">=",
+    },
+    {
+      label: "Certification Type",
+      type: "in",
+      key: "certificationType",
+      placeholder: "Filter by certification type",
+      value: ["Diy", "Certified"],
+    },
+  ];
+
+  quries: NodeQuries = {
     ret_count: true,
     size: 15,
   };
 
   async onLoadNodes(page: number) {
     this.loading = true;
-    const res = await GridProxy.nodes<INode[]>({ ...this.filters, page });
+    const res = await GridProxy.nodes<INode[]>({ ...this.quries, page });
     this.count = +res.headers["count"];
     this.nodes = await this.__normalizeNodes(res.data);
     this.loading = false;

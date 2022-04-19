@@ -110,7 +110,7 @@ export interface IFarm {
   twinId: number;
   pricingPolicyId: number;
   certificationType: "Diy" | "Certified";
-  publicIPs: IPublicIPs[];
+  publicIps: IPublicIPs[];
   stellarAddress?: string;
   totalPublicIp: number;
   usedPublicIp: number;

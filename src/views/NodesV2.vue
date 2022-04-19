@@ -66,7 +66,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DetailsV2 from "@/components/DetailsV2.vue";
-import { INode } from "@/graphql/api";
+import { IFarm, INode } from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
@@ -75,6 +75,11 @@ import ConditionFilter from "@/components/ConditionFilter.vue";
 import ComparisonFilter from "@/components/ComparisonFilter.vue";
 import LayoutFilters from "@/components/LayoutFilters.vue";
 import { GridProxy } from "@/utils/gridProxy";
+import { NodeQuries } from "@/types/gridProxy";
+import {
+  getFarmFreePublicIps,
+  getFarmUsedPublicIps,
+} from "@/utils/calcPublicIps";
 
 @Component({
   components: {
@@ -103,26 +108,34 @@ export default class Nodes extends Vue {
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
-    { text: "CRU", value: "cru", align: "center" },
+    { text: "CRU", value: "total_resources.cru", align: "center" },
     { text: "Up Time", value: "uptime", align: "center" },
   ];
 
-  onLoadNodes(page: number) {
+  filters: NodeQuries = {
+    ret_count: true,
+    size: 15,
+  };
+
+  async onLoadNodes(page: number) {
     this.loading = true;
+    const res = await GridProxy.nodes<INode[]>({ ...this.filters, page });
+    this.count = +res.headers["count"];
+    this.nodes = await this.__normalizeNodes(res.data);
+    this.loading = false;
+  }
 
-    GridProxy.nodes<INode[]>({ ret_count: true, size: 15, page })
-      .then(async (res) => {
-        console.log(await (GridProxy.instance as any).cache.length());
-
-        this.count = +res.headers["count"];
-        this.nodes = res.data;
+  private async __normalizeNodes(nodes: INode[]): Promise<INode[]> {
+    return Promise.all(
+      nodes.map(async (node: any) => {
+        const res = await GridProxy.farms<IFarm[]>({ farm_id: node.farmId });
+        const [farm] = res.data;
+        const [free, used] = [getFarmFreePublicIps(farm), getFarmUsedPublicIps(farm)]; // prettier-ignore
+        node.totalPublicIPs = free + used;
+        node.freePublicIPs = free;
+        return node;
       })
-      .catch((err) => {
-        console.log("Error", err);
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+    );
   }
 }
 </script>

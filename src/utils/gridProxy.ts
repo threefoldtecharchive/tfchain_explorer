@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { setup } from "axios-cache-adapter";
-import { NodeQuries } from "../types/gridProxy";
+import { NodeQuries, FarmQuries } from "../types/gridProxy";
 
 const axiosReq: AxiosInstance = setup({
   baseURL: "http://192.241.158.21:8080",
@@ -45,5 +45,9 @@ export class GridProxy {
 
   static nodes<T>(queries: NodeQuries = {}) {
     return GridProxy.request<T>("/nodes", queries);
+  }
+
+  static farms<T>(queries: FarmQuries = {}) {
+    return GridProxy.request<T>("/farms", queries);
   }
 }

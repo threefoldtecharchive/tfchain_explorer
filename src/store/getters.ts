@@ -91,7 +91,7 @@ export function getFarmPublicIPs(
   if (farm) {
     const freePublicIps = getFarmFreePublicIps(farm);
     const usedPublicIps = getFarmUsedPublicIps(farm);
-    const totalPublicIps = farm.publicIPs.length;
+    const totalPublicIps = farm.publicIps.length;
     return [totalPublicIps, freePublicIps, usedPublicIps];
   }
   return [0, 0, 0];
@@ -170,7 +170,7 @@ export default {
       return farms.map((f) => {
         return {
           ...f,
-          totalPublicIPs: f.publicIPs.length,
+          // totalPublicIPs: f.publicIPs.length,
           freePublicIPs: getFarmFreePublicIps(f),
           usedPublicIPs: getFarmUsedPublicIps(f),
           pricingPolicyName: state.pricingPolicies.get(f.pricingPolicyId),

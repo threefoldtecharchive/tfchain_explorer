@@ -1,7 +1,7 @@
 import { IFarm } from "@/graphql/api";
 
 export default function getFarmPublicIPs(farm: IFarm): IFarm {
-  const ips = farm.publicIPs;
+  const ips = farm.publicIps;
   const total = ips.length;
   const used = ips.filter((x) => x.contractId === 0).length;
   return {

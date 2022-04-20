@@ -1,30 +1,32 @@
 <template>
   <Layout pageName="Farms">
     <template v-slot:filters>
-      <LayoutFilters
-        :items="filters.map((f) => f.chip_label)"
-        v-model="activeFiltersKeys"
-      />
-    </template>
-
-    <template v-slot:apply-filters>
-      <v-btn
-        color="primary"
-        :disabled="loading || !changed"
-        :loading="loading"
-        @click="onApplyFilter"
-        class="mt-2"
-      >
-        Apply Filter
-      </v-btn>
+      <v-col>
+        <LayoutFilters
+          :items="filters.map((f) => f.label)"
+          v-model="activeFiltersKeys"
+          @input="changed = true"
+        />
+        <v-row justify="end">
+          <v-btn
+            :disabled="!changed || loading"
+            type="button"
+            :loading="loading"
+            color="primary"
+            @click="onLoadFarms()"
+          >
+            Filter
+          </v-btn>
+        </v-row>
+      </v-col>
     </template>
 
     <template v-slot:active-filters>
-      <div v-for="filter in activeFilters" :key="filter.label">
+      <div v-for="f in activeFilters" :key="f.label">
         <component
-          :is="filter.component"
-          :options="filter"
-          v-model="filter.value"
+          :is="f.component"
+          :label="f.label"
+          v-model="f.value"
           @input="changed = true"
         />
       </div>
@@ -38,20 +40,17 @@
         class="elevation-1"
         align
         :items-per-page="15"
-        :server-items-length="farms.total"
-        :items="items"
+        :server-items-length="count"
+        :items="farms"
         :disable-pagination="loading"
-        :page="page + 1"
         :footer-props="{
           'disable-items-per-page': true,
           'disable-pagination': loading,
         }"
-        @click:row="openSheet"
         :disable-sort="false"
         multi-sort
-        @update:options="
-          onUpdateOptions($event.page, $event.sortBy, $event.sortDesc)
-        "
+        @update:options="onLoadFarms($event.page)"
+        @click:row="openSheet"
       >
         <template v-slot:[`item.certificationType`]="{ item }">
           {{ item.certificationType }}
@@ -82,10 +81,6 @@
         <template v-slot:[`item.usedPublicIp`]="{ item }">
           {{ item.usedPublicIp }}
         </template>
-
-        <template v-slot:[`item.pricingPolicyId`]="{ item }">
-          {{ pricingPolicy(item.pricingPolicyId) }}
-        </template>
       </v-data-table>
     </template>
 
@@ -93,7 +88,7 @@
       <DetailsV2
         :open="!!farm"
         :query="query"
-        :variables="farm ? { farmId: farm.id, twinId: farm.twinId } : {}"
+        :variables="farm ? { farmId: farm.farmId, twinId: farm.twinId } : {}"
         v-on:close-sheet="closeSheet"
       />
     </template>
@@ -120,6 +115,13 @@ import getFarmPublicIPs from "@/utils/getFarmPublicIps";
 import gql from "graphql-tag";
 import equalArrays from "@/utils/equalArrays";
 import LayoutFilters from "@/components/LayoutFilters.vue";
+import { GridProxy } from "@/utils/gridProxy";
+import { FarmQuries } from "@/types/gridProxy";
+import {
+  getFarmFreePublicIps,
+  getFarmUsedPublicIps,
+} from "@/utils/calcPublicIps";
+import SearchFilter from "@/components/SearchFilter.vue";
 
 @Component({
   components: {
@@ -127,215 +129,146 @@ import LayoutFilters from "@/components/LayoutFilters.vue";
     DetailsV2,
     InFilterV2,
     LayoutFilters,
+    SearchFilter,
   },
 })
 export default class Farms extends Vue {
-  sort: { by: string[]; desc: boolean[] } = { by: [], desc: [] };
-
-  value = "";
-  page = 0;
+  changed = true;
   loading = false;
-  changed = false;
+  count = 0;
+  farms: IFarm[] = [];
 
   // prettier-ignore
   headers = [
-    { text: "ID", value: "id" },
+    { text: "ID", value: "farmId" },
     { text: "NAME", value: "name" },
     { text: "Total Public IPs", value: "totalPublicIp", align: "center", sortable: false },
     { text: "Free Public IPs", value: "freePublicIp", align: "center", sortable: false },
     { text: "Used Public IPs", value: "usedPublicIp", align: "center", sortable: false },
-    { text: "CERTIFICATION TYPE", value: "certificationType", align: "center", sortable: false },
+    { text: "CERTIFICATION TYPE", value: "Certification_type", align: "center", sortable: false },
     { text: "PRICING POLICY", value: "pricingPolicyId", align: "center", sortable: false },
   ];
 
-  get farms(): IPaginationData<IFarm> {
-    return this.$store.state.farms;
-  }
+  private __page = 1;
+  async onLoadFarms(page: number = this.__page) {
+    try {
+      this.__page = page;
+      this.loading = true;
 
-  get items(): IFarm[] | undefined {
-    return this.farms.items.get(this.page);
-  }
+      const quries: any = {
+        ret_count: this.changed,
+        page,
+        size: 15,
+      };
 
-  private get _pricingPolicy(): Map<number, string> {
-    return this.$store.state.pricingPolicies;
-  }
-
-  onUpdateOptions(page: number, sortBy: string[], sortDesc: boolean[]) {
-    const _by = this.sort.by;
-    const _desc = this.sort.desc;
-
-    this.page = page - 1;
-    this.sort = {
-      by: sortBy,
-      desc: sortDesc,
-    };
-
-    if (!equalArrays(_by, sortBy) || !equalArrays(_desc, sortDesc)) {
-      this.onApplyFilter();
-    }
-  }
-
-  public pricingPolicy(id: number) {
-    const name = this._pricingPolicy.get(id);
-    return name ? name : id;
-  }
-
-  private _vars: any = {};
-
-  @Watch("page", { immediate: true })
-  public onUpdatePage() {
-    if (this.items) return;
-    this.loading = true;
-    this.$apollo
-      .query<IFetchPaginatedData<IFarm>>({
-        query: getFarmsQuery,
-        variables: {
-          limit: PAGE_LIMIT,
-          offset: this.page * PAGE_LIMIT,
-          ...this._vars,
-        },
-      })
-      .then(
-        ({
-          data: {
-            total: { count },
-            items,
-          },
-        }) => {
-          this.$store.state.farms = {
-            total: count,
-            items: this.farms.items.set(this.page, items.map(getFarmPublicIPs)),
-          };
-        }
-      )
-      .catch((err) => {
-        console.log("Error", err);
-      })
-      .finally(() => {
-        this.loading = false;
+      this.activeFilters.forEach(({ key, value }) => {
+        if (value !== null && value !== undefined) quries[key] = value;
       });
-  }
 
-  public getKeyByValue(value: string): number | null {
-    const map = this._pricingPolicy;
-    const keys = [...map.keys()];
-    const values = [...map.values()];
-
-    for (let i = 0; i < values.length; i++) {
-      if (values[i] === value) return keys[i];
-    }
-
-    return null;
-  }
-
-  public onApplyFilter() {
-    this.changed = false;
-    const _vars: any = this.activeFilters
-      .filter((f) => (Array.isArray(f.value) ? f.value.length > 0 : true))
-      .reduce((res, f) => {
-        const { symbol, value, getValue } = f;
-        res[symbol] = getValue?.(f) ?? value;
-        return res;
-      }, {} as { [key: string]: any });
-
-    const orderBy: string[] = [];
-    for (let i = 0; i < this.sort.by.length; i++) {
-      const by = this.sort.by[i];
-      const desc = this.sort.desc[i];
-
-      switch (by) {
-        case "id":
-          orderBy.push(desc ? "farmID_DESC" : "farmID_ASC");
-          break;
-
-        case "name":
-          orderBy.push(desc ? "name_DESC" : "name_ASC");
-          break;
+      const res = await GridProxy.farms<IFarm[]>(quries);
+      if (this.changed) {
+        this.count = +res.headers["count"];
       }
+      this.farms = await this.__normalizeFarms(res.data);
+      this.loading = false;
+      this.changed = false;
+    } catch {
+      this.loading = false;
+      this.changed = false;
     }
-
-    _vars.orderBy = orderBy.length === 0 ? undefined : orderBy;
-    this._vars = _vars;
-
-    this.$store.state.farms = {
-      total: 0,
-      items: new Map(),
-    };
-    if (this.page === 0) this.onUpdatePage();
-    else this.page = 0;
   }
 
-  activeFiltersKeys: string[] = ["Farm ID", "Name"];
+  private async __normalizeFarms(farms: IFarm[]): Promise<IFarm[]> {
+    const res = await GridProxy.farmingPolicies();
+    const policies: { [key: number]: string } = res.data.reduce(
+      (res: any, { id, name }: any) => {
+        res[id] = name;
+        return res;
+      },
+      {}
+    );
 
-  get activeFilters(): IFilterOptions[] {
-    const keySet = new Set(this.activeFiltersKeys);
-    return this.filters.filter((f) => keySet.has(f.chip_label));
+    return farms.map((farm: any) => {
+      const free = getFarmFreePublicIps(farm);
+      const used = getFarmUsedPublicIps(farm);
+      farm.totalPublicIp = free + used;
+      farm.freePublicIp = free;
+      farm.usedPublicIp = used;
+      farm.pricingPolicyId = policies[farm.pricingPolicyId];
+      return farm;
+    });
   }
 
-  public filters: IFilterOptions[] = [
+  activeFiltersKeys = ["Farm ID", "Name", "Free IPs"];
+  filters = [
     {
-      component: InFilterV2,
-      chip_label: "Farm ID",
-      label: "Filter By Farm ID",
-      items: () => Promise.resolve([]),
-      value: [],
-      multiple: true,
-      type: "number",
-      symbol: "farmId_in",
+      label: "Free IPs",
+      key: "free_ips",
+      component: SearchFilter,
+      value: 0,
     },
     {
-      component: InFilterV2,
-      chip_label: "Name",
-      label: "Filter By Farm Name",
-      items(sub_string: string) {
-        return apollo.defaultClient
-          .query<IFilterQuery>({
-            query: filterQuery("name"),
-            variables: { sub_string },
-          })
-          .then(({ data }) => {
-            return data.items.map((x) => x.value);
-          });
-      },
-      value: [],
-      multiple: true,
-      symbol: "name_in",
+      label: "Total IPs",
+      key: "total_ips",
+      component: SearchFilter,
+      value: 0,
     },
     {
-      component: InFilterV2,
-      chip_label: "Twin ID",
-      label: "Filter By Twin ID",
-      items: (_) => Promise.resolve([]),
-      value: [],
-      type: "number",
-      multiple: true,
-      symbol: "twinId_in",
+      label: "Pricing Policy ID",
+      key: "pricing_policy_id",
+      component: SearchFilter,
+      value: null,
     },
     {
-      component: InFilterV2,
-      chip_label: "Certification Type",
-      label: "Filter By Certification Type",
-      items: (_) => Promise.resolve(["Diy", "Certified"]),
-      value: [],
-      init: true,
-      multiple: true,
-      symbol: "certificationType_in",
+      label: "Version",
+      key: "version",
+      component: SearchFilter,
+      value: null,
     },
     {
-      component: InFilterV2,
-      chip_label: "Pricing Policy",
-      label: "Filter By Pricing policy",
-      items: (_) => Promise.resolve([...this._pricingPolicy.values()]),
-      value: [],
-      init: true,
-      multiple: true,
-      symbol: "pricingPolicyId_in",
-      getValue: (f) => {
-        return (f.value as string[]).map(this.getKeyByValue.bind(this));
-      },
+      label: "Farm ID",
+      key: "farm_id",
+      component: SearchFilter,
+      value: null,
+    },
+    {
+      label: "Twin ID",
+      key: "twin_id",
+      component: SearchFilter,
+      value: null,
+    },
+    {
+      label: "Name",
+      key: "name",
+      component: SearchFilter,
+      value: null,
+    },
+    {
+      label: "Name Contains",
+      key: "name_contains",
+      component: SearchFilter,
+      value: null,
+    },
+    {
+      label: "Certification Type",
+      key: "certification_type",
+      component: SearchFilter,
+      value: null,
+    },
+    {
+      label: "Stellar Address",
+      key: "stellar_address",
+      component: SearchFilter,
+      value: null,
     },
   ];
 
+  get activeFilters() {
+    const keys = new Set(this.activeFiltersKeys);
+    return this.filters.filter((f) => keys.has(f.label));
+  }
+
+  farm: IFarm | null = null;
   query = gql`
     query getFarmDetails($farmId: Int!, $twinId: Int!) {
       farm: farms(where: { farmID_eq: $farmId }) {
@@ -356,8 +289,6 @@ export default class Farms extends Vue {
       }
     }
   `;
-
-  farm: IFarm | null = null;
 
   openSheet(farm: IFarm): void {
     this.farm = farm;

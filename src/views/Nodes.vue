@@ -227,32 +227,37 @@ export default class Nodes extends Vue {
 
   private __page = 1;
   async onLoadNodes(page: number = this.__page) {
-    this.__page = page;
-    this.loading = true;
+    try {
+      this.__page = page;
+      this.loading = true;
 
-    const quries: any = {
-      ret_count: this.changed,
-      size: 15,
-      page,
-      status: this.onlyOnline ? "up" : "down",
-    };
+      const quries: any = {
+        ret_count: this.changed,
+        size: 15,
+        page,
+        status: this.onlyOnline ? "up" : "down",
+      };
 
-    if (this.withGateway) {
-      quries.ipv4 = true;
-      quries.domain = true;
+      if (this.withGateway) {
+        quries.ipv4 = true;
+        quries.domain = true;
+      }
+
+      this.activeFilters.forEach(({ key, value }) => {
+        if (value !== null && value !== undefined) quries[key] = value;
+      });
+
+      const res = await GridProxy.nodes<INode[]>(quries);
+      if (this.changed) {
+        this.count = +res.headers["count"];
+      }
+      this.nodes = await this.__normalizeNodes(res.data);
+      this.loading = false;
+      this.changed = false;
+    } catch {
+      this.loading = false;
+      this.changed = false;
     }
-
-    this.activeFilters.forEach(({ key, value }) => {
-      if (value !== null && value !== undefined) quries[key] = value;
-    });
-
-    const res = await GridProxy.nodes<INode[]>(quries);
-    if (this.changed) {
-      this.count = +res.headers["count"];
-    }
-    this.nodes = await this.__normalizeNodes(res.data);
-    this.loading = false;
-    this.changed = false;
   }
 
   private async __normalizeNodes(nodes: INode[]): Promise<INode[]> {

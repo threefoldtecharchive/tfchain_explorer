@@ -50,4 +50,11 @@ export class GridProxy {
   static farms<T>(queries: FarmQuries = {}) {
     return GridProxy.request<T>("/farms", queries);
   }
+
+  static farmingPolicies() {
+    return GridProxy.request<any>(
+      "https://raw.githubusercontent.com/threefoldtech/tfchain/development/farming_policies.json",
+      {}
+    );
+  }
 }

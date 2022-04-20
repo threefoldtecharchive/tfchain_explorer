@@ -154,6 +154,7 @@ export default class Details extends Vue {
         }, data);
 
         // update with the data from grid proxy
+        if (!this.nodeId) return;
         const gproxyData = await fetch(
           `${window.configs.proxy_url}/nodes/${this.nodeId}`
         ).then((res) => res.json());

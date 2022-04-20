@@ -12,7 +12,7 @@ export interface NodeQuries {
   farm_name?: string;
   ipv4?: boolean;
   ipv6?: boolean;
-  domain?: string;
+  domain?: boolean;
   farm_ids?: string;
 }
 

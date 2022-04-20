@@ -1,40 +1,32 @@
 <template>
   <Layout pageName="Nodes">
     <template v-slot:filters>
-      <LayoutFilters
-        :items="filters.map((f) => f.label)"
-        v-model="activeFiltersKeys"
-      />
+      <v-col>
+        <LayoutFilters
+          :items="filters.map((f) => f.label)"
+          v-model="activeFiltersKeys"
+        />
+        <v-row justify="end">
+          <v-btn
+            :disabled="!changed || loading"
+            type="button"
+            :loading="loading"
+            color="primary"
+            @click="onLoadNodes()"
+          >
+            Filter
+          </v-btn>
+        </v-row>
+      </v-col>
     </template>
 
     <template v-slot:active-filters>
-      <div v-for="filter in activeFilters" :key="filter.key">
-        <InFilter
-          key1="nodes"
-          :key2="filter.key"
-          :label="filter.placeholder"
-          v-if="filter.type === 'in'"
-        />
-        <RangeFilter
-          v-if="filter.type === 'range'"
-          key1="nodes"
-          :key2="filter.key"
-          :label="filter.placeholder"
-          :max="filter.max"
-          :unit="filter.unit"
-        />
-        <ConditionFilter
-          v-if="filter.type === 'condition'"
-          key1="nodes"
-          :key2="filter.key"
-          :labels="filter.placeholder"
-        />
-        <ComparisonFilter
-          key1="nodes"
-          :key2="filter.key"
-          :label="filter.placeholder"
-          :prefix="filter.prefix"
-          v-if="filter.type === 'comparison'"
+      <div v-for="f in activeFilters" :key="f.label">
+        <component
+          :is="f.component"
+          :label="f.label"
+          v-model="f.value"
+          @input="changed = true"
         />
       </div>
     </template>
@@ -53,8 +45,13 @@
             v-model="withGateway"
             style="margin-bottom: -30px"
             label="Gateways"
+            @change="onLoadNodes()"
           />
-          <v-switch v-model="onlyOnline" label="Online" />
+          <v-switch
+            v-model="onlyOnline"
+            label="Online"
+            @change="onLoadNodes()"
+          />
         </div>
       </div>
       <div class="d-flex justify-center">
@@ -63,30 +60,36 @@
         </v-alert>
       </div>
       <v-data-table
-        ref="table"
-        :loading="$store.getters.tableLoading"
+        :loading="loading"
         loading-text="Loading..."
         :headers="headers"
-        :items="listNodes()"
-        :items-per-page="10"
+        :items="nodes"
+        :items-per-page="15"
         class="elevation-1"
         align
-        @click:row="openSheet"
+        :server-items-length="count"
+        :footer-props="{
+          'disable-items-per-page': true,
+          'disable-pagination': loading,
+        }"
+        :disable-pagination="loading"
+        disable-sort
+        @update:options="onLoadNodes($event.page)"
       >
         <template v-slot:[`item.created`]="{ item }">
           {{ item.created | date }}
         </template>
 
         <template v-slot:[`item.hru`]="{ item }">
-          {{ item.hru | toTeraOrGigaOrPeta }}
+          {{ item.total_resources.hru | toTeraOrGigaOrPeta }}
         </template>
 
         <template v-slot:[`item.sru`]="{ item }">
-          {{ item.sru | toTeraOrGigaOrPeta }}
+          {{ item.total_resources.sru | toTeraOrGigaOrPeta }}
         </template>
 
         <template v-slot:[`item.mru`]="{ item }">
-          {{ item.mru | toTeraOrGigaOrPeta }}
+          {{ item.total_resources.mru | toTeraOrGigaOrPeta }}
         </template>
 
         <template v-slot:[`item.uptime`]="{ item }">
@@ -94,37 +97,13 @@
         </template>
       </v-data-table>
     </template>
-
-    <template v-slot:details>
-      <DetailsV2
-        :open="!!node"
-        :query="query"
-        :variables="
-          node
-            ? {
-                nodeId: node.nodeId,
-                farmId: node.farmId,
-                twinId: node.twinId,
-                country: node.country,
-              }
-            : {}
-        "
-        :nodeId="node && node.nodeId"
-        v-on:close-sheet="closeSheet"
-      />
-    </template>
-
-    <template v-slot:default>
-      <NodesDistribution :nodes="listNodes()" />
-      <!-- v-if="$store.getters.nodes.length > 0" -->
-    </template>
   </Layout>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DetailsV2 from "@/components/DetailsV2.vue";
-import { INode } from "@/graphql/api";
+import { IFarm, INode } from "@/graphql/api";
 import Layout from "@/components/Layout.vue";
 import InFilter from "@/components/InFilter.vue";
 import RangeFilter from "@/components/RangeFilter.vue";
@@ -132,7 +111,12 @@ import NodesDistribution from "@/components/NodesDistribution.vue";
 import ConditionFilter from "@/components/ConditionFilter.vue";
 import ComparisonFilter from "@/components/ComparisonFilter.vue";
 import LayoutFilters from "@/components/LayoutFilters.vue";
-import gql from "graphql-tag";
+import { GridProxy } from "@/utils/gridProxy";
+import {
+  getFarmFreePublicIps,
+  getFarmUsedPublicIps,
+} from "@/utils/calcPublicIps";
+import SearchFilter from "@/components/SearchFilter.vue";
 
 @Component({
   components: {
@@ -144,11 +128,16 @@ import gql from "graphql-tag";
     ConditionFilter,
     ComparisonFilter,
     LayoutFilters,
+    SearchFilter,
   },
 })
 export default class Nodes extends Vue {
+  loading = false;
+  changed = true;
   withGateway = false;
   onlyOnline = true;
+  count: number | null = null;
+  nodes: INode[] = [];
 
   headers = [
     { text: "ID", value: "nodeId" },
@@ -158,181 +147,102 @@ export default class Nodes extends Vue {
     { text: "HRU", value: "hru", align: "center" },
     { text: "SRU", value: "sru", align: "center" },
     { text: "MRU", value: "mru", align: "center" },
-    { text: "CRU", value: "cru", align: "center" },
+    { text: "CRU", value: "total_resources.cru", align: "center" },
     { text: "Up Time", value: "uptime", align: "center" },
   ];
 
-  activeFiltersKeys: string[] = ["MRU", "HRU", "CRU"];
-
-  get activeFilters() {
-    const keySet = new Set(this.activeFiltersKeys);
-    return this.filters.filter((filter) => keySet.has(filter.label));
-  }
-
+  activeFiltersKeys = ["MRU", "HRU", "SRU"];
   filters = [
     {
-      label: "Node ID",
-      type: "in",
-      key: "nodeId",
-      placeholder: "Filter by node id.",
-    },
-    {
-      label: "Farm ID",
-      type: "in",
-      key: "farmId",
-      placeholder: "Filter by farm id.",
-    },
-    {
-      label: "Twin ID",
-      type: "in",
-      key: "twinId",
-      placeholder: "Filter by twin id.",
-    },
-    {
-      label: "Country Full Name",
-      type: "in",
-      key: "countryFullName",
-      placeholder: "Filter by country.",
-    },
-    {
-      label: "Farming Policy",
-      type: "in",
-      key: "farmingPolicyName",
-      placeholder: "Filter by farming policy name.",
-    },
-    {
-      label: "SRU",
-      type: "range",
-      key: "sru",
-      placeholder: "sru",
-      max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
-      unit: "TB",
+      label: "MRU",
+      key: "free_mru",
+      component: SearchFilter,
+      value: 0,
     },
     {
       label: "HRU",
-      type: "range",
-      key: "hru",
-      placeholder: "hru",
-      max: 1e12 * 1000, // 1e12 is Terra and we want here 1000 Terrabytes
-      unit: "TB",
+      key: "free_hru",
+      component: SearchFilter,
+      value: 0,
     },
     {
-      label: "MRU",
-      type: "range",
-      key: "mru",
-      placeholder: "mru",
-      max: 1e12 * 10, // 1e12 is Terra and we want here 10 Terrabytes
-      unit: "TB",
+      label: "SRU",
+      key: "free_sru",
+      component: SearchFilter,
+      value: 0,
     },
     {
-      label: "CRU",
-      type: "range",
-      key: "cru",
-      placeholder: "cru",
-      max: 64 * 3,
-      unit: "core",
+      label: "IPS",
+      key: "free_ips",
+      component: SearchFilter,
+      value: 0,
     },
     {
-      label: "Free Public IP",
-      type: "comparison",
-      key: "freePublicIPs",
-      placeholder: "Filter by greater than or equal to publicIp Number.",
-      prefix: ">=",
+      label: "Country",
+      key: "country",
+      component: SearchFilter,
+      value: "",
     },
     {
-      label: "Certification Type",
-      type: "in",
-      key: "certificationType",
-      placeholder: "Filter by certification type",
-      value: ["Diy", "Certified"],
+      label: "Farm Name",
+      key: "farm_name",
+      component: SearchFilter,
+      value: "",
+    },
+    {
+      label: "Farm IDs",
+      key: "farm_ids",
+      component: SearchFilter,
+      value: "",
     },
   ];
 
-  listNodes() {
-    let nodes: INode[] = this.$store.getters.listFilteredNodes;
+  get activeFilters() {
+    const keys = new Set(this.activeFiltersKeys);
+    return this.filters.filter((f) => keys.has(f.label));
+  }
+
+  private __page = 1;
+  async onLoadNodes(page: number = this.__page) {
+    this.__page = page;
+    this.loading = true;
+
+    const quries: any = {
+      ret_count: this.changed,
+      size: 15,
+      page,
+      status: this.onlyOnline ? "up" : "down",
+    };
+
     if (this.withGateway) {
-      nodes = nodes.filter(({ publicConfig }) => publicConfig?.domain !== "");
+      quries.ipv4 = true;
+      quries.domain = true;
     }
 
-    if (this.onlyOnline) {
-      nodes = nodes.filter(({ status }) => status === "up");
+    this.activeFilters.forEach(({ key, value }) => {
+      if (value !== null && value !== undefined) quries[key] = value;
+    });
+
+    const res = await GridProxy.nodes<INode[]>(quries);
+    if (this.changed) {
+      this.count = +res.headers["count"];
     }
-
-    return nodes;
+    this.nodes = await this.__normalizeNodes(res.data);
+    this.loading = false;
+    this.changed = false;
   }
 
-  toggleActive(label: string): void {
-    this.activeFiltersKeys = this.activeFiltersKeys.filter((x) => x !== label);
-  }
-
-  node: INode | null = null;
-  query = gql`
-    query getNodeDetails(
-      $nodeId: Int!
-      $farmId: Int!
-      $twinId: Int!
-      $country: String!
-    ) {
-      node: nodes(where: { nodeID_eq: $nodeId }) {
-        country
-        city
-        location {
-          latitude
-          longitude
-        }
-        nodeId: nodeID
-        farmId: farmID
-        farmingPolicyId
-        gridVersion
-        uptime
-        created
-        updatedAt
-        certificationType
-        interfaces {
-          id
-          name
-          mac
-          ips
-        }
-        publicConfig {
-          ipv4
-          gw4
-          ipv6
-          gw6
-          domain
-        }
-        farmingPolicyId
-      }
-
-      farm: farms(where: { farmID_eq: $farmId }) {
-        id
-        farmId: farmID
-        name
-        gridVersion
-        certificationType
-        stellarAddress
-      }
-
-      twin: twins(where: { twinID_eq: $twinId }) {
-        id
-        twinId: twinID
-        accountId: accountID
-        gridVersion
-        ip
-      }
-
-      country: countries(where: { name_eq: $country }) {
-        code
-      }
-    }
-  `;
-
-  openSheet(node: INode): void {
-    this.node = node;
-  }
-
-  closeSheet(): void {
-    this.node = null;
+  private async __normalizeNodes(nodes: INode[]): Promise<INode[]> {
+    return Promise.all(
+      nodes.map(async (node: any) => {
+        const res = await GridProxy.farms<IFarm[]>({ farm_id: node.farmId });
+        const [farm] = res.data;
+        const [free, used] = [getFarmFreePublicIps(farm), getFarmUsedPublicIps(farm)]; // prettier-ignore
+        node.totalPublicIPs = free + used;
+        node.freePublicIPs = free;
+        return node;
+      })
+    );
   }
 }
 </script>

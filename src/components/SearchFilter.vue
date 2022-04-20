@@ -2,7 +2,7 @@
   <v-card flat color="transparent">
     <v-subheader>{{ label }}</v-subheader>
     <v-text-field
-      type="text"
+      :type="type"
       :label="label"
       :placeholder="label"
       solo
@@ -21,6 +21,7 @@ import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 export default class SearchFilter extends Vue {
   @Prop({ required: true }) label!: string;
   @Prop({ required: true }) value!: string;
+  @Prop({ default: "text" }) type!: string;
 
   val = this.value;
 

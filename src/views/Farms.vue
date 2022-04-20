@@ -26,6 +26,7 @@
         <component
           :is="f.component"
           :label="f.label"
+          :type="f.type"
           v-model="f.value"
           @input="changed = true"
         />
@@ -205,18 +206,21 @@ export default class Farms extends Vue {
       label: "Free IPs",
       key: "free_ips",
       component: SearchFilter,
+      type: "number",
       value: 0,
     },
     {
       label: "Total IPs",
       key: "total_ips",
       component: SearchFilter,
+      type: "number",
       value: 0,
     },
     {
       label: "Pricing Policy ID",
       key: "pricing_policy_id",
       component: SearchFilter,
+      type: "number",
       value: null,
     },
     {
@@ -229,12 +233,14 @@ export default class Farms extends Vue {
       label: "Farm ID",
       key: "farm_id",
       component: SearchFilter,
+      type: "number",
       value: null,
     },
     {
       label: "Twin ID",
       key: "twin_id",
       component: SearchFilter,
+      type: "number",
       value: null,
     },
     {

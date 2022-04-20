@@ -26,6 +26,7 @@
         <component
           :is="f.component"
           :label="f.label"
+          :type="f.type"
           v-model="f.value"
           @input="changed = true"
         />
@@ -180,24 +181,28 @@ export default class Nodes extends Vue {
       label: "MRU",
       key: "free_mru",
       component: SearchFilter,
+      type: "number",
       value: 0,
     },
     {
       label: "HRU",
       key: "free_hru",
       component: SearchFilter,
+      type: "number",
       value: 0,
     },
     {
       label: "SRU",
       key: "free_sru",
       component: SearchFilter,
+      type: "number",
       value: 0,
     },
     {
       label: "IPS",
       key: "free_ips",
       component: SearchFilter,
+      type: "number",
       value: 0,
     },
     {

@@ -5,6 +5,7 @@
         <LayoutFilters
           :items="filters.map((f) => f.label)"
           v-model="activeFiltersKeys"
+          @input="changed = true"
         />
         <v-row justify="end">
           <v-btn
@@ -45,12 +46,12 @@
             v-model="withGateway"
             style="margin-bottom: -30px"
             label="Gateways"
-            @change="onLoadNodes()"
+            @change="(changed = true) && onLoadNodes()"
           />
           <v-switch
             v-model="onlyOnline"
             label="Online"
-            @change="onLoadNodes()"
+            @change="(changed = true) && onLoadNodes()"
           />
         </div>
       </div>
@@ -75,6 +76,7 @@
         :disable-pagination="loading"
         disable-sort
         @update:options="onLoadNodes($event.page)"
+        @click:row="openSheet"
       >
         <template v-slot:[`item.created`]="{ item }">
           {{ item.created | date }}
@@ -97,6 +99,25 @@
         </template>
       </v-data-table>
     </template>
+
+    <template v-slot:details>
+      <DetailsV2
+        :open="!!node"
+        :query="query"
+        :variables="
+          node
+            ? {
+                nodeId: node.nodeId,
+                farmId: node.farmId,
+                twinId: node.twinId,
+                country: node.country,
+              }
+            : {}
+        "
+        :nodeId="node && node.nodeId"
+        v-on:close-sheet="closeSheet"
+      />
+    </template>
   </Layout>
 </template>
 
@@ -112,6 +133,7 @@ import ConditionFilter from "@/components/ConditionFilter.vue";
 import ComparisonFilter from "@/components/ComparisonFilter.vue";
 import LayoutFilters from "@/components/LayoutFilters.vue";
 import { GridProxy } from "@/utils/gridProxy";
+import gql from "graphql-tag";
 import {
   getFarmFreePublicIps,
   getFarmUsedPublicIps,
@@ -138,6 +160,7 @@ export default class Nodes extends Vue {
   onlyOnline = true;
   count: number | null = null;
   nodes: INode[] = [];
+  node: INode | null = null;
 
   headers = [
     { text: "ID", value: "nodeId" },
@@ -238,11 +261,77 @@ export default class Nodes extends Vue {
         const res = await GridProxy.farms<IFarm[]>({ farm_id: node.farmId });
         const [farm] = res.data;
         const [free, used] = [getFarmFreePublicIps(farm), getFarmUsedPublicIps(farm)]; // prettier-ignore
+        node.farm = farm;
         node.totalPublicIPs = free + used;
         node.freePublicIPs = free;
         return node;
       })
     );
+  }
+
+  query = gql`
+    query getNodeDetails(
+      $nodeId: Int!
+      $farmId: Int!
+      $twinId: Int!
+      $country: String!
+    ) {
+      node: nodes(where: { nodeID_eq: $nodeId }) {
+        country
+        city
+        location {
+          latitude
+          longitude
+        }
+        nodeId: nodeID
+        farmId: farmID
+        farmingPolicyId
+        gridVersion
+        uptime
+        created
+        updatedAt
+        certificationType
+        interfaces {
+          id
+          name
+          mac
+          ips
+        }
+        publicConfig {
+          ipv4
+          gw4
+          ipv6
+          gw6
+          domain
+        }
+        farmingPolicyId
+      }
+      farm: farms(where: { farmID_eq: $farmId }) {
+        id
+        farmId: farmID
+        name
+        gridVersion
+        certificationType
+        stellarAddress
+      }
+      twin: twins(where: { twinID_eq: $twinId }) {
+        id
+        twinId: twinID
+        accountId: accountID
+        gridVersion
+        ip
+      }
+      country: countries(where: { name_eq: $country }) {
+        code
+      }
+    }
+  `;
+
+  openSheet(node: INode): void {
+    this.node = node;
+  }
+  closeSheet(): void {
+    this.node = null;
   }
 }
 </script>

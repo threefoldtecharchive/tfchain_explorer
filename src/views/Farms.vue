@@ -53,10 +53,6 @@
         @update:options="onLoadFarms($event.page)"
         @click:row="openSheet"
       >
-        <template v-slot:[`item.certificationType`]="{ item }">
-          {{ item.certificationType }}
-        </template>
-
         <template v-slot:[`item.publicIPs`]="{ item }">
           {{ item.publicIPs.length }}
         </template>
@@ -146,7 +142,6 @@ export default class Farms extends Vue {
     { text: "Total Public IPs", value: "totalPublicIp", align: "center", sortable: false },
     { text: "Free Public IPs", value: "freePublicIp", align: "center", sortable: false },
     { text: "Used Public IPs", value: "usedPublicIp", align: "center", sortable: false },
-    { text: "CERTIFICATION TYPE", value: "Certification_type", align: "center", sortable: false },
     { text: "PRICING POLICY", value: "pricingPolicyId", align: "center", sortable: false },
   ];
 

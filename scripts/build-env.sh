@@ -26,6 +26,10 @@ case $GQL_URL in
     PROXY_URL="https://gridproxy.test.grid.tf"
     POLKADOT_URL="wss://tfchain.test.grid.tf/ws"
     ;;
+  *"qa"*)
+    PROXY_URL="https://gridproxy.qa.grid.tf"
+    POLKADOT_URL="wss://tfchain.qa.grid.tf/ws"
+    ;;
 esac
 
 configs="

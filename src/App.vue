@@ -2,6 +2,16 @@
   <v-app>
     <Sidenav :mini="mini" />
     <v-main>
+      <v-app-bar color="red">
+        Check out our new &nbsp;
+        <a
+          href="https://dashboard.qa.grid.tf/"
+          class="text-decoration-none"
+          target="_blank"
+        >
+          Dashboard (Beta) </a
+        >&nbsp; which is planned to be a replacement for this explorer red
+      </v-app-bar>
       <Navbar :mini="mini" v-on:toggle-sidenav="mini = !mini" />
       <router-view />
     </v-main>

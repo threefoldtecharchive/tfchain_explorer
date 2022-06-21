@@ -287,7 +287,7 @@ export default class Nodes extends Vue {
         uptime
         created
         updatedAt
-        certificationType
+        certificationType: certification
         interfaces {
           id
           name
@@ -309,7 +309,7 @@ export default class Nodes extends Vue {
         farmId: farmID
         name
         gridVersion
-        certificationType
+        certificationType: certification
         stellarAddress
       }
 

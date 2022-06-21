@@ -5,8 +5,18 @@ export const types = {
     name: "Vec<u8>",
     twin_id: "u32",
     pricing_policy_id: "u32",
-    certification_type: "CertificationType",
+    certification: "FarmCertification",
     public_ips: "Vec<PublicIP>",
+    dedicated_farm: "bool",
+    farming_policy_limits: "Option<FarmingPolicyLimit>",
+  },
+  FarmingPolicyLimit: {
+    farming_policy_id: "u32",
+    cu: "Option<u64>",
+    su: "Option<u64>",
+    end: "Option<u64>",
+    node_count: "Option<u32>",
+    node_certification: "bool",
   },
   PublicIP: {
     ip: "Vec<u8>",
@@ -45,7 +55,11 @@ export const types = {
     created: "u64",
     farming_policy_id: "u32",
     interfaces: "Vec<Interface>",
-    certification_type: "CertificationType",
+    certification: "NodeCertification",
+    secure_boot: "bool",
+    virtualized: "bool",
+    serial_number: "Vec<u8>",
+    connection_price: "u32",
   },
   PublicConfig: {
     ipv4: "Vec<u8>",
@@ -69,18 +83,11 @@ export const types = {
     mac: "Vec<u8>",
     ips: "Vec<Vec<u8>>",
   },
-  CertificationType: {
+  NodeCertification: {
     _enum: ["Diy", "Certified"],
   },
-  CertificationCodeType: {
-    _enum: ["Farm", "Entity"],
-  },
-  CertificationCodes: {
-    version: "u32",
-    id: "u32",
-    name: "Vec<u8>",
-    description: "Vec<u8>",
-    certification_code_type: "CertificationCodeType",
+  FarmCertification: {
+    _enum: ["NotCertified", "Gold"],
   },
   PricingPolicy: {
     version: "u32",
@@ -94,6 +101,7 @@ export const types = {
     domain_name: "Policy",
     foundation_account: "AccountId",
     certified_sales_account: "AccountId",
+    discount_for_dedicated_nodes: "u8",
   },
   Policy: {
     value: "u32",
@@ -113,6 +121,7 @@ export const types = {
     _enum: {
       NodeContract: "NodeContract",
       NameContract: "NameContract",
+      RentContract: "RentContract",
     },
   },
   NodeContract: {
@@ -125,6 +134,9 @@ export const types = {
   NameContract: {
     name: "Vec<u8>",
   },
+  RentContract: {
+    node_id: "u32",
+  },
   ContractBillingInformation: {
     previous_nu_reported: "u64",
     last_updated: "u64",
@@ -134,10 +146,21 @@ export const types = {
     _enum: {
       Created: null,
       Deleted: "Cause",
+      GracePeriod: "u64",
     },
+  },
+  ContractResources: {
+    contract_id: "u64",
+    used: "Resources",
   },
   Cause: {
     _enum: ["CanceledByUser", "OutOfFunds"],
+  },
+  NruConsumption: {
+    contract_id: "u64",
+    timestamp: "u64",
+    window: "u64",
+    nru: "u64",
   },
   Consumption: {
     contract_id: "u64",
@@ -164,8 +187,13 @@ export const types = {
     su: "u32",
     nu: "u32",
     ipv4: "u32",
-    timestamp: "u64",
-    certification_type: "CertificationType",
+    minimal_uptime: "u16",
+    policy_created: "BlockNumber",
+    policy_end: "BlockNumber",
+    immutable: "bool",
+    default: "bool",
+    node_certification: "NodeCertification",
+    farm_certification: "FarmCertification",
   },
   ContractBill: {
     contract_id: "u64",
@@ -239,5 +267,38 @@ export const types = {
     timestamp: "u64",
     document_link: "Vec<u8>",
     document_hash: "Vec<u8>",
+  },
+  Validator: {
+    validator_node_account: "AccountId",
+    stash_account: "AccountId",
+    description: "Vec<u8>",
+    tf_connect_id: "Vec<u8>",
+    info: "Vec<u8>",
+    state: "ValidatorRequestState",
+  },
+  ValidatorRequestState: {
+    _enum: ["Created", "Approved", "Validating"],
+  },
+  ContractLock: {
+    amount_locked: "Balance",
+    lock_updated: "u64",
+    cycles: "u16",
+  },
+  DaoProposal: {
+    index: "u32",
+    description: "Vec<u8>",
+    link: "Vec<u8>",
+  },
+  DaoVotes: {
+    index: "u32",
+    threshold: "u32",
+    ayes: "Vec<VoteWeight>",
+    nayes: "Vec<VoteWeight>",
+    end: "BlockNumber",
+    vetos: "Vec<AccountId>",
+  },
+  VoteWeight: {
+    farm_id: "u32",
+    weight: "u64",
   },
 };

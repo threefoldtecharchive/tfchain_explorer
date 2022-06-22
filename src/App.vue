@@ -4,13 +4,10 @@
     <v-main>
       <v-app-bar color="red">
         Check out our new &nbsp;
-        <a
-          href="https://dashboard.qa.grid.tf/"
-          class="text-decoration-none"
-          target="_blank"
-        >
-          Dashboard (Beta) </a
-        >&nbsp; which is planned to be a replacement for this explorer red
+        <a :href="dashboardUrl" class="text-decoration-none" target="_blank">
+          Dashboard (Beta)
+        </a>
+        &nbsp; which is planned to be a replacement for this explorer
       </v-app-bar>
       <Navbar :mini="mini" v-on:toggle-sidenav="mini = !mini" />
       <router-view />
@@ -32,6 +29,10 @@ import { ActionTypes } from "./store/actions";
 })
 export default class App extends Vue {
   mini = true;
+
+  get dashboardUrl(): string {
+    return window.configs.dashboard_url;
+  }
 
   created() {
     this.$store.dispatch(ActionTypes.INIT_POLICIES);

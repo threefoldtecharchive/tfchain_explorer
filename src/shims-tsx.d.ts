@@ -5,6 +5,7 @@ interface AppConfigs {
   polkadot_url: string;
   proxy_url: string;
   version: string;
+  dashboard_url: string;
 }
 
 declare global {
